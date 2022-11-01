@@ -1,0 +1,48 @@
+/*
+Copyright 2022 by Herbert Potechius,
+Ernst-Abbe-Hochschule Jena - University of Applied Sciences - Department of Electrical Engineering and Information
+Technology - Immersive Media and AR/VR Research Group.
+All rights reserved.
+This file is released under the "MIT License Agreement".
+Please see the LICENSE file that should have been included as part of this package.
+*/
+
+
+$window_height: 100vh;
+$window_width: 100vw;
+
+$box_margin: 2px;
+$box_border: 1px;
+
+$header_height: 50px;
+
+$footer_height: 50px;
+
+
+$sidebarright_settings_height: 200px;
+$sidebarright_settings_innerheight: calc(#{$sidebarright_settings_height} - 2 * #{$box_margin} - 2 * #{$box_border});
+$sidebarright_width: 200px;
+$sidebarright_height: calc(#{$window_height} - #{$header_height} - #{$footer_height});
+$sidebarright_element_innerwidth: calc(#{$sidebarright_width} - 2 * #{$box_margin} - 2 * #{$box_border});
+$sidebarright_element_height: calc((#{$sidebarright_height} - #{$sidebarright_settings_height}) / 3);
+$sidebarright_element_innerheight: calc(#{$sidebarright_element_height} - 2 * #{$box_margin} - 2 * #{$box_border});
+
+$sidebarleft_width: 200px;
+$sidebarleft_height: calc(#{$window_height} - #{$header_height} - #{$footer_height});
+$sidebarleft_innerwidth: calc(#{$sidebarleft_width} - 2 * #{$box_margin} - 2 * #{$box_border});
+$sidebarleft_innerheight: calc(#{$sidebarleft_height} - 2 * #{$box_margin} - 2 * #{$box_border});
+
+$console_height: 200px;
+$console_width: calc(#{$window_width} - #{$sidebarleft_width} - #{$sidebarright_width});
+$console_innerwidth: calc(#{$console_width} - 2 * #{$box_margin} - 2 * #{$box_border});
+$console_innerheight: calc(#{$console_height} - 2 * #{$box_margin} - 2 * #{$box_border});
+
+$renderer_height: calc((#{$window_height} - #{$header_height} - #{$footer_height} - #{$console_height}) / 2);
+$renderer_width: calc((#{$window_width} - #{$sidebarleft_width} - #{$sidebarright_width}) / 3);
+$renderer_innerwidth: calc(#{$renderer_width} - 2 * #{$box_margin} - 2 * #{$box_border});
+$renderer_innerheight: calc(#{$renderer_height} - 2 * #{$box_margin} - 2 * #{$box_border});
+
+$rendererout_height: calc(#{$window_height} - #{$header_height} - #{$footer_height} - #{$console_height});
+$rendererout_width: calc((#{$window_width} - #{$sidebarleft_width} - #{$sidebarright_width}) / 3 * 2);
+$rendererout_innerheight: calc(#{$rendererout_height} - 2 * #{$box_margin} - 2 * #{$box_border});
+$rendererout_innerwidth: calc(#{$rendererout_width} - 2 * #{$box_margin} - 2 * #{$box_border});

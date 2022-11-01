@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/ColorTransferTool/static/css/main.c904f0f6.css",
+    "main.js": "/ColorTransferTool/static/js/main.accfc2bd.js",
+    "static/js/787.d54f9060.chunk.js": "/ColorTransferTool/static/js/787.d54f9060.chunk.js",
+    "static/media/logo.svg": "/ColorTransferTool/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
+    "index.html": "/ColorTransferTool/index.html",
+    "main.c904f0f6.css.map": "/ColorTransferTool/static/css/main.c904f0f6.css.map",
+    "main.accfc2bd.js.map": "/ColorTransferTool/static/js/main.accfc2bd.js.map",
+    "787.d54f9060.chunk.js.map": "/ColorTransferTool/static/js/787.d54f9060.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.c904f0f6.css",
+    "static/js/main.accfc2bd.js"
+  ]
+}

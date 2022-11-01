@@ -1,0 +1,101 @@
+/*
+Copyright 2022 by Herbert Potechius,
+Ernst-Abbe-Hochschule Jena - University of Applied Sciences - Department of Electrical Engineering and Information
+Technology - Immersive Media and AR/VR Research Group.
+All rights reserved.
+This file is released under the "MIT License Agreement".
+Please see the LICENSE file that should have been included as part of this package.
+*/
+
+@import "constants/Colors";
+@import "constants/Sizes";
+
+
+#console_main {
+    position: absolute;
+    top: calc(#{$window_height} - #{$footer_height} - #{$console_height});
+    left: $sidebarleft_width;
+    margin: $box_margin;
+    width: $console_innerwidth;
+    height: $console_innerheight;
+    background-color: $grey;
+    border: 1px solid $darkgrey;
+}
+
+#Console_tab_console_ta{
+    width: calc(100vw - 400px - 20px);
+    height: 180px - 20px;
+}
+
+#console_play_button {
+    position: absolute;
+    //background-color: green;
+    padding: 2px;
+    margin: 2px;
+    top: 0px;
+    right: 20px;
+}
+
+#console_play_button_logo {
+    //position: absolute;
+    padding: 0px;
+    margin: 0px;
+    height: 17px;
+    width: 17px;
+}
+
+#console_play_button:hover {
+    filter: brightness(1.5);
+}
+
+#console_upload_button {
+    position: absolute;
+    //background-color: green;
+    padding: 2px;
+    margin: 2px;
+    top: 0px;
+    right: 50px;
+}
+
+#console_upload_button_logo {
+    padding: 0px;
+    margin: 0px;
+    height: 17px;
+    width: 17px;
+}
+
+#console_upload_button:hover {
+    filter: brightness(1.5);
+}
+
+#console_eval_button {
+    position: absolute;
+    //background-color: green;
+    padding: 2px;
+    margin: 2px;
+    top: 0px;
+    right: 80px;
+}
+
+#console_eval_button_logo {
+    padding: 0px;
+    margin: 0px;
+    height: 17px;
+    width: 17px;
+}
+
+#console_eval_button:hover {
+    filter: brightness(1.5);
+}
+
+#ref_histogram {
+    position: absolute;
+    $scrolloffset: 20px;
+    left: calc((#{$console_innerwidth} - 2 * 5px - #{$scrolloffset}) / 3 + 8px);
+}
+
+#out_histogram {
+    position: absolute;
+    $scrolloffset: 20px;
+    left: calc(((#{$console_innerwidth} - 2 * 5px - #{$scrolloffset}) / 3 + 6px) * 2);
+}

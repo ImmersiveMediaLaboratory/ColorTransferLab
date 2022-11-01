@@ -1,0 +1,8 @@
+client/build/
+client/node_modules/
+client/package-lock.json
+
+server/env/
+server/data/
+server/Models/
+

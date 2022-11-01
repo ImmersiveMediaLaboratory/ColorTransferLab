@@ -1,0 +1,41 @@
+/*
+Copyright 2022 by Herbert Potechius,
+Ernst-Abbe-Hochschule Jena - University of Applied Sciences - Department of Electrical Engineering and Information
+Technology - Immersive Media and AR/VR Research Group.
+All rights reserved.
+This file is released under the "MIT License Agreement".
+Please see the LICENSE file that should have been included as part of this package.
+*/
+
+@import "constants/Colors";
+
+
+/*************************************************************************************************************
+* Changes the style of scrollbars
+*************************************************************************************************************/
+::-webkit-scrollbar{ width: 10px; }
+::-webkit-scrollbar-track{  background: #f1f1f1; }
+::-webkit-scrollbar-thumb{ background: #888; }
+::-webkit-scrollbar-thumb:hover{ background: #555; }
+
+
+:root {
+    font-size: 13px;
+    color: $lightgrey;
+    background-color: $grey;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+img { 
+    -webkit-user-drag: none; 
+    -khtml-user-drag: none; 
+    -moz-user-drag: none; 
+    -o-user-drag: none; 
+    user-drag: none; 
+  }

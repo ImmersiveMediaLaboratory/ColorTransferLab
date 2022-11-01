@@ -1,0 +1,55 @@
+/*
+Copyright 2022 by Herbert Potechius,
+Ernst-Abbe-Hochschule Jena - University of Applied Sciences - Department of Electrical Engineering and Information
+Technology - Immersive Media and AR/VR Research Group.
+All rights reserved.
+This file is released under the "MIT License Agreement".
+Please see the LICENSE file that should have been included as part of this package.
+*/
+
+@import "constants/Colors";
+@import "constants/Sizes";
+
+
+.tab-list_sidebarleft {  
+    position: absolute;
+    background-color: $darkgrey;
+    margin: 0px;
+    width: 30px;
+    padding: 0px;
+  }
+
+.tabs_sidebarleft {
+    background-color: salmon;
+}
+  
+.tab-list-item_sidebarleft {
+    padding-right: 4px;
+    list-style: none;
+    width: 30px;
+    height: calc((#{$sidebarleft_innerheight} - 25px) / 4);
+    writing-mode: tb-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    text-align: center;
+    font-family: "Arial", Helvetica, sans-serif;
+}
+
+.tab-list-active_sidebarleft {
+    background-color: $grey;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.tab-content_sidebarleft::-webkit-scrollbar {
+    display: none;
+  }
+
+.tab-content_sidebarleft {
+    position: absolute;
+    width: 170px;
+    margin-left: 30px;
+    overflow-y: scroll;
+    height: calc((#{$sidebarleft_innerheight} - 25px));
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
