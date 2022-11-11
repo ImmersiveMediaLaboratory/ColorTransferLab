@@ -15,9 +15,6 @@ import SideBarRight from '../SideBarRight/SideBarRight';
 import Console from '../Console/Console';
 import Body from '../Body/Body';
 import './Main.scss';
-import {server_request} from 'connection/utils_http'
-import { NoToneMapping } from 'three';
-
 import Requests from 'connection/utils_http';
 
 
@@ -28,8 +25,8 @@ import Requests from 'connection/utils_http';
 -----------------------------------------------------------------------------------------------------------------*/
 class Main extends React.Component {
     constructor(props) {
-      super(props);
-      this.state = {render: true};
+        super(props);
+        this.state = {render: true};
 
     }
 
@@ -37,19 +34,16 @@ class Main extends React.Component {
     -- Method "componentDidMount()" will be executed after this component is inserted into the DOM
     -------------------------------------------------------------------------------------------------------------*/
     componentDidMount() {
-      Requests.request_server_status();
-      Requests.request_available_methods();
-      Requests.request_database_content()
+        Requests.initConsole()
+        Requests.request_server_status();
+        Requests.request_available_methods();
+        Requests.request_database_content()
     }
-
 
     /*-------------------------------------------------------------------------------------------------------------
     -- 
     -------------------------------------------------------------------------------------------------------------*/
     render() {
-
-        
-
         return (
             <div>
                 <Header/>
@@ -61,6 +55,6 @@ class Main extends React.Component {
             </div>
         );
     }
-  }
+}
 
 export default Main;

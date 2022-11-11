@@ -12,7 +12,7 @@ import './Console.scss';
 import './TabsConsole.scss';
 import Tabs from "./../Tabs/Tabs";
 import Images from "constants/Images"
-import SystemConfiguration from "settings/SystemConfiguration"
+import SysConf from "settings/SystemConfiguration"
 import { server_request_post_CT } from 'connection/utils_http';
 import PointCloud from 'rendering/PointCloud';
 import ColorHistogram from './ColorHistogram';
@@ -41,7 +41,7 @@ class Console extends React.Component {
 
                 try {
                     const xmlHttp = new XMLHttpRequest();
-                    const theUrl = "http://localhost:8001/upload";
+                    const theUrl = SysConf.address + "upload";
                     xmlHttp.open( "POST", theUrl, false );
                     
                     let formData = new FormData()
@@ -83,6 +83,81 @@ class Console extends React.Component {
     /*---------------------------------------------------------------------------------------------------------------
     --
     ---------------------------------------------------------------------------------------------------------------*/
+    evalPrint() {
+        if(SysConf.execution_params["comparison"] == "" || SysConf.execution_params["output"] == ""){
+            Console.consolePrint("WARNING", "Both comparison and output image has to be given.")
+            return
+        }
+
+        try {
+            const xmlHttp = new XMLHttpRequest();
+            const theUrl = SysConf.address + "evaluation";
+            xmlHttp.open( "POST", theUrl, true );
+
+            xmlHttp.onload = function (e) {
+                if (xmlHttp.readyState === 4) {
+                    if (xmlHttp.status === 200) {
+                        var stat = xmlHttp.responseText.replaceAll("\'", "\"");
+                        var stat_obj = JSON.parse(stat);
+                        var eval_values = stat_obj["data"]
+                        
+                        // update evaluation tab
+                        var console_eval = document.getElementById("Console_tab_console_evaluation")
+                        console_eval.innerHTML = ""
+                
+                        const tbl = document.createElement("table");
+                        const tblBody = document.createElement("tbody");
+                        const headerVal = ["SSIM", "PSNR", "Bhattacharya", "GSSIM", "HistogramIntersection"]
+                
+                        // create table header
+                        const row = document.createElement("tr");
+                        for(let j = 0; j < headerVal.length; j++) {
+                            const cell = document.createElement("th");
+                            const cellText = document.createTextNode(headerVal[j])
+                            cell.appendChild(cellText);
+                            row.appendChild(cell);
+                        }
+                        // create data row
+                        const row_dat = document.createElement("tr");
+                        for(let j = 0; j < headerVal.length; j++) {
+                            const cell = document.createElement("td");
+                            const cellText = document.createTextNode(eval_values[headerVal[j]])
+                            cell.appendChild(cellText);
+                            row_dat.appendChild(cell);
+                        }
+                        tblBody.appendChild(row)
+                        tblBody.appendChild(row_dat)
+                        tbl.appendChild(tblBody);
+                        tbl.setAttribute("tableLayout", "auto");
+                        tbl.setAttribute("width", "100%");
+                        console_eval.append(tbl)
+
+                    } else {
+                        console.error(xmlHttp.statusText);
+                    }
+                }
+            };
+            xmlHttp.onerror = function (e) {
+                console.error(xmlHttp.statusText);
+            };
+            xmlHttp.onloadend = function (e) {
+                // changeEnableupdate(Math.random())
+            };
+
+            var out_dat = {
+                "comparison": SysConf.execution_params["comparison"],
+                "output": SysConf.execution_params["output"],
+            }
+
+            xmlHttp.send(JSON.stringify(out_dat));
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    /*---------------------------------------------------------------------------------------------------------------
+    --
+    ---------------------------------------------------------------------------------------------------------------*/
     render() {
         return (
             <div id='console_main'>
@@ -91,10 +166,10 @@ class Console extends React.Component {
                     <div id="Console_tab_console_ta"></div>
                     </div>
                     <div label="Evaluation">
-                        <div id="Console_tab_console_test2">test2</div>
+                        <div id="Console_tab_console_evaluation"></div>
                     </div>
                     <div label="Configuration">
-                        <div id="Console_tab_console_test3">test3</div>
+                        <div id="Console_tab_console_configuration"></div>
                     </div>
                     <div label="Color Statistics">
                         <div id="Console_tab_console_test4">
@@ -104,7 +179,7 @@ class Console extends React.Component {
                         </div>
                     </div>
                     <div label="Information">
-                        <div id="Console_tab_console_test5">test5</div>
+                        <div id="Console_tab_console_test5"></div>
                     </div>
                 </Tabs>
                 <div id="console_play_button">
@@ -114,7 +189,7 @@ class Console extends React.Component {
                     <img id="console_upload_button_logo" onClick={this.chooseFile} src={Images.icon_upload_button}/>
                 </div>
                 <div id="console_eval_button">
-                    <img id="console_eval_button_logo"  src={Images.icon_eval_button}/>
+                    <img id="console_eval_button_logo" onClick={this.evalPrint} src={Images.icon_eval_button}/>
                 </div>
             </div>
         );

@@ -11,13 +11,9 @@ import React, {Suspense, useMemo, useRef, useEffect, useState} from 'react';
 import { useLoader, useFrame } from "@react-three/fiber";
 import { PLYLoader } from 'three/examples/jsm/loaders/PLYLoader'
 import * as THREE from 'three'
-
 import PointShader from "shader/PointShader"
-import SceneProperties from 'settings/SceneProperties';
-
 const vertexShader = PointShader.vertexShader
 const fragmentShader = PointShader.fragmentShader
-
 
 
 /*************************************************************************************************************
@@ -56,7 +52,6 @@ function PointCloud(props) {
       setting_rgbcolorspace.addEventListener("change", change_rgbcolorspace);
 
       return () => {
-        console.log("unmount")
         var setting_pointsize = document.getElementById('settings_pointsize')
         setting_pointsize.removeEventListener("change", change_pointsize);
 
@@ -92,36 +87,19 @@ function PointCloud(props) {
         []
     )
 
-    //let loaderx = new PLYLoader();
-    //const obj = loaderx.parse(props.file_path);
-
-
-
-    //let loaderx = new PLYLoader();
-    //const obj = loaderx.parse("http://localhost:8001/data/Meshes/Wappentier_blue.ply");//props.file_path);
-    // let obj = useLoader(PLYLoader, props.file_path, loader => {
-    //     const dracoLoader = new PLYLoader();
-    //     dracoLoader.parse(props.file_path)
-    //    })
-
     var obj = useLoader(PLYLoader, props.file_path)
     let coords = new Float32Array(obj.attributes.position.array)
     let normals = new Float32Array(obj.attributes.normal.array)
     let colors = new Float32Array(obj.attributes.color.array)
 
-    console.log("YEAH  TRUE")
-    console.log(props.file_path)
     if(props.from_image) {
-        console.log("FUCK ITS TRUE")
         var canvas = document.createElement('canvas');
         // TODO: Number of vertices in 3D histogram has to be scaled properly 
         canvas.width = props.image.width / 2
         canvas.height = props.image.height / 2
-        var context = canvas.getContext('2d');
+        // {willReadFrequently:true} removes the warning "Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true."
+        var context = canvas.getContext('2d', {willReadFrequently:true});
         context.drawImage(props.image, 0, 0);
-        console.log(context.getImageData(100, 100, 1, 1).data)
-        console.log(props.image.width)
-        console.log(props.image)
 
         const vv = new Float32Array(canvas.width * canvas.height * 3);
         const nn = new Float32Array(canvas.width * canvas.height * 3);
@@ -157,13 +135,6 @@ function PointCloud(props) {
         normals = new Float32Array(obj.attributes.normal.array)
         colors = new Float32Array(obj.attributes.color.array)
     }
-
-
-
-    useEffect(() =>   {
-        console.log(props.file_path)
-        console.log(obj)
-    },   [obj])
 
     return(
         <points key={Math.random} ref={ref}>

@@ -17,17 +17,17 @@ import * as THREE from 'three'
 const Axis = () => {
     const pointsRed = []
     pointsRed.push(new THREE.Vector3(0, 0.001, 0))
-    pointsRed.push(new THREE.Vector3(5, 0.001, 0))
+    pointsRed.push(new THREE.Vector3(4, 0.001, 0))
     const lineGeometryRed = new THREE.BufferGeometry().setFromPoints(pointsRed)
 
     const pointsGreen = []
     pointsGreen.push(new THREE.Vector3(0, 0.001, 0))
-    pointsGreen.push(new THREE.Vector3(0, 5.001, 0))
+    pointsGreen.push(new THREE.Vector3(0, 4.001, 0))
     const lineGeometryGreen = new THREE.BufferGeometry().setFromPoints(pointsGreen)
 
     const pointsBlue = []
     pointsBlue.push(new THREE.Vector3(0, 0.001, 0))
-    pointsBlue.push(new THREE.Vector3(0, 0.001, 5))
+    pointsBlue.push(new THREE.Vector3(0, 0.001, 4))
     const lineGeometryBlue = new THREE.BufferGeometry().setFromPoints(pointsBlue)
   
     return (

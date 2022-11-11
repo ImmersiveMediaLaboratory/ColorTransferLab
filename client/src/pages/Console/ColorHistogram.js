@@ -8,26 +8,15 @@ Please see the LICENSE file that should have been included as part of this packa
 */
 
 import React, { useState, useEffect, Suspense } from 'react';
-import { Canvas} from "@react-three/fiber";
-import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
-
-import SystemConfiguration from "settings/SystemConfiguration"
-import SceneProperties from 'settings/SceneProperties';
-
 import './ColorHistogram.scss';
-
-import { server_request } from 'connection/utils_http';
+import SysConf from "settings/SystemConfiguration"
 
 
 function ColorHistogram(props) {
     const ID = props.id
     const RENDERERID = props.rendererID
-
     const canvasID = "canvas" + ID
-
     const histogramstatsID = "histogramstats" + ID
-
-    console.log(canvasID)
 
     const setPixel = (x, y, w, h, image, r, g, b, val) => {
         if(val == "all") {
@@ -75,13 +64,11 @@ function ColorHistogram(props) {
 
         if(RENDERERID == "renderer_src" || RENDERERID == "renderer_ref"){
             renderer_source.addEventListener("drop", (event) => {
-                console.log(RENDERERID)
                 try {
                     const xmlHttp = new XMLHttpRequest();
-                    const theUrl = "http://localhost:8001/color_histogram";
+                    const theUrl = SysConf.address + "color_histogram";
                     xmlHttp.open( "POST", theUrl, false );
                     var out_dat = event.dataTransfer.getData('text')
-                    console.log(out_dat)
                     xmlHttp.send(JSON.stringify(out_dat));
                     var stat = xmlHttp.responseText.replaceAll("\'", "\"");
                     var stat_obj = JSON.parse(stat);
@@ -90,7 +77,6 @@ function ColorHistogram(props) {
                     var mean = stat_obj["data"]["mean"]
                     var std = stat_obj["data"]["std"]
 
-                    console.log(mean)
                     var maxV = Math.max.apply(null, histogram.map(function(row){ return Math.max.apply(Math, row); }))
 
 
@@ -129,8 +115,7 @@ function ColorHistogram(props) {
                     var stats_color = document.getElementById(histogramstatsID);
                     stats_color.innerHTML = "Mean: (" + mean[0] + ", " + mean[1] + ", " + mean[2] + ") - " +
                                             "Std: (" + std[0] + ", " + std[1] + ", " + std[2] + ")"
-                }
-                catch (e) {
+                } catch (e) {
                     console.log(e)
                 }
             })

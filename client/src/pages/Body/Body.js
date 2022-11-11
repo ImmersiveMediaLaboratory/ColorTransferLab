@@ -13,8 +13,13 @@ import Renderer from './Renderer';
 
 import Tabs from "../Tabs/Tabs";
 import './TabsRendererRef.scss';
-import SystemConfiguration from 'settings/SystemConfiguration';
 
+
+/*-----------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
+-- 
+-------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------*/
 class Body extends React.Component {
   constructor(props) {
     super(props);
@@ -33,12 +38,12 @@ class Body extends React.Component {
                         <Renderer id="renderer_ref" title="Reference"/>
                     </div>
                 </div>
-                <div label="Multi Input">
+                {/* <div label="Multi Input">
                     <div id="RendererRef_test2">test2</div>
                 </div>
                 <div label="Color Theme">
                     <div id="RendererRef_test3">test3</div>
-                </div>
+                </div> */}
                 <div label="Comparison">
                     <div id="RendererRef_com">
                         <Renderer id="renderer_com" title="Comparison"/>

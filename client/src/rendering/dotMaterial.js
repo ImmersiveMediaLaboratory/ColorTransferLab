@@ -2,7 +2,6 @@ import * as THREE from "three"
 import { extend } from "@react-three/fiber"
 import React, {Suspense, useMemo, useRef, useEffect} from 'react';
 
-import SceneProperties from "settings/SceneProperties"
 
 class DotMaterial extends THREE.ShaderMaterial {
     constructor() {

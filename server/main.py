@@ -4,6 +4,9 @@ tf.compat.v1.disable_eager_execution()
 #config = tf.compat.v1.ConfigProto()
 #config.gpu_options.allow_growth = True
 #session = tf.compat.v1.Session(config=config)
+from socketserver import ThreadingMixIn
+import threading
+import multiprocessing
 
 from http.server import BaseHTTPRequestHandler, HTTPServer, SimpleHTTPRequestHandler
 import os
@@ -15,11 +18,13 @@ import numpy as np
 from numba import cuda
 import shutil
 import timeout_decorator
-
+import func_timeout
 from module.MeshProcessing.PLYLoader import PLYLoader
 from module.ImageProcessing.Image import Image
 from module.ColorTransfer import ColorTransfer
-
+from module.Evaluation.SSIM.SSIM import SSIM
+from module.Evaluation.PSNR.PSNR import PSNR
+from module.Evaluation.HistogramIntersection.HistogramIntersection import HistogramIntersection
 
 
 #init_path = "../../VSCodeProjects/color-transfer-tool/public/data"
@@ -45,12 +50,6 @@ class MyServer(SimpleHTTPRequestHandler):
             self.send_header("Content-type", "text/html")
             #self.send_header('Access-Control-Allow-Origin', '*')
             self.end_headers()
-        else:
-            pass
-            #self.send_response(200)
-            #self.send_header("Content-type", "image/jpeg")
-            #self.send_header('Access-Control-Allow-Origin', '*')
-            #self.end_headers()
 
         response = {
             "service": None,
@@ -61,39 +60,24 @@ class MyServer(SimpleHTTPRequestHandler):
             response["service"] = "server_status"
             response["enabled"] = "true"
             response["data"] = self.address_string()
-            print(response)
-
         elif self.path == "/available_methods":
             response["service"] = "available_methods"
             response["enabled"] = "true"
             response["data"] = ColorTransfer.get_available_methods()
-            print(response)
-
         elif self.path == "/database":
             out = []
             show_database_content(init_path, out)
-
             response["service"] = "database"
             response["enabled"] = "true"
             response["data"] = out
-            print(response)
-
-        #elif self.path.split(":")[0] == "/file":
         else:
-            #out = []
-            #response["service"] = "file"
-            #response["enabled"] = "true"
-            #response["data"] = out
-            #response = self.path.split(":")[1]
-            #print(response)
-            #self.send_response(200)
-
             return SimpleHTTPRequestHandler.do_GET(self)
-            #shutil.move("output/out.ply", "../../VSCode/color-transfer-tool/public/output")
-
 
         self.wfile.write(bytes(str(response), "utf-8"))
 
+    # ------------------------------------------------------------------------------------------------------------------
+    # method description
+    # ------------------------------------------------------------------------------------------------------------------
     def end_headers(self):
         self.send_header('Access-Control-Allow-Origin', '*')
         SimpleHTTPRequestHandler.end_headers(self)
@@ -102,7 +86,6 @@ class MyServer(SimpleHTTPRequestHandler):
     # method description
     # ------------------------------------------------------------------------------------------------------------------
     def do_OPTIONS(self):
-        print("Was zur HÖLLE")
         self.send_response(200, "ok")
         self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Access-Control-Allow-Methods', 'POST, OPTIONS')
@@ -126,21 +109,20 @@ class MyServer(SimpleHTTPRequestHandler):
                 "histogram": [],
                 "mean": [],
                 "std": [],
-                "extension": ""
+                "extension": "",
+                "message": ""
             }
         }
 
+        # apply color transfer if this url is posted by user
         if self.path == "/color_transfer":
-            datalen = int(self.headers['Content-Length'])
-            data = self.rfile.read(datalen)
-            obj = json.loads(data)
-            print(obj)
+            obj = self.getJson()
+
             folder_src, file_src = obj["source"].split(":")
             folder_ref, file_ref = obj["reference"].split(":")
             _, extension_src = file_src.split(".")
             _, extension_ref = file_ref.split(".")
             approach = obj["approach"]
-            print(obj["options"])
 
             src_path = init_path + "/" + folder_src + "/" + file_src
             ref_path = init_path + "/" + folder_ref + "/" + file_ref
@@ -158,7 +140,19 @@ class MyServer(SimpleHTTPRequestHandler):
                 ref = Image(file_path=ref_path)
 
             ct = ColorTransfer(src, ref, obj["options"])
-            output = ct.apply(approach)
+            #output = ct.apply(approach)
+
+            try:
+                output = func_timeout.func_timeout(60, ct.apply, args=(approach,), kwargs=None)
+            except func_timeout.FunctionTimedOut:
+                print("CRASH")
+                response["service"] = "color_transfer"
+                response["enabled"] = "false"
+                response["data"]["message"] = "Algorithms takes longer than 1 minute. Change the Configuration parameters to reduce execution time."
+                print("\033[92m" + "Request fulfilled" + "\033[0m")
+                self.wfile.write(bytes(str(response), "utf-8"))
+                return
+
 
             if extension_src == "ply":
                 out_loader = PLYLoader(mesh=output)
@@ -173,21 +167,12 @@ class MyServer(SimpleHTTPRequestHandler):
             response["data"]["histogram"] = output.get_color_statistic()[0].tolist()
             response["data"]["mean"] = output.get_color_statistic()[1].tolist()
             response["data"]["std"] = output.get_color_statistic()[2].tolist()
-
-
-            #output.write("output/out.ply")
-            # shutil leads the clients webpage to reload
-            #shutil.move("output/out.ply", "../../VSCode/color-transfer-tool/public/output")
-
-            #print(obj)
         elif self.path == "/color_histogram":
             datalen = int(self.headers['Content-Length'])
             data = self.rfile.read(datalen)
             obj = json.loads(data)
             folder, file = obj.split(":")
             _, extension = file.split(".")
-
-            print(obj)
 
             path = init_path + "/" + folder + "/" + file
 
@@ -205,7 +190,6 @@ class MyServer(SimpleHTTPRequestHandler):
                 "std": src.get_color_statistic()[2].tolist()
             }
         elif self.path == "/upload":
-            print("UPLOAD")
             """Handle a POST request."""
             # Save files received in the POST
             wasSuccess, files_uploaded = self.handle_file_uploads()
@@ -228,24 +212,69 @@ class MyServer(SimpleHTTPRequestHandler):
             self.send_header("Content-Length", len(response_str))
             self.end_headers()
             self.wfile.write(response_str.encode('utf-8'))
-            #datalen = int(self.headers['Content-Length'])
-            #data = self.rfile.read(datalen)
-            #obj = json.loads(data)
-            ##img = cv2.imdecode(buf=np.frombuffer(data, np.uint8), flags=cv2.IMREAD_UNCHANGED)
-            ##cv2.imshow("test", img)
-            ##cv2.waitKey(0)
-            #print(data)
-            print("JELLO")
+        elif self.path == "/evaluation":
+            obj = self.getJson()
 
-        #print(response)
-        print("Done")
+            folder_com, file_com = obj["comparison"].split(":")
+            folder_out, file_out = obj["output"].split(":")
+            _, extension_com = file_com.split(".")
+            _, extension_out = file_out.split(".")
+
+            com_path = init_path + "/" + folder_com + "/" + file_com
+            out_path = init_path + "/" + folder_out + "/" + file_out
+
+            # check the source and reference types
+
+            if extension_com == "ply":
+                loader_src = PLYLoader(com_path)
+                src = loader_src.get_mesh()
+            elif extension_com == "png" or extension_com == "jpg":
+                src = Image(file_path=com_path)
+
+            if extension_out == "ply":
+                loader_ref = PLYLoader(out_path)
+                ref = loader_ref.get_mesh()
+            elif extension_out == "png" or extension_out == "jpg":
+                ref = Image(file_path=out_path)
+
+            mssim = SSIM.apply(src, ref)
+            psnr = PSNR.apply(src, ref)
+            hint = HistogramIntersection.apply(src, ref)
+
+            response["service"] = "evaluation"
+            response["enabled"] = "true"
+            response["data"] = {
+                "SSIM": mssim,
+                "PSNR": psnr,
+                "Bhattacharya": 0.0,
+                "GSSIM": 0.0,
+                "HistogramIntersection": hint
+            }
+
+
+        print("\033[92m" + "Request fulfilled" + "\033[0m")
         self.wfile.write(bytes(str(response), "utf-8"))
 
+    # ------------------------------------------------------------------------------------------------------------------
+    # method description
+    # ------------------------------------------------------------------------------------------------------------------
+    def getJson(self):
+        datalen = int(self.headers['Content-Length'])
+        data = self.rfile.read(datalen)
+        obj = json.loads(data)
+        return obj
+
+    # ------------------------------------------------------------------------------------------------------------------
+    # method description
+    # ------------------------------------------------------------------------------------------------------------------
     def read_line(self):
         line_str = self.rfile.readline().decode('ISO-8859-1')
         self.char_remaining -= len(line_str)
         return line_str
 
+    # ------------------------------------------------------------------------------------------------------------------
+    # method description
+    # ------------------------------------------------------------------------------------------------------------------
     def handle_file_uploads(self):
         """
         Take the post request and save any files received to the same folder
@@ -270,7 +299,6 @@ class MyServer(SimpleHTTPRequestHandler):
             return False, []
 
         files_uploaded = []
-        print("FUCKC")
         while self.char_remaining > 0:
             # Breaking out of this loop on anything except a boundary
             # an end-of-file will be a failure, so let's assume that
@@ -324,6 +352,11 @@ class MyServer(SimpleHTTPRequestHandler):
 
         return wasSuccess, files_uploaded
 
+
+class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
+    """Handle requests in a separate thread."""
+
+
 # ------------------------------------------------------------------------------------------------------------------
 # method description
 # ------------------------------------------------------------------------------------------------------------------
@@ -345,6 +378,7 @@ def show_directory_content(path, out):
 # ------------------------------------------------------------------------------------------------------------------
 # method description
 # ------------------------------------------------------------------------------------------------------------------
+"""
 def show_database_content2(path, out):
     directory_contents = os.listdir(path)
 
@@ -357,7 +391,7 @@ def show_database_content2(path, out):
             folder["files"].append(ob)
 
         out.append(folder)
-
+"""
 
 # ------------------------------------------------------------------------------------------------------------------
 # method description
@@ -377,18 +411,14 @@ def show_database_content(path, out):
         arr.append(folder)
 
     get_directory_content(path, out, "root")
-    #print(json.dumps(out, indent=4))
-
 
 # ------------------------------------------------------------------------------------------------------------------
 # method description
 # ------------------------------------------------------------------------------------------------------------------
 def run(server_class=HTTPServer, handler_class=BaseHTTPRequestHandler):
     server_address = (ADDRESS, PORT)
-    httpd = server_class(server_address, handler_class)
+    httpd = ThreadedHTTPServer(server_address, handler_class)
     httpd.serve_forever()
-
-
 
 # ------------------------------------------------------------------------------------------------------------------
 # method description
