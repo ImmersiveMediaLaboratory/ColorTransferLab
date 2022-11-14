@@ -69,6 +69,7 @@ function ColorHistogram(props) {
                     const theUrl = SysConf.address + "color_histogram";
                     xmlHttp.open( "POST", theUrl, false );
                     var out_dat = event.dataTransfer.getData('text')
+                    console.log(out_dat)
                     xmlHttp.send(JSON.stringify(out_dat));
                     var stat = xmlHttp.responseText.replaceAll("\'", "\"");
                     var stat_obj = JSON.parse(stat);
@@ -119,7 +120,14 @@ function ColorHistogram(props) {
                     console.log(e)
                 }
             })
-        }
+        } 
+        //else {
+
+        //     var renderer_canvas = document.getElementById("renderer_image" + "renderer_out")
+        //     renderer_canvas.addEventListener("change", (event) => {
+        //         console.log("dddd")
+        //     })
+        // }
 
     }, [])
 

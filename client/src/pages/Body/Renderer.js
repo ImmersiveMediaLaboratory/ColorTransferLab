@@ -216,10 +216,10 @@ function Renderer(props) {
                         // TODO Has to be moved to ColorHistogram.js
                         //########################################################################################
                         //########################################################################################
-                        /*
+                        
                         try {
                             const xmlHttp = new XMLHttpRequest();
-                            const theUrl = "http://localhost:8001/color_histogram";
+                            const theUrl = SysConf.address + "color_histogram";
                             xmlHttp.open( "POST", theUrl, false );
 
                             if (output_extension == "ply" || output_extension == "obj")
@@ -293,7 +293,7 @@ function Renderer(props) {
                         catch (e) {
                             console.log(e)
                         }
-                        */
+                        
                         //########################################################################################
                         //########################################################################################
                     }
