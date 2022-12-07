@@ -52,6 +52,14 @@ class Settings extends React.Component {
                     <td>RGB Color Space</td>
                     <td><input id="settings_rgbcolorspace" type="checkbox" /></td>
                 </tr>
+                <tr>
+                    <td>3D RGB Color Histogram</td>
+                    <td><input id="settings_3dcolorhistogram" type="checkbox" /></td>
+                </tr>
+                <tr>
+                    <td>Voxel Grid</td>
+                    <td><input id="settings_voxelgrid" type="checkbox" /></td>
+                </tr>
                 </tbody>
             </table>
             </div>

@@ -36,8 +36,40 @@ class SystemConfiguration {
     static scene_out = null
     static scene_src = null
     static source_config = {
-        "color_mean": null
+        "color_mean": null,
+        "3D_color_histogram": null,
+        "3D_color_space": null
     }
+
+    static reference_config = {
+        "color_mean": null,
+        "3D_color_histogram": null,
+        "3D_color_space": null
+    }
+
+
+    static data_config = {
+        "Source": {
+            "filename": null,
+            "3D_color_histogram": null,
+            "3D_color_space": null,
+            "voxel_grid": null
+        },
+        "Reference": {
+            "filename": null,
+            "3D_color_histogram": null,
+            "3D_color_space": null,
+            "voxel_grid": null
+        },
+        "Output": {
+            "filename": null,
+            "3D_color_histogram": null,
+            "3D_color_space": null,
+            "voxel_grid": null
+        }
+    }
+
+    static available_metrics = null
     
     static pointsize = 1.0;
     static gridEnabled = true;

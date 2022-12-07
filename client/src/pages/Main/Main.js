@@ -37,6 +37,7 @@ class Main extends React.Component {
         Requests.initConsole()
         Requests.request_server_status();
         Requests.request_available_methods();
+        Requests.request_available_metrics();
         Requests.request_database_content()
     }
 

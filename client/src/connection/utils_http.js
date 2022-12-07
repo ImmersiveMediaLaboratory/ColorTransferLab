@@ -56,27 +56,27 @@ class Requests {
         tblC.setAttribute("width", "100%");
         console_config.append(tblC)
 
-        // init evaluation
-        var console_eval = document.getElementById("Console_tab_console_evaluation")
-        console_eval.innerHTML = ""
+        // // init evaluation
+        // var console_eval = document.getElementById("Console_tab_console_evaluation")
+        // console_eval.innerHTML = ""
 
-        const tbl = document.createElement("table");
-        const tblBody = document.createElement("tbody");
-        const headerVal = ["SSIM", "PSNR", "Bhattacharya", "GSSIM", "HistogramIntersection"]
+        // const tbl = document.createElement("table");
+        // const tblBody = document.createElement("tbody");
+        // const headerVal = ["SSIM", "PSNR", "Bhattacharya", "GSSIM", "HistogramIntersection"]
 
-        // create table header
-        const row = document.createElement("tr");
-        for(let j = 0; j < headerVal.length; j++) {
-            const cell = document.createElement("th");
-            const cellText = document.createTextNode(headerVal[j])
-            cell.appendChild(cellText);
-            row.appendChild(cell);
-        }
-        tblBody.appendChild(row)
-        tbl.appendChild(tblBody);
-        tbl.setAttribute("tableLayout", "auto");
-        tbl.setAttribute("width", "100%");
-        console_eval.append(tbl)
+        // // create table header
+        // const row = document.createElement("tr");
+        // for(let j = 0; j < headerVal.length; j++) {
+        //     const cell = document.createElement("th");
+        //     const cellText = document.createTextNode(headerVal[j])
+        //     cell.appendChild(cellText);
+        //     row.appendChild(cell);
+        // }
+        // tblBody.appendChild(row)
+        // tbl.appendChild(tblBody);
+        // tbl.setAttribute("tableLayout", "auto");
+        // tbl.setAttribute("width", "100%");
+        // console_eval.append(tbl)
     }
 
     /*-------------------------------------------------------------------------------------------------------------
@@ -106,6 +106,67 @@ class Requests {
         } else {
             Console.consolePrint("WARNING", "No color transfer methods were found")
         }
+    }
+    /*-------------------------------------------------------------------------------------------------------------
+    -- Request available color transfer metrics and create entries
+    -------------------------------------------------------------------------------------------------------------*/
+    static request_available_metrics() {
+        let stat_obj = Requests.#server_request("available_metrics")
+        
+        // check if the request of available methods is fulfilled
+        if (stat_obj["enabled"]) {
+            Console.consolePrint("INFO", "Color transfer methods were found: "  + stat_obj["data"].length + " in total")
+            //console.log(stat_obj["data"])
+            Requests.#createMetricEntries(stat_obj["data"])
+            SysConf.available_metrics = stat_obj["data"]
+        } else {
+            Console.consolePrint("WARNING", "No color transfer metrics were found")
+        }
+    }
+
+    /*-------------------------------------------------------------------------------------------------------------
+    -- Request available color transfer metrics and create entries
+    -------------------------------------------------------------------------------------------------------------*/
+    static #createMetricEntries(metrics) {
+        // init evaluation
+        var console_eval = document.getElementById("Console_tab_console_evaluation")
+        console_eval.innerHTML = ""
+
+        const tbl = document.createElement("table");
+        const tblBody = document.createElement("tbody");
+
+        // create table header
+        const cell = document.createElement("th");
+        const cellText = document.createTextNode("Metric")
+        cell.appendChild(cellText);
+        const cell2 = document.createElement("th");
+        const cellText2 = document.createTextNode("Value")
+        cell2.appendChild(cellText2);
+
+        const row = document.createElement("tr");
+        row.appendChild(cell);
+        row.appendChild(cell2);
+        tblBody.appendChild(row)
+
+        for(let j = 0; j < metrics.length; j++) {
+            const cell = document.createElement("td");
+            const cellText = document.createTextNode(metrics[j])
+            cell.appendChild(cellText);
+
+            const cell2 = document.createElement("td");
+            const cellText2 = document.createTextNode(" ")
+            cell2.appendChild(cellText2);
+
+            const row = document.createElement("tr");
+            row.appendChild(cell);
+            row.appendChild(cell2);
+            tblBody.appendChild(row)
+        }
+
+        tbl.appendChild(tblBody);
+        tbl.setAttribute("tableLayout", "auto");
+        tbl.setAttribute("width", "100%");
+        console_eval.append(tbl)
     }
 
     /*-------------------------------------------------------------------------------------------------------------

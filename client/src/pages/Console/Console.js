@@ -100,38 +100,47 @@ class Console extends React.Component {
                         var stat = xmlHttp.responseText.replaceAll("\'", "\"");
                         var stat_obj = JSON.parse(stat);
                         var eval_values = stat_obj["data"]
-                        
-                        // update evaluation tab
+
+                        // init evaluation
                         var console_eval = document.getElementById("Console_tab_console_evaluation")
                         console_eval.innerHTML = ""
-                
+
                         const tbl = document.createElement("table");
                         const tblBody = document.createElement("tbody");
-                        const headerVal = ["SSIM", "PSNR", "Bhattacharya", "GSSIM", "HistogramIntersection"]
-                
+
                         // create table header
+                        const cell = document.createElement("th");
+                        const cellText = document.createTextNode("Metric")
+                        cell.appendChild(cellText);
+                        const cell2 = document.createElement("th");
+                        const cellText2 = document.createTextNode("Value")
+                        cell2.appendChild(cellText2);
+
                         const row = document.createElement("tr");
-                        for(let j = 0; j < headerVal.length; j++) {
-                            const cell = document.createElement("th");
-                            const cellText = document.createTextNode(headerVal[j])
-                            cell.appendChild(cellText);
-                            row.appendChild(cell);
-                        }
-                        // create data row
-                        const row_dat = document.createElement("tr");
-                        for(let j = 0; j < headerVal.length; j++) {
-                            const cell = document.createElement("td");
-                            const cellText = document.createTextNode(eval_values[headerVal[j]])
-                            cell.appendChild(cellText);
-                            row_dat.appendChild(cell);
-                        }
+                        row.appendChild(cell);
+                        row.appendChild(cell2);
                         tblBody.appendChild(row)
-                        tblBody.appendChild(row_dat)
+
+                        for(let j = 0; j < SysConf.available_metrics.length; j++) {
+                            const cell = document.createElement("td");
+                            const cellText = document.createTextNode(SysConf.available_metrics[j])
+                            cell.appendChild(cellText);
+
+                            const cell2 = document.createElement("td");
+                            const cellText2 = document.createTextNode(eval_values[SysConf.available_metrics[j]])
+                            cell2.appendChild(cellText2);
+
+                            const row = document.createElement("tr");
+                            row.appendChild(cell);
+                            row.appendChild(cell2);
+                            tblBody.appendChild(row)
+                        }
+
                         tbl.appendChild(tblBody);
                         tbl.setAttribute("tableLayout", "auto");
                         tbl.setAttribute("width", "100%");
                         console_eval.append(tbl)
-
+                    
                     } else {
                         console.error(xmlHttp.statusText);
                     }

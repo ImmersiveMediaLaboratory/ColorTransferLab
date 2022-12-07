@@ -30,7 +30,7 @@ class SideBarRight extends React.Component {
           <div id="SideBarRight_sidebarright">  
               <Database/> 
               <Items/> 
-              <Objects/> 
+              {/* <Objects/>  */}
               <Settings/>
           </div>
         );

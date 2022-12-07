@@ -52,18 +52,20 @@ class SideBarLeft extends React.Component {
                     {/* <div className="sidebarleft_approach">PLACEHOLDER</div> */}
                   </div>
                 </div>
-                {/* 
-                <div label="Reconstruction">
+                
+                {/* <div label="Reconstruction"> */}
+                {/* <div className="unclickable" label="">
                   <div id="SidebarLeft_content_reconstruction">
                     <div className="sidebarleft_approach">PLACEHOLDER</div>
                   </div>
-                </div>
-                <div label="Registration">
+                </div> */}
+                {/* <div label="Registration"> */}
+                {/* <div label="">
                   <div id="SidebarLeft_content_registration">
                     <div className="sidebarleft_approach">PLACEHOLDER</div>
                   </div>
-                </div>
-                */}
+                </div> */}
+               
               </Tabs>
 
             </div>

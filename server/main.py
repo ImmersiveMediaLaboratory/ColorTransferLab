@@ -45,7 +45,7 @@ class MyServer(SimpleHTTPRequestHandler):
     # ------------------------------------------------------------------------------------------------------------------
     def do_GET(self):
         print("Receive...")
-        if self.path == "/server_status" or self.path == "/available_methods" or self.path == "/database":
+        if self.path == "/server_status" or self.path == "/available_methods" or self.path == "/database" or self.path == "/available_metrics":
             self.send_response(200)
             self.send_header("Content-type", "text/html")
             #self.send_header('Access-Control-Allow-Origin', '*')
@@ -64,6 +64,10 @@ class MyServer(SimpleHTTPRequestHandler):
             response["service"] = "available_methods"
             response["enabled"] = "true"
             response["data"] = ColorTransfer.get_available_methods()
+        elif self.path == "/available_metrics":
+            response["service"] = "available_metrics"
+            response["enabled"] = "true"
+            response["data"] = ColorTransfer.get_available_metrics()
         elif self.path == "/database":
             out = []
             show_database_content(init_path, out)
@@ -189,6 +193,7 @@ class MyServer(SimpleHTTPRequestHandler):
                 "mean": src.get_color_statistic()[1].tolist(),
                 "std": src.get_color_statistic()[2].tolist()
             }
+            #print(response["data"])
         elif self.path == "/upload":
             """Handle a POST request."""
             # Save files received in the POST
@@ -250,7 +255,26 @@ class MyServer(SimpleHTTPRequestHandler):
                 "GSSIM": 0.0,
                 "HistogramIntersection": hint
             }
+        elif self.path == "/object_info":
+            obj = self.getJson()["object_path"]
+            extensions = obj.split(".")[-1]
+            if extensions == "ply":
+                loader_src = PLYLoader(obj)
+                src = loader_src.get_mesh()
+                voxelgrid = src.get_voxel_grid()
+            elif extensions == "png" or extensions == "jpg":
+                src = Image(file_path=obj)
+                voxelgrid = {"centers": [], "colors": []}
 
+            response["service"] = "object_info"
+            response["enabled"] = "true"
+            print(voxelgrid["centers"].shape)
+            response["data"] = {
+                "histogram": src.get_3D_color_histogram().tolist(),
+                "voxelgrid_centers": voxelgrid["centers"].tolist(),
+                "voxelgrid_colors": voxelgrid["colors"].tolist(),
+                "scale": voxelgrid["scale"]
+            }
 
         print("\033[92m" + "Request fulfilled" + "\033[0m")
         self.wfile.write(bytes(str(response), "utf-8"))

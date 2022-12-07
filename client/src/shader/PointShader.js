@@ -45,7 +45,7 @@ class PointShader {
                 gl_FragColor = vec4(abs(normalize(vNormal.xyz)), 1);
             }
             else {
-                gl_FragColor = vec4(vColor.rgb, 1);
+                gl_FragColor = vec4(vColor.rgb, 0.0);
             }
         }     
         `

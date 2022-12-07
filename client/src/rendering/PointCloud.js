@@ -40,6 +40,12 @@ function PointCloud(props) {
         changeRgbcolorspace(event.target.checked)
     }
 
+    // var settings_3dcolorhistogram = document.getElementById('settings_3dcolorhistogram')
+    // const [rgbcolorhistogram, changeRgbcolorhistogram] = useState(settings_3dcolorhistogram.checked)
+    // const change_rgbcolorhistogram = (event) => {
+    //     changeRgbcolorhistogram(event.target.checked)
+    // }
+
 
     useEffect(() => {
       var setting_pointsize = document.getElementById('settings_pointsize')
@@ -51,6 +57,9 @@ function PointCloud(props) {
       var setting_rgbcolorspace = document.getElementById('settings_rgbcolorspace')
       setting_rgbcolorspace.addEventListener("change", change_rgbcolorspace);
 
+    //   var settings_3dcolorhistogram = document.getElementById('settings_3dcolorhistogram')
+    //   settings_3dcolorhistogram.addEventListener("change", change_rgbcolorhistogram);
+
       return () => {
         var setting_pointsize = document.getElementById('settings_pointsize')
         setting_pointsize.removeEventListener("change", change_pointsize);
@@ -60,6 +69,9 @@ function PointCloud(props) {
 
         var setting_rgbcolorspace = document.getElementById('settings_rgbcolorspace')
         setting_rgbcolorspace.removeEventListener("change", change_rgbcolorspace);
+
+        // var settings_3dcolorhistogram = document.getElementById('settings_3dcolorhistogram')
+        // settings_3dcolorhistogram.addEventListener("change", change_rgbcolorhistogram);
     }
     }, []);
 
@@ -78,6 +90,7 @@ function PointCloud(props) {
             Kd: { value: new THREE.Vector3(1, 1, 1) },
             Ks: { value: new THREE.Vector3(1, 1, 1) },
             LightIntensity: { value: new THREE.Vector4(0.5, 0.5, 0.5, 1.0) },
+            //LightIntensity: { value: new THREE.Vector4(1.0, 1.0, 1.0, 1.0) },
             LightPosition: { value: new THREE.Vector4(0.0, 2000.0, 0.0, 1.0) },
             Shininess: { value: 200.0 }
           },
@@ -91,6 +104,7 @@ function PointCloud(props) {
     let coords = new Float32Array(obj.attributes.position.array)
     let normals = new Float32Array(obj.attributes.normal.array)
     let colors = new Float32Array(obj.attributes.color.array)
+    // console.log(colors)
 
     if(props.from_image) {
         var canvas = document.createElement('canvas');

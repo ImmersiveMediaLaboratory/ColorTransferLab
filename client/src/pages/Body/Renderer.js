@@ -7,12 +7,14 @@ This file is released under the "MIT License Agreement".
 Please see the LICENSE file that should have been included as part of this package.
 */
 
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, Suspense, useRef} from 'react';
 import { Canvas} from "@react-three/fiber";
 import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
 import SysConf from "settings/SystemConfiguration"
 import Axis from "rendering/Axis"
 import PointCloud from "rendering/PointCloud"
+import VoxelGrid from "rendering/VoxelGrid"
+import ColorHistogram from "rendering/ColorHistogram"
 import Console from 'pages/Console/Console';
 import './Renderer.scss';
 import Images from "constants/Images";
@@ -56,9 +58,13 @@ function Renderer(props) {
 
             var filename = "data/" + fil[0] + "/" + fil[1]
             var filename = SysConf.address + filename
+            SysConf.data_config[TITLE]["filename"] = filename
+
+            var infos = getImageInformation("data/" + fil[0] + "/" + fil[1])
 
             SysConf.meshes[TITLE.toLowerCase()].pop()
             SysConf.meshes[TITLE.toLowerCase()].push(<PointCloud key={Math.random()} file_path={filename} from_image={false}/>)
+
             
             changeEnableupdate(Math.random())
 
@@ -84,19 +90,114 @@ function Renderer(props) {
             var image_path = SysConf.address + "data/" + fil[0] + "/" + fil[1]
             renderersrc_image_inner.src = image_path
 
-            // Add 3D color histogram
+            var infos = getImageInformation("data" + fil[0] + "/" + fil[1])
+
+            //console.log(ID)
+
+            // Add 3D color Space
             // Has to be done within the onload functions because images are loaded asynchronously
             const img = new Image()
             img.onload = () => {
-                SysConf.meshes[TITLE.toLowerCase()].pop()
-                SysConf.meshes[TITLE.toLowerCase()].push(<PointCloud key={Math.random()} 
-                                                                          file_path={SysConf.address + "data/PointClouds/template.ply"} 
-                                                                          from_image={true}
-                                                                          image={img}/>)
+                SysConf.data_config[TITLE]["3D_color_space"] = <PointCloud key={Math.random()} 
+                                                                           file_path={SysConf.address + "data/PointClouds/template.ply"} 
+                                                                           from_image={true}
+                                                                           image={img}/>
+
+                //SysConf.meshes[TITLE.toLowerCase()].pop()
+                //SysConf.meshes[TITLE.toLowerCase()].push(<PointCloud key={Math.random()} 
+                //                                                          file_path={SysConf.address + "data/PointClouds/template.ply"} 
+                //                                                          from_image={true}
+                //                                                          image={img}/>)
                 changeEnableupdate(Math.random())
             }
             img.crossOrigin = "Anonymous";
             img.src = image_path
+        }
+    }
+    /* ------------------------------------------------------------------------------------------------------------
+    -- 
+    -------------------------------------------------------------------------------------------------------------*/
+    // function requestVoxelGrid(object_path) {
+    //     try {
+    //         const xmlHttp = new XMLHttpRequest();
+    //         const theUrl = SysConf.address + "voxel_grid";
+    //         xmlHttp.open( "POST", theUrl, true );
+
+    //         xmlHttp.onload = function (e) {
+    //             if (xmlHttp.readyState === 4) {
+    //                 if (xmlHttp.status === 200) {
+    //                     var stat = xmlHttp.responseText.replaceAll("\'", "\"");
+    //                     var stat_obj = JSON.parse(stat);
+    //                     var voxelgrid = stat_obj["data"]
+    //                     console.log(voxelgrid)
+    //                     //SysConf.data_config[TITLE]["3D_color_histogram"] = <ColorHistogram key={Math.random()} histogram={eval_values} />
+    //                 } else {
+    //                     console.error(xmlHttp.statusText);
+    //                 }
+    //             }
+    //         };
+    //         xmlHttp.onerror = function (e) {
+    //             console.error(xmlHttp.statusText);
+    //         };
+    //         xmlHttp.onloadend = function (e) {
+    //             // changeEnableupdate(Math.random())
+    //         };
+
+    //         var out_dat = {
+    //             "object_path": object_path
+    //         }
+
+    //         xmlHttp.send(JSON.stringify(out_dat));
+    //     } catch (e) {
+    //         console.log(e)
+    //     }
+    // }
+
+    /* ------------------------------------------------------------------------------------------------------------
+    -- 
+    -------------------------------------------------------------------------------------------------------------*/
+    function getImageInformation(object_path) {
+        console.log("hhh")
+        console.log(object_path)
+        try {
+            const xmlHttp = new XMLHttpRequest();
+            const theUrl = SysConf.address + "object_info";
+            xmlHttp.open( "POST", theUrl, true );
+
+            xmlHttp.onload = function (e) {
+                if (xmlHttp.readyState === 4) {
+                    if (xmlHttp.status === 200) {
+                        var stat = xmlHttp.responseText.replaceAll("\'", "\"");
+                        var stat_obj = JSON.parse(stat);
+                        var eval_values = stat_obj["data"]["histogram"]
+                        var voxelgrid_centers = stat_obj["data"]["voxelgrid_centers"]
+                        var voxelgrid_colors = stat_obj["data"]["voxelgrid_colors"]
+                        var voxelgrid_scale = stat_obj["data"]["scale"]
+                        console.log(stat_obj["data"])
+                        SysConf.data_config[TITLE]["3D_color_histogram"] = <ColorHistogram key={Math.random()} histogram={eval_values} />
+                        SysConf.data_config[TITLE]["voxel_grid"] = <VoxelGrid key={Math.random()} 
+                                                                    voxelgrid_centers={voxelgrid_centers}  
+                                                                    voxelgrid_colors={voxelgrid_colors} 
+                                                                    voxelgrid_scale={voxelgrid_scale} />
+                    } else {
+                        console.error(xmlHttp.statusText);
+                    }
+                }
+            };
+            xmlHttp.onerror = function (e) {
+                console.error(xmlHttp.statusText);
+            };
+            xmlHttp.onloadend = function (e) {
+                // changeEnableupdate(Math.random())
+            };
+
+            var out_dat = {
+                "object_path": object_path
+            }
+
+            xmlHttp.send(JSON.stringify(out_dat));
+        } catch (e) {
+            console.log(e)
         }
     }
 
@@ -115,7 +216,7 @@ function Renderer(props) {
     /* ------------------------------------------------------------------------------------------------------------
     -- 
     -------------------------------------------------------------------------------------------------------------*/
-    function show3DColorHistogram(e){
+    function show3DColorSpace(e){
         var button_enabled = e.target.checked
         var renderersrc_image = document.getElementById(imageID)
         var Renderer_renderer_canvas = document.getElementById(renderCanvasID)
@@ -124,6 +225,9 @@ function Renderer(props) {
             if(button_enabled) {
                 renderersrc_image.style.visibility = "hidden"; 
                 Renderer_renderer_canvas.style.visibility = "visible";
+                SysConf.meshes[TITLE.toLowerCase()].pop()
+                SysConf.meshes[TITLE.toLowerCase()].push(SysConf.data_config[TITLE]["3D_color_space"])
+                changeEnableupdate(Math.random())
             } else {
                 renderersrc_image.style.visibility = "visible"; 
                 Renderer_renderer_canvas.style.visibility = "hidden";
@@ -131,6 +235,61 @@ function Renderer(props) {
         }
     }
 
+    /* ------------------------------------------------------------------------------------------------------------
+    -- 
+    -------------------------------------------------------------------------------------------------------------*/
+    function show3DColorHistogram(e){
+        var button_enabled = e.target.checked
+        var renderersrc_image = document.getElementById(imageID)
+        var Renderer_renderer_canvas = document.getElementById(renderCanvasID)
+        if(MODE == "Image") {
+            if(button_enabled) {
+                renderersrc_image.style.visibility = "hidden"; 
+                Renderer_renderer_canvas.style.visibility = "visible";
+                SysConf.meshes[TITLE.toLowerCase()].pop()
+                SysConf.meshes[TITLE.toLowerCase()].push(SysConf.data_config[TITLE]["3D_color_histogram"])
+                changeEnableupdate(Math.random())
+            } else {
+                renderersrc_image.style.visibility = "visible"; 
+                Renderer_renderer_canvas.style.visibility = "hidden";
+            }
+        }
+        if(MODE == "PointCloud") {
+            if(button_enabled) {
+                SysConf.meshes[TITLE.toLowerCase()].pop()
+                SysConf.meshes[TITLE.toLowerCase()].push(SysConf.data_config[TITLE]["3D_color_histogram"])
+                changeEnableupdate(Math.random())
+            } else {
+                console.log("GGGGGG")
+                SysConf.meshes[TITLE.toLowerCase()].pop()
+                SysConf.meshes[TITLE.toLowerCase()].push(<PointCloud key={Math.random()} file_path={SysConf.data_config[TITLE]["filename"]} from_image={false}/>)
+                changeEnableupdate(Math.random())
+            }
+        }
+    }
+
+    /* ------------------------------------------------------------------------------------------------------------
+    -- 
+    -------------------------------------------------------------------------------------------------------------*/
+    function showVoxelGrid(e){
+        var button_enabled = e.target.checked
+        var renderersrc_image = document.getElementById(imageID)
+        var Renderer_renderer_canvas = document.getElementById(renderCanvasID)
+
+        if(MODE == "PointCloud") {
+            if(button_enabled) {
+                console.log("FFFFF")
+                SysConf.meshes[TITLE.toLowerCase()].pop()
+                SysConf.meshes[TITLE.toLowerCase()].push(SysConf.data_config[TITLE]["voxel_grid"])
+                changeEnableupdate(Math.random())
+            } else {
+                console.log("GGGGGG")
+                SysConf.meshes[TITLE.toLowerCase()].pop()
+                SysConf.meshes[TITLE.toLowerCase()].push(<PointCloud key={Math.random()} file_path={SysConf.data_config[TITLE]["filename"]} from_image={false}/>)
+                changeEnableupdate(Math.random())
+            }
+        }
+    }
     /* ------------------------------------------------------------------------------------------------------------
     -- 
     -------------------------------------------------------------------------------------------------------------*/
@@ -172,8 +331,6 @@ function Renderer(props) {
                         Console.consolePrint("ERROR", stat_obj["data"]["message"])
                     }
                     else {
-
-
                         var output_extension = stat_obj["data"]["extension"]
                         var renderer_canvas = document.getElementById("renderer_canvas" + "renderer_out")
                         var renderer_image = document.getElementById("renderer_image" + "renderer_out")
@@ -184,6 +341,10 @@ function Renderer(props) {
                             MODE = "PointCloud"
                             var filename = SysConf.address + "data/Output/" + rankey + ".ply" 
                             SysConf.execution_params["output"] = "/Output:" + rankey + ".ply"
+                            SysConf.data_config[TITLE]["filename"] = filename 
+
+                            var infos = getImageInformation("data/Output/" + rankey + ".ply" )
+
                             SysConf.meshes[TITLE.toLowerCase()].pop()
                             SysConf.meshes[TITLE.toLowerCase()].push(<PointCloud key={rankey} file_path={filename}/>)
                             changeEnableupdate(rankey)
@@ -196,15 +357,19 @@ function Renderer(props) {
                             SysConf.execution_params["output"] = "/Output:" + rankey + ".jpg"
                             renderer_image_inner.src = image_path
 
+
+
+                            var infos = getImageInformation("data/Output/" + rankey + ".jpg")
+
                             // Add 3D color histogram
                             // Has to be done within the onload functions because images are loaded asynchronously
                             const img = new Image()
                             img.onload = () => {
-                                SysConf.meshes[TITLE.toLowerCase()].pop()
-                                SysConf.meshes[TITLE.toLowerCase()].push(<PointCloud key={Math.random()} 
-                                                                                                file_path={"http://localhost:8001/data//PointClouds/table.ply"} 
-                                                                                                from_image={true}
-                                                                                                image={img}/>)
+                                SysConf.data_config[TITLE]["3D_color_space"] = <PointCloud key={Math.random()} 
+                                                                                file_path={SysConf.address + "data/PointClouds/template.ply"} 
+                                                                                from_image={true}
+                                                                                image={img}/>
+
                                 changeEnableupdate(Math.random())
                             }
                             img.crossOrigin = "Anonymous";
@@ -342,7 +507,14 @@ function Renderer(props) {
         }
 
         var color_space_button = document.getElementById("settings_rgbcolorspace")
-        color_space_button.addEventListener("change", show3DColorHistogram);
+        color_space_button.addEventListener("change", show3DColorSpace);
+
+
+        var color_histogram_button = document.getElementById("settings_3dcolorhistogram")
+        color_histogram_button.addEventListener("change", show3DColorHistogram);
+
+        var voxel_grid_button = document.getElementById("settings_voxelgrid")
+        voxel_grid_button.addEventListener("change", showVoxelGrid);
  
         var settings_grid = document.getElementById("settings_grid")
         settings_grid.addEventListener("change", (event) => {
@@ -356,7 +528,6 @@ function Renderer(props) {
             else {changeAxis(null)}
         });
     }, []);
-
     return(
         <div id={ID}>
             <div className="renderer_title">{TITLE}</div>
@@ -364,8 +535,8 @@ function Renderer(props) {
                 img id={innerImageID} className="renderer_image_inner"/>
                 </div>
             <Canvas id={renderCanvasID}>
-                <ambientLight />
                 <PerspectiveCamera position={[2, 2, 2]} makeDefault />
+                <ambientLight />
                 <OrbitControls />
                 {grid}
                 {axis}
