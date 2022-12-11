@@ -17,7 +17,11 @@ import Texts from 'constants/Texts';
 
 /*-----------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------------
--- 
+-- Contains tabs for the following module classes:
+-- (1) Color Transfer
+-- (2) Segementation (currently unsupported)
+-- (3) Reconstruction (currently unsupported)
+-- (4) Registration (currently unsupported)
 -------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------*/
 class SideBarLeft extends React.Component {
@@ -35,42 +39,35 @@ class SideBarLeft extends React.Component {
     render() {
         return (
             <div id="sidebarleft_main">
-              <div id="sidebarleft_header">
-                <img id="sidebarleft_header_logo" src={Images.icon_algorithms}/>
-                <div id="sidebarleft_header_name">{Texts.sidebar_algorithms}</div>
-              </div>
-
-              <Tabs id="sidebarleft">
-                <div label="Color Transfer" >
-                  <div id="sidebarleft_content_colorTransfer">
-                    {/* <div className="sidebarleft_approach">PLACEHOLDER</div> */}
-                  </div>
+                <div id="sidebarleft_header">
+                    <img id="sidebarleft_header_logo" src={Images.icon_algorithms}/>
+                    <div id="sidebarleft_header_name">{Texts.sidebar_algorithms}</div>
                 </div>
-                
-                <div label="Segmentation">
-                  <div id="SidebarLeft_content_classification">
-                    {/* <div className="sidebarleft_approach">PLACEHOLDER</div> */}
-                  </div>
-                </div>
-                
-                {/* <div label="Reconstruction"> */}
-                {/* <div className="unclickable" label="">
-                  <div id="SidebarLeft_content_reconstruction">
-                    <div className="sidebarleft_approach">PLACEHOLDER</div>
-                  </div>
-                </div> */}
-                {/* <div label="Registration"> */}
-                {/* <div label="">
-                  <div id="SidebarLeft_content_registration">
-                    <div className="sidebarleft_approach">PLACEHOLDER</div>
-                  </div>
-                </div> */}
-               
-              </Tabs>
-
+                <Tabs id="sidebarleft">
+                    <div label="Color Transfer" >
+                        <div id="sidebarleft_content_colorTransfer">
+                            {/* <div className="sidebarleft_approach">PLACEHOLDER</div> */}
+                        </div>
+                    </div>
+                    <div label="Segmentation">
+                        <div id="SidebarLeft_content_classification">
+                            {/* <div className="sidebarleft_approach">PLACEHOLDER</div> */}
+                        </div>
+                    </div>
+                    <div label="Reconstruction">
+                        <div id="SidebarLeft_content_reconstruction">
+                            {/* <div className="sidebarleft_approach">PLACEHOLDER</div> */}
+                        </div>
+                    </div>
+                    <div label="Registration">
+                        <div id="SidebarLeft_content_registration">
+                            {/* <div className="sidebarleft_approach">PLACEHOLDER</div> */}
+                        </div>
+                    </div>
+                </Tabs>
             </div>
         );
     }
-  }
+}
 
 export default SideBarLeft;

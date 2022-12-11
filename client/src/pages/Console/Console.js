@@ -14,7 +14,6 @@ import Tabs from "./../Tabs/Tabs";
 import Images from "constants/Images"
 import SysConf from "settings/SystemConfiguration"
 import { server_request_post_CT } from 'connection/utils_http';
-import PointCloud from 'rendering/PointCloud';
 import ColorHistogram from './ColorHistogram';
 import Requests from 'connection/utils_http';
 
@@ -30,7 +29,8 @@ class Console extends React.Component {
     }
 
     /*---------------------------------------------------------------------------------------------------------------
-    --
+    -- Allows the upload of local images and point clouds.
+    -- The items can be accessed via the <Uploads> button within the <DATABASE> window.
     ---------------------------------------------------------------------------------------------------------------*/
     chooseFile() {
         let input = document.createElement('input');
@@ -54,23 +54,23 @@ class Console extends React.Component {
                 catch (e) {
                     console.log(e)
                 }
-
-
-
             };
         input.click();
     }
 
     /*---------------------------------------------------------------------------------------------------------------
-    --
+    -- Prints the given output with timestamp and type.
+    -- Available types: (1) INFO, (2) WARNING, (3) ERROR (4) UNDEFINED 
     ---------------------------------------------------------------------------------------------------------------*/
     static consolePrint(type, output) {
         if(type == "INFO")
             var sClass = "server_info"
         else if(type == "WARNING")
             var sClass = "server_warning"
-        else
+        else if(type == "ERROR")
             var sClass = "server_error"
+        else
+            var sClass = "server_undefined"
 
         var today = new Date()
         var time = today.getHours().toString().padStart(2, '0') + ":" +
@@ -81,7 +81,8 @@ class Console extends React.Component {
     }
 
     /*---------------------------------------------------------------------------------------------------------------
-    --
+    -- Send request to python server for evaluation which will be printed within the Evaluation tab.
+    -- Works only if the <comparison> and <output> objects are given.
     ---------------------------------------------------------------------------------------------------------------*/
     evalPrint() {
         if(SysConf.execution_params["comparison"] == "" || SysConf.execution_params["output"] == ""){
@@ -182,9 +183,9 @@ class Console extends React.Component {
                     </div>
                     <div label="Color Statistics">
                         <div id="Console_tab_console_test4">
-                            <ColorHistogram id="src_histogram" rendererID="renderer_src"/>
-                            <ColorHistogram id="ref_histogram" rendererID="renderer_ref"/>
-                            <ColorHistogram id="out_histogram" rendererID="renderer_out"/>
+                            <ColorHistogram id="src_histogram" rendererID="renderer_src" TITLE="Source"/>
+                            <ColorHistogram id="ref_histogram" rendererID="renderer_ref" TITLE="Reference"/>
+                            <ColorHistogram id="out_histogram" rendererID="renderer_out" TITLE="Output"/>
                         </div>
                     </div>
                     <div label="Information">

@@ -26,46 +26,57 @@ class SystemConfiguration {
         "options": []
     }
 
-    static meshes = {
-        "source": [],
-        "reference": [],
-        "output": [],
-        "comparison": []
-    }
+    // reference to the state change method which triggers the rerendering of the color histograms
+    static colorHistogramStateChange = {
+        "Source": null,
+        "Reference": null,
+        "Output": null
+    };
 
-    static scene_out = null
-    static scene_src = null
-    static source_config = {
-        "color_mean": null,
-        "3D_color_histogram": null,
-        "3D_color_space": null
-    }
-
-    static reference_config = {
-        "color_mean": null,
-        "3D_color_histogram": null,
-        "3D_color_space": null
-    }
-
-
+    /* 
+    Description of the <data_config> object
+    rendering -> contains the current render object
+    */
     static data_config = {
         "Source": {
             "filename": null,
+            "rendering": [],
+            "mesh": null,
             "3D_color_histogram": null,
-            "3D_color_space": null,
-            "voxel_grid": null
+            "3D_color_distribution": null,
+            "voxel_grid": null,
+            "pc_center": null,
+            "pc_scale":null
         },
         "Reference": {
             "filename": null,
+            "rendering": [],
+            "mesh": null,
             "3D_color_histogram": null,
-            "3D_color_space": null,
-            "voxel_grid": null
+            "3D_color_distribution": null,
+            "voxel_grid": null,
+            "pc_center": null,
+            "pc_scale":null
         },
         "Output": {
             "filename": null,
+            "rendering": [],
+            "mesh": null,
             "3D_color_histogram": null,
-            "3D_color_space": null,
-            "voxel_grid": null
+            "3D_color_distribution": null,
+            "voxel_grid": null,
+            "pc_center": null,
+            "pc_scale":null
+        },
+        "Comparison": {
+            "filename": null,
+            "rendering": [],
+            "mesh": null,
+            "3D_color_histogram": null,
+            "3D_color_distribution": null,
+            "voxel_grid": null,
+            "pc_center": null,
+            "pc_scale":null
         }
     }
 

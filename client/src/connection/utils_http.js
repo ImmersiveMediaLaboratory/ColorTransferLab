@@ -115,7 +115,7 @@ class Requests {
         
         // check if the request of available methods is fulfilled
         if (stat_obj["enabled"]) {
-            Console.consolePrint("INFO", "Color transfer methods were found: "  + stat_obj["data"].length + " in total")
+            Console.consolePrint("INFO", "Color transfer metrics were found: "  + stat_obj["data"].length + " in total")
             //console.log(stat_obj["data"])
             Requests.#createMetricEntries(stat_obj["data"])
             SysConf.available_metrics = stat_obj["data"]
@@ -477,7 +477,6 @@ class Requests {
     -------------------------------------------------------------------------------------------------------------*/
     static #createCTButtons(stat_obj) {
         for (let elem of stat_obj["data"]){
-
             var sidebarleft_content_colorTransfer = document.getElementById("sidebarleft_content_colorTransfer")
 
             var colorTransfer_button = document.createElement("div");

@@ -15,7 +15,7 @@ import Texts from 'constants/Texts';
 
 /*-----------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------------
--- Contains texts
+-- Contains the items which will be shown after clicking an element in the DATABASE window
 -------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------*/
 class Items extends React.Component {
@@ -25,7 +25,6 @@ class Items extends React.Component {
 
     render() {
         return (
-
             <div id="items_main">
                 <div id="items_header">
                     <img id='items_header_logo' src={Images.icon_items}/>

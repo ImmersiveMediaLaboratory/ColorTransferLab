@@ -33,7 +33,7 @@ class Images {
     static icon_upload_button = "assets/icons/icon_upload.png";
     static icon_eval_button = "assets/icons/icon_eval.png";
 
-    static gif_loading = "assets/gifs/loading.gif"
+    static gif_loading = "assets/gifs/loading3.gif"
 }
 
 

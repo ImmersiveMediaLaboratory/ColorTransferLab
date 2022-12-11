@@ -12,6 +12,7 @@ import { useLoader, useFrame } from "@react-three/fiber";
 import { PLYLoader } from 'three/examples/jsm/loaders/PLYLoader'
 import * as THREE from 'three'
 import PointShader from "shader/PointShader"
+import SysConf from "settings/SystemConfiguration"
 const vertexShader = PointShader.vertexShader
 const fragmentShader = PointShader.fragmentShader
 
@@ -26,16 +27,43 @@ function VoxelGrid(props) {
     const colors = props.voxelgrid_colors
     const scale = props.voxelgrid_scale
 
+    function linearToSrgb(val) {
+        var out = []
+        for(var i = 0; i < 3; i++){
+            if(0.0 <= val[i] <= 0.0031308) {
+                out.push(val[i] * 12.92)
+            } else {
+                out.push(Math.pow(val[i], 1.0/2.4) * 1.055 -0.055)
+            }
+        }
+        return out
+    }
+
+    function srgbToLinear(val) {
+        var out = []
+        for(var i = 0; i < 3; i++){
+            if(0.0 <= val[i] <= 0.04045) {
+                out.push(val[i] / 12.92)
+            } else {
+                out.push(Math.pow((val[i] + 0.055) / 1.055, 2.4))
+            }
+        }
+        return out
+    }
+
+    var center = SysConf.data_config[props.id]["pc_center"]
+    var scaling = SysConf.data_config[props.id]["pc_scale"]
+    
     const boxes = []
     centers.map(function(e, i) {
         boxes.push(<mesh key={Math.random()} position={e}>
                     <boxGeometry  args={[scale, scale, scale]}/>
-                    <meshStandardMaterial color={colors[i]} />
+                    <meshBasicMaterial color={srgbToLinear(colors[i])} />
                     </mesh>)
       });
 
     return (
-       <mesh ref={mesh}>
+       <mesh ref={mesh} position={[-center.x*scaling, -center.y*scaling + 1.0, -center.z*scaling]} scale={scaling}>
           {boxes}
        </mesh>
     );

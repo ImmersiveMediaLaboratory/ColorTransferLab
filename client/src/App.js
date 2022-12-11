@@ -14,9 +14,6 @@ import Main from './pages/Main/Main'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 
-
-
-
 function App() {
   return (
     <Router>

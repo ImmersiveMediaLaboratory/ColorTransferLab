@@ -8,20 +8,20 @@ Please see the LICENSE file that should have been included as part of this packa
 */
 
 
-class PointShader {
+class ColorDistributionShader {
     static vertexShader = 
         `
         uniform float pointsize;
-
         varying vec3 vColor;
-        varying vec3 vNormal;
         attribute vec3 color;
 
         void main() {
             vColor = color;
-            vNormal = normal;
 
             vec3 pos = vec3(position.xyz);
+
+            vec4 re = vec4( mix( pow( vColor.rgb, vec3( 0.41666 ) ) * 1.055 - vec3( 0.055 ), vColor.rgb * 12.92, vec3( lessThanEqual( vColor.rgb, vec3( 0.0031308 ) ) ) ), 1.0 );
+            pos = vec3(re.rgb) * 4.0;
 
             gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0 );
             gl_PointSize = pointsize;
@@ -30,22 +30,15 @@ class PointShader {
 
     static fragmentShader =
         `
-        uniform bool enableNormalColor;
-
         varying vec3 vColor;
         varying vec3 vNormal;
 
         void main() {
-            if(enableNormalColor) {
-                gl_FragColor = vec4(abs(normalize(vNormal.xyz)), 1);
-            }
-            else {
-                //gl_FragColor = vec4(vColor.rgb, 1.0);
-                // LinearTosRGB encoding
-                gl_FragColor = vec4( mix( pow( vColor.rgb, vec3( 0.41666 ) ) * 1.055 - vec3( 0.055 ), vColor.rgb * 12.92, vec3( lessThanEqual( vColor.rgb, vec3( 0.0031308 ) ) ) ), 1.0 );
-            }
+            // LinearTosRGB encoding
+            gl_FragColor = vec4( mix( pow( vColor.rgb, vec3( 0.41666 ) ) * 1.055 - vec3( 0.055 ), vColor.rgb * 12.92, vec3( lessThanEqual( vColor.rgb, vec3( 0.0031308 ) ) ) ), 1.0 );
+
         }     
         `
 }
 
-export default PointShader
+export default ColorDistributionShader

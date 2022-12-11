@@ -12,6 +12,7 @@ import { useLoader, useFrame } from "@react-three/fiber";
 import { PLYLoader } from 'three/examples/jsm/loaders/PLYLoader'
 import * as THREE from 'three'
 import PointShader from "shader/PointShader"
+import { isPowerOfTwo } from 'three/src/math/MathUtils';
 const vertexShader = PointShader.vertexShader
 const fragmentShader = PointShader.fragmentShader
 
@@ -20,6 +21,7 @@ const fragmentShader = PointShader.fragmentShader
 * - creates three colored axes for visualizing the coordinatesystem's axes
 * - the axes are shifted a little in y direction to prevent overlapping with the grid
 *************************************************************************************************************/
+
 function ColorHistogram(props) {
     const mesh = useRef();
     const hist = props.histogram
@@ -41,9 +43,13 @@ function ColorHistogram(props) {
             var r = element[0] 
             var g = element[1] 
             var b = element[2] 
+            
+
+            // spheres.push(<mesh key={Math.random()} position={[r/2.5+offset,g/2.5+offset,b/2.5+offset]}>
             spheres.push(<mesh key={Math.random()} position={[r/2.5+offset,g/2.5+offset,b/2.5+offset]}>
                                 <sphereGeometry  args={[radius, 16, 16]}/>
-                                <meshStandardMaterial color={[r/10,g/10,b/10]} />
+                                {/* <sphereGeometry  args={[0.1, 16, 16]}/> */}
+                                <meshBasicMaterial color={[r/10,g/10,b/10]} />
                         </mesh>)
         }
 

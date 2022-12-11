@@ -11,8 +11,10 @@ import React, { useState, useEffect, Suspense, useRef} from 'react';
 import { Canvas} from "@react-three/fiber";
 import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
 import SysConf from "settings/SystemConfiguration"
+import Utils from "utils/Utils"
 import Axis from "rendering/Axis"
 import PointCloud from "rendering/PointCloud"
+import ColorDistribution from "rendering/ColorDistribution"
 import VoxelGrid from "rendering/VoxelGrid"
 import ColorHistogram from "rendering/ColorHistogram"
 import Console from 'pages/Console/Console';
@@ -22,15 +24,19 @@ import Images from "constants/Images";
 
 /* ----------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------------
--- 
+-- Renderer windows for (1) Source, (2) Reference, (3) Output and (4) Comparison
 -------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------*/
 function Renderer(props) {
+    /* ------------------------------------------------------------------------------------------------------------
+    -- STATE VARIABLES
+    -------------------------------------------------------------------------------------------------------------*/
     const [enableUpdate, changeEnableupdate] = useState(0)
     const [grid, changeGrid] = useState(<gridHelper args={[20,20, 0x222222, 0x222222]}/>)
     const [axis, changeAxis] = useState(<Axis />)
 
     const ID = props.id;
+    // Only Source, Reference and Comparison are droppable
     const DROPPABLE = props.droppable;
     const TITLE = props.title
 
@@ -56,109 +62,60 @@ function Renderer(props) {
             // change MODE to "Pointcloud" because a pointcloud was dropped
             MODE = "PointCloud"
 
-            var filename = "data/" + fil[0] + "/" + fil[1]
-            var filename = SysConf.address + filename
-            SysConf.data_config[TITLE]["filename"] = filename
+            var filepath = SysConf.address + "data/" + fil[0] + "/" + fil[1]
+            SysConf.data_config[TITLE]["filename"] = filepath
+            SysConf.data_config[TITLE]["mesh"] = <PointCloud key={Math.random()} file_path={filepath} id={TITLE}/>
 
-            var infos = getImageInformation("data/" + fil[0] + "/" + fil[1])
+            getImageInformation("data/" + fil[0] + "/" + fil[1])
 
-            SysConf.meshes[TITLE.toLowerCase()].pop()
-            SysConf.meshes[TITLE.toLowerCase()].push(<PointCloud key={Math.random()} file_path={filename} from_image={false}/>)
+            SysConf.data_config[TITLE]["3D_color_distribution"] = <ColorDistribution key={Math.random()} 
+                                                                    file_path={filepath} 
+                                                                    from_image={false}
+                                                                    id={TITLE}/>
 
-            
-            changeEnableupdate(Math.random())
+            changeRendering(TITLE, "mesh")
+            show3Dview(imageID, renderCanvasID)
 
-            var renderersrc_image = document.getElementById(imageID)
-            renderersrc_image.style.visibility = "hidden"; 
-            var Renderer_renderer_canvas = document.getElementById(renderCanvasID)
-            Renderer_renderer_canvas.style.visibility = "visible";
         } else if(file_extension == "png" || file_extension == "jpg") {
             // change MODE to "Image" because an image was dropped
             MODE = "Image"
 
-            var Renderer_renderer_canvas = document.getElementById(renderCanvasID)
             var renderersrc_image_inner = document.getElementById(innerImageID)
-            var renderersrc_image = document.getElementById(imageID)
 
             // change the visibility of the image canvas only if the RGB color space button is not checked
             var rgb_colorspace_button = document.getElementById("settings_rgbcolorspace")
-            if(!rgb_colorspace_button.checked){
-                Renderer_renderer_canvas.style.visibility = "hidden";
-                renderersrc_image.style.visibility = "visible"; 
-            }
 
+            if(!rgb_colorspace_button.checked)
+                show2Dview(imageID, renderCanvasID)
+    
             var image_path = SysConf.address + "data/" + fil[0] + "/" + fil[1]
             renderersrc_image_inner.src = image_path
 
-            var infos = getImageInformation("data" + fil[0] + "/" + fil[1])
-
-            //console.log(ID)
+            getImageInformation("data" + fil[0] + "/" + fil[1])
 
             // Add 3D color Space
             // Has to be done within the onload functions because images are loaded asynchronously
             const img = new Image()
             img.onload = () => {
-                SysConf.data_config[TITLE]["3D_color_space"] = <PointCloud key={Math.random()} 
-                                                                           file_path={SysConf.address + "data/PointClouds/template.ply"} 
-                                                                           from_image={true}
-                                                                           image={img}/>
-
-                //SysConf.meshes[TITLE.toLowerCase()].pop()
-                //SysConf.meshes[TITLE.toLowerCase()].push(<PointCloud key={Math.random()} 
-                //                                                          file_path={SysConf.address + "data/PointClouds/template.ply"} 
-                //                                                          from_image={true}
-                //                                                          image={img}/>)
+                SysConf.data_config[TITLE]["3D_color_distribution"] = <ColorDistribution key={Math.random()} 
+                                                                            file_path={SysConf.address + "data/PointClouds/template.ply"} 
+                                                                            from_image={true}
+                                                                            image={img}
+                                                                            id={TITLE}/>
                 changeEnableupdate(Math.random())
             }
             img.crossOrigin = "Anonymous";
             img.src = image_path
         }
+
+        // triggers the 2D color histogram to change
+        SysConf.colorHistogramStateChange[TITLE](Math.random())
     }
-    /* ------------------------------------------------------------------------------------------------------------
-    -- 
-    -------------------------------------------------------------------------------------------------------------*/
-    // function requestVoxelGrid(object_path) {
-    //     try {
-    //         const xmlHttp = new XMLHttpRequest();
-    //         const theUrl = SysConf.address + "voxel_grid";
-    //         xmlHttp.open( "POST", theUrl, true );
-
-    //         xmlHttp.onload = function (e) {
-    //             if (xmlHttp.readyState === 4) {
-    //                 if (xmlHttp.status === 200) {
-    //                     var stat = xmlHttp.responseText.replaceAll("\'", "\"");
-    //                     var stat_obj = JSON.parse(stat);
-    //                     var voxelgrid = stat_obj["data"]
-    //                     console.log(voxelgrid)
-    //                     //SysConf.data_config[TITLE]["3D_color_histogram"] = <ColorHistogram key={Math.random()} histogram={eval_values} />
-    //                 } else {
-    //                     console.error(xmlHttp.statusText);
-    //                 }
-    //             }
-    //         };
-    //         xmlHttp.onerror = function (e) {
-    //             console.error(xmlHttp.statusText);
-    //         };
-    //         xmlHttp.onloadend = function (e) {
-    //             // changeEnableupdate(Math.random())
-    //         };
-
-    //         var out_dat = {
-    //             "object_path": object_path
-    //         }
-
-    //         xmlHttp.send(JSON.stringify(out_dat));
-    //     } catch (e) {
-    //         console.log(e)
-    //     }
-    // }
 
     /* ------------------------------------------------------------------------------------------------------------
     -- 
     -------------------------------------------------------------------------------------------------------------*/
     function getImageInformation(object_path) {
-        console.log("hhh")
-        console.log(object_path)
         try {
             const xmlHttp = new XMLHttpRequest();
             const theUrl = SysConf.address + "object_info";
@@ -178,7 +135,8 @@ function Renderer(props) {
                         SysConf.data_config[TITLE]["voxel_grid"] = <VoxelGrid key={Math.random()} 
                                                                     voxelgrid_centers={voxelgrid_centers}  
                                                                     voxelgrid_colors={voxelgrid_colors} 
-                                                                    voxelgrid_scale={voxelgrid_scale} />
+                                                                    voxelgrid_scale={voxelgrid_scale}
+                                                                    id={TITLE} />
                     } else {
                         console.error(xmlHttp.statusText);
                     }
@@ -187,13 +145,8 @@ function Renderer(props) {
             xmlHttp.onerror = function (e) {
                 console.error(xmlHttp.statusText);
             };
-            xmlHttp.onloadend = function (e) {
-                // changeEnableupdate(Math.random())
-            };
 
-            var out_dat = {
-                "object_path": object_path
-            }
+            var out_dat = { "object_path": object_path}
 
             xmlHttp.send(JSON.stringify(out_dat));
         } catch (e) {
@@ -216,21 +169,32 @@ function Renderer(props) {
     /* ------------------------------------------------------------------------------------------------------------
     -- 
     -------------------------------------------------------------------------------------------------------------*/
-    function show3DColorSpace(e){
-        var button_enabled = e.target.checked
-        var renderersrc_image = document.getElementById(imageID)
-        var Renderer_renderer_canvas = document.getElementById(renderCanvasID)
+    function show3DColorDistribution(e){
+        // if this method is called via the EventListener, <e> describes the event otherwise
+        // <e> describes the checkbox
+        if (typeof e.target !== 'undefined')
+            var button_enabled = e.target.checked
+        else
+            var button_enabled = e.checked
 
         if(MODE == "Image") {
             if(button_enabled) {
-                renderersrc_image.style.visibility = "hidden"; 
-                Renderer_renderer_canvas.style.visibility = "visible";
-                SysConf.meshes[TITLE.toLowerCase()].pop()
-                SysConf.meshes[TITLE.toLowerCase()].push(SysConf.data_config[TITLE]["3D_color_space"])
-                changeEnableupdate(Math.random())
+                // disable all the other checkboxes
+                disableCheckbox("settings_3dcolorhistogram", show3DColorHistogram)
+                disableCheckbox("settings_voxelgrid", showVoxelGrid)
+                show3Dview(imageID, renderCanvasID)
+                changeRendering(TITLE, "3D_color_distribution")
             } else {
-                renderersrc_image.style.visibility = "visible"; 
-                Renderer_renderer_canvas.style.visibility = "hidden";
+                show2Dview(imageID, renderCanvasID)
+            }
+        } else {
+            if(button_enabled) {
+                // disable all the other checkboxes
+                disableCheckbox("settings_3dcolorhistogram", show3DColorHistogram)
+                disableCheckbox("settings_voxelgrid", showVoxelGrid)
+                changeRendering(TITLE, "3D_color_distribution")
+            } else {
+                changeRendering(TITLE, "mesh")
             }
         }
     }
@@ -239,32 +203,34 @@ function Renderer(props) {
     -- 
     -------------------------------------------------------------------------------------------------------------*/
     function show3DColorHistogram(e){
-        var button_enabled = e.target.checked
-        var renderersrc_image = document.getElementById(imageID)
-        var Renderer_renderer_canvas = document.getElementById(renderCanvasID)
+        // if this method is called via the EventListener, <e> describes the event otherwise
+        // <e> describes the checkbox
+        if (typeof e.target !== 'undefined')
+            var button_enabled = e.target.checked
+        else
+            var button_enabled = e.checked
+
         if(MODE == "Image") {
             if(button_enabled) {
-                renderersrc_image.style.visibility = "hidden"; 
-                Renderer_renderer_canvas.style.visibility = "visible";
-                SysConf.meshes[TITLE.toLowerCase()].pop()
-                SysConf.meshes[TITLE.toLowerCase()].push(SysConf.data_config[TITLE]["3D_color_histogram"])
-                changeEnableupdate(Math.random())
+                // disable all the other checkboxes
+                disableCheckbox("settings_rgbcolorspace", show3DColorDistribution)
+                disableCheckbox("settings_voxelgrid", showVoxelGrid)
+                show3Dview(imageID, renderCanvasID)
+                changeRendering(TITLE, "3D_color_histogram")
             } else {
-                renderersrc_image.style.visibility = "visible"; 
-                Renderer_renderer_canvas.style.visibility = "hidden";
+                show2Dview(imageID, renderCanvasID)
             }
         }
+
         if(MODE == "PointCloud") {
             if(button_enabled) {
-                SysConf.meshes[TITLE.toLowerCase()].pop()
-                SysConf.meshes[TITLE.toLowerCase()].push(SysConf.data_config[TITLE]["3D_color_histogram"])
-                changeEnableupdate(Math.random())
-            } else {
-                console.log("GGGGGG")
-                SysConf.meshes[TITLE.toLowerCase()].pop()
-                SysConf.meshes[TITLE.toLowerCase()].push(<PointCloud key={Math.random()} file_path={SysConf.data_config[TITLE]["filename"]} from_image={false}/>)
-                changeEnableupdate(Math.random())
-            }
+                // disable all the other checkboxes
+                disableCheckbox("settings_rgbcolorspace", show3DColorDistribution)
+                disableCheckbox("settings_voxelgrid", showVoxelGrid)
+                changeRendering(TITLE, "3D_color_histogram")
+            }               
+            else
+                changeRendering(TITLE, "mesh")
         }
     }
 
@@ -272,34 +238,32 @@ function Renderer(props) {
     -- 
     -------------------------------------------------------------------------------------------------------------*/
     function showVoxelGrid(e){
-        var button_enabled = e.target.checked
-        var renderersrc_image = document.getElementById(imageID)
-        var Renderer_renderer_canvas = document.getElementById(renderCanvasID)
+        // if this method is called via the EventListener, <e> describes the event otherwise
+        // <e> describes the checkbox
+        if (typeof e.target !== 'undefined')
+            var button_enabled = e.target.checked
+        else
+            var button_enabled = e.checked
 
         if(MODE == "PointCloud") {
             if(button_enabled) {
-                console.log("FFFFF")
-                SysConf.meshes[TITLE.toLowerCase()].pop()
-                SysConf.meshes[TITLE.toLowerCase()].push(SysConf.data_config[TITLE]["voxel_grid"])
-                changeEnableupdate(Math.random())
-            } else {
-                console.log("GGGGGG")
-                SysConf.meshes[TITLE.toLowerCase()].pop()
-                SysConf.meshes[TITLE.toLowerCase()].push(<PointCloud key={Math.random()} file_path={SysConf.data_config[TITLE]["filename"]} from_image={false}/>)
-                changeEnableupdate(Math.random())
+                // disable all the other checkboxes
+                disableCheckbox("settings_rgbcolorspace", show3DColorHistogram)
+                disableCheckbox("settings_3dcolorhistogram", showVoxelGrid)
+                changeRendering(TITLE, "voxel_grid")
             }
+            else
+                changeRendering(TITLE, "mesh")
         }
     }
+
     /* ------------------------------------------------------------------------------------------------------------
     -- 
     -------------------------------------------------------------------------------------------------------------*/
     const apply_color_transfer = () => {
         try {
-            var renderer_canvas = document.getElementById("renderer_canvas" + "renderer_out")
-            var renderer_image = document.getElementById("renderer_image" + "renderer_out")
             var renderer_image_inner = document.getElementById("renderer_image_inner" + "renderer_out")
-            renderer_canvas.style.visibility = "hidden";
-            renderer_image.style.visibility = "visible";
+            show2Dview("renderer_image" + "renderer_out", "renderer_canvas" + "renderer_out")
             renderer_image_inner.src = Images.gif_loading
 
             const xmlHttp = new XMLHttpRequest();
@@ -307,68 +271,60 @@ function Renderer(props) {
             xmlHttp.open( "POST", theUrl, true );
 
             // output file has to be saved with a random name, otherwise the browser loads the cached object
-            var rankey = Math.random().toString().replace(".", "-")
-
+            var rankey = Utils.getRandomID()
 
             xmlHttp.onload = function (e) {
                 if (xmlHttp.readyState === 4) {
-                    console.log("A")
                   if (xmlHttp.status === 200) {
-                    console.log("B")
                     var stat = xmlHttp.responseText.replaceAll("\'", "\"");
                     var stat_obj = JSON.parse(stat);
-                    console.log(stat_obj["enabled"])
-                    console.log(typeof stat_obj["enabled"]);
 
                     var isTrueSet = (stat_obj["enabled"] === 'true');
 
                     if(!isTrueSet) {
-                        console.log("ERROR")
-                        var renderer_canvas = document.getElementById("renderer_canvas" + "renderer_out")
-                        var renderer_image = document.getElementById("renderer_image" + "renderer_out")
-                        renderer_image.style.visibility = "hidden";
-                        renderer_canvas.style.visibility = "visible";
+                        show3Dview("renderer_image" + "renderer_out", "renderer_canvas" + "renderer_out")
                         Console.consolePrint("ERROR", stat_obj["data"]["message"])
                     }
                     else {
                         var output_extension = stat_obj["data"]["extension"]
-                        var renderer_canvas = document.getElementById("renderer_canvas" + "renderer_out")
-                        var renderer_image = document.getElementById("renderer_image" + "renderer_out")
             
-                        if (output_extension == "ply" || output_extension == "obj") {        
-                            renderer_image.style.visibility = "hidden";
-                            renderer_canvas.style.visibility = "visible";
+                        if (output_extension == "ply" || output_extension == "obj") {    
+                            show3Dview("renderer_image" + "renderer_out", "renderer_canvas" + "renderer_out")    
                             MODE = "PointCloud"
                             var filename = SysConf.address + "data/Output/" + rankey + ".ply" 
                             SysConf.execution_params["output"] = "/Output:" + rankey + ".ply"
                             SysConf.data_config[TITLE]["filename"] = filename 
 
-                            var infos = getImageInformation("data/Output/" + rankey + ".ply" )
+                            getImageInformation("data/Output/" + rankey + ".ply" )
 
-                            SysConf.meshes[TITLE.toLowerCase()].pop()
-                            SysConf.meshes[TITLE.toLowerCase()].push(<PointCloud key={rankey} file_path={filename}/>)
-                            changeEnableupdate(rankey)
+                            SysConf.data_config[TITLE]["mesh"] = <PointCloud key={rankey} file_path={filename} id={TITLE}/>
+
+                            SysConf.data_config[TITLE]["3D_color_distribution"] = <ColorDistribution key={Math.random()} 
+                                                                                    file_path={filename} 
+                                                                                    from_image={false}
+                                                                                    id={TITLE}/>
+
+                            changeRendering(TITLE, "mesh")
+
                         } else if (output_extension == "png" || output_extension == "jpg") {
-                            renderer_canvas.style.visibility = "hidden";
-                            renderer_image.style.visibility = "visible"; 
+                            show2Dview("renderer_image" + "renderer_out", "renderer_canvas" + "renderer_out")
                             MODE = "Image"
                             var renderer_image_inner = document.getElementById("renderer_image_inner" + "renderer_out")
                             var image_path = SysConf.address + "data/Output/" + rankey + ".jpg"
                             SysConf.execution_params["output"] = "/Output:" + rankey + ".jpg"
                             renderer_image_inner.src = image_path
 
-
-
-                            var infos = getImageInformation("data/Output/" + rankey + ".jpg")
+                            getImageInformation("data/Output/" + rankey + ".jpg")
 
                             // Add 3D color histogram
                             // Has to be done within the onload functions because images are loaded asynchronously
                             const img = new Image()
                             img.onload = () => {
-                                SysConf.data_config[TITLE]["3D_color_space"] = <PointCloud key={Math.random()} 
+                                SysConf.data_config[TITLE]["3D_color_distribution"] = <PointCloud key={Math.random()} 
                                                                                 file_path={SysConf.address + "data/PointClouds/template.ply"} 
                                                                                 from_image={true}
-                                                                                image={img}/>
+                                                                                image={img} 
+                                                                                id={TITLE}/>
 
                                 changeEnableupdate(Math.random())
                             }
@@ -376,91 +332,8 @@ function Renderer(props) {
                             img.src = image_path
                         }
 
-
-                        // Change histogram of output
-                        // TODO Has to be moved to ColorHistogram.js
-                        //########################################################################################
-                        //########################################################################################
                         
-                        try {
-                            const xmlHttp = new XMLHttpRequest();
-                            const theUrl = SysConf.address + "color_histogram";
-                            xmlHttp.open( "POST", theUrl, false );
-
-                            if (output_extension == "ply" || output_extension == "obj")
-                                var out_dat = "Output:" + rankey + ".ply"
-                            else
-                                var out_dat = "Output:" + rankey + ".jpg"
-
-                            console.log(out_dat)
-                            xmlHttp.send(JSON.stringify(out_dat));
-                            var stat = xmlHttp.responseText.replaceAll("\'", "\"");
-                            var stat_obj = JSON.parse(stat);
-
-                            var histogram = stat_obj["data"]["histogram"]
-                            var mean = stat_obj["data"]["mean"]
-                            var std = stat_obj["data"]["std"]
-
-                            var maxV = Math.max.apply(null, histogram.map(function(row){ return Math.max.apply(Math, row); }))
-
-
-                            var histogram_scaled = []
-                            for(var i = 0; i < histogram.length; i++){
-                                histogram_scaled[i] = [Math.floor(histogram[i][0]/maxV*100),
-                                                        Math.floor(histogram[i][1]/maxV*100),
-                                                        Math.floor(histogram[i][2]/maxV*100)];
-                            }
-
-                            const setPixel = (x, y, w, h, image, r, g, b, val) => {
-                                if(val == "all") {
-                                    image[(x + (h-y) * w) * 4 + 0] = r;
-                                    image[(x + (h-y) * w) * 4 + 1] = g;
-                                    image[(x + (h-y) * w) * 4 + 2] = b;
-                                } else if (val == "red")
-                                    image[(x + (h-y) * w) * 4 + 0] = r;
-                                else if (val == "green")
-                                    image[(x + (h-y) * w) * 4 + 1] = r;
-                                else if (val == "blue")
-                                    image[(x + (h-y) * w) * 4 + 2] = r;
-
-                                image[(x + (h-y) * w) * 4 + 3] = 255;
-                            }
-
-                            var c = document.getElementById("canvasout_histogram");
-                            var ctx = c.getContext("2d");
-                            c.height = 100
-
-                            var imageData = ctx.createImageData(256, 100);
-                            for (let x = 0; x < 256; x++) {
-                                if(x % 64 == 0 && x != 0){
-                                    for (let y=0; y < 100; y++){
-                                        setPixel(x, y, 256, 100, imageData.data, 128, 128, 128, "all")
-                                    }
-                                }
-
-                                for (let y=0; y < histogram_scaled[x][0]; y++){
-                                    setPixel(x, y, 256, 100, imageData.data, 255, 0, 0, "red")
-                                }
-                                for (let y=0; y < histogram_scaled[x][1]; y++){
-                                    setPixel(x, y, 256, 100, imageData.data, 255, 0, 0, "green")
-                                }
-                                for (let y=0; y < histogram_scaled[x][2]; y++){
-                                    setPixel(x, y, 256, 100, imageData.data, 255, 0, 0, "blue")
-                                }
-                            }
-                            ctx.putImageData(imageData, 0, 0);
-
-                            var stats_color = document.getElementById("histogramstatsout_histogram");
-                            stats_color.innerHTML = "Mean: (" + mean[0] + ", " + mean[1] + ", " + mean[2] + ") - " +
-                                                    "Std: (" + std[0] + ", " + std[1] + ", " + std[2] + ")"
-
-                        }
-                        catch (e) {
-                            console.log(e)
-                        }
-                        
-                        //########################################################################################
-                        //########################################################################################
+                        SysConf.colorHistogramStateChange["Output"](Math.random())
                     }
 
                   } else {
@@ -491,7 +364,67 @@ function Renderer(props) {
     }
 
     /* ------------------------------------------------------------------------------------------------------------
+    ---------------------------------------------------------------------------------------------------------------
+    -- HELPER METHODS
+    ---------------------------------------------------------------------------------------------------------------
+    -------------------------------------------------------------------------------------------------------------*/
+
+    /* ------------------------------------------------------------------------------------------------------------
+    -- Enables a given outputn type. Supported types are:
+    -- (1) mesh
+    -- (2) voxel_grid
+    -- (3) 3D_color_distribution
+    -- (4) 3D_color_histogram
+    -------------------------------------------------------------------------------------------------------------*/
+    function changeRendering(win, type) {
+        SysConf.data_config[TITLE]["rendering"].pop()
+        SysConf.data_config[TITLE]["rendering"].push(SysConf.data_config[win][type])
+        changeEnableupdate(Math.random())
+    }
+    /* ------------------------------------------------------------------------------------------------------------
     -- 
+    -------------------------------------------------------------------------------------------------------------*/
+    function toggle2D3Dview(imageID, renderCanvasID) {
+        var renderersrc_image = document.getElementById(imageID)
+        var Renderer_renderer_canvas = document.getElementById(renderCanvasID)
+
+        if(renderersrc_image.style.visibility == "visible") {
+            renderersrc_image.style.visibility = "hidden"; 
+            Renderer_renderer_canvas.style.visibility = "visible";
+        } else {
+            renderersrc_image.style.visibility = "visible"; 
+            Renderer_renderer_canvas.style.visibility = "hidden";
+        }
+    }
+    /* ------------------------------------------------------------------------------------------------------------
+    -- 
+    -------------------------------------------------------------------------------------------------------------*/
+    function show3Dview(imageID, renderCanvasID) {
+        var renderersrc_image = document.getElementById(imageID)
+        var Renderer_renderer_canvas = document.getElementById(renderCanvasID)
+        renderersrc_image.style.visibility = "hidden"; 
+        Renderer_renderer_canvas.style.visibility = "visible";
+    }
+    /* ------------------------------------------------------------------------------------------------------------
+    -- 
+    -------------------------------------------------------------------------------------------------------------*/
+    function show2Dview(imageID, renderCanvasID) {
+        var renderersrc_image = document.getElementById(imageID)
+        var Renderer_renderer_canvas = document.getElementById(renderCanvasID)
+        renderersrc_image.style.visibility = "visible"; 
+        Renderer_renderer_canvas.style.visibility = "hidden";
+    }
+    /* ------------------------------------------------------------------------------------------------------------
+    -- 
+    -------------------------------------------------------------------------------------------------------------*/
+    function disableCheckbox(id, method) {
+        var checkbox = document.getElementById(id, method)
+        if(!checkbox.checked) method(checkbox)
+        checkbox.checked = false;
+    }
+
+    /* ------------------------------------------------------------------------------------------------------------
+    -- Registration of EventListener
     -------------------------------------------------------------------------------------------------------------*/
     useEffect(() => {
         if(DROPPABLE) {
@@ -507,8 +440,7 @@ function Renderer(props) {
         }
 
         var color_space_button = document.getElementById("settings_rgbcolorspace")
-        color_space_button.addEventListener("change", show3DColorSpace);
-
+        color_space_button.addEventListener("change", show3DColorDistribution);
 
         var color_histogram_button = document.getElementById("settings_3dcolorhistogram")
         color_histogram_button.addEventListener("change", show3DColorHistogram);
@@ -528,30 +460,29 @@ function Renderer(props) {
             else {changeAxis(null)}
         });
     }, []);
+
     return(
         <div id={ID}>
             <div className="renderer_title">{TITLE}</div>
-            <div id={imageID} className="renderer_image"><
-                img id={innerImageID} className="renderer_image_inner"/>
-                </div>
+            <div id={imageID} className="renderer_image">
+                <img id={innerImageID} className="renderer_image_inner"/>
+            </div>
             <Canvas id={renderCanvasID}>
-                <PerspectiveCamera position={[2, 2, 2]} makeDefault />
-                <ambientLight />
+                <PerspectiveCamera position={[4, 4, 4]} makeDefault />
                 <OrbitControls />
                 {grid}
                 {axis}
                 <Suspense fallback={null}>
-                    {<group>{SysConf.meshes[TITLE.toLowerCase()]}</group>}
+                    {<group>{SysConf.data_config[TITLE]["rendering"]}</group>}
                 </Suspense>
             </Canvas>
         </div>
     );
 }
 
-
 /* ----------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------------
--- 
+-- Allows dropping items on the renderer windows.
 -------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------*/
 Renderer.defaultProps = {
