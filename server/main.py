@@ -32,6 +32,8 @@ from ColorTransferLib.Evaluation.PSNR.PSNR import PSNR
 from ColorTransferLib.Evaluation.HistogramIntersection.HistogramIntersection import HistogramIntersection
 from Request.GetRequest import GetRequest
 from Request.PostRequest import PostRequest
+import zipfile36 as zipfile
+import gdown
 
 #init_path = "../../VSCodeProjects/color-transfer-tool/public/data"
 init_path = "data"
@@ -240,6 +242,20 @@ def run(server_class=HTTPServer, handler_class=BaseHTTPRequestHandler):
 # method description
 # ------------------------------------------------------------------------------------------------------------------
 def main():
+    # download Models folder
+    if not os.path.exists("Models") and not os.path.exists("data"):
+        print("Download DATA.zip ...")
+        url = "https://drive.google.com/file/d/1TuWldLgf00A5tcLdftTy2g-XDdSXBFuG/view?usp=share_link"
+        output_path = 'DATA.zip'
+        gdown.download(url, output_path, quiet=False, fuzzy=True)
+        # Extract DATA.zip
+        print("Extract DATA.zip ...")
+        with zipfile.ZipFile("DATA.zip","r") as zip_ref:
+            zip_ref.extractall()
+        # Delete DATA.zip
+        print("Delete DATA.zip ...")
+        os.remove("DATA.zip")
+
     print("Running...")
     run(handler_class=MyServer)
 
