@@ -21,3 +21,11 @@ open3d==0.16.0
 imblearn
 zipfile36
 gdown
+h5py
+tqdm
+PilloW
+torch-optimizer
+retry
+vector-quantize-pytorch
+linear_attention_transformer
+dlib

@@ -51,6 +51,7 @@ class PostRequest():
 
         try:
             output = func_timeout.func_timeout(60, ct.apply, args=(), kwargs=None)
+            output = output["object"]
         except func_timeout.FunctionTimedOut:
             response["service"] = "color_transfer"
             response["enabled"] = "false"

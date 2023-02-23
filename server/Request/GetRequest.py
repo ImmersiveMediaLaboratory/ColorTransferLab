@@ -30,6 +30,7 @@ class GetRequest():
         response["service"] = "available_methods"
         response["enabled"] = "true"
         response["data"] = ColorTransfer.get_available_methods()
+        print(response["data"])
         return response
 
     # ------------------------------------------------------------------------------------------------------------------
