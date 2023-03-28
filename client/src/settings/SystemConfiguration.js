@@ -15,6 +15,8 @@ Please see the LICENSE file that should have been included as part of this packa
 -----------------------------------------------------------------------------------------------------------------*/
 class SystemConfiguration {
     static address = "http://localhost:8001/"
+    //static address = "http://artic.vision:8001/"
+    //static address = "http://93.239.104.149:8001/"
 
     // these parameters will be sent to the python server
     static execution_params = {

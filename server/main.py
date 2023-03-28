@@ -38,8 +38,8 @@ import gdown
 #init_path = "../../VSCodeProjects/color-transfer-tool/public/data"
 init_path = "data"
 PORT = 8001
-#ADDRESS = "localhost"
-ADDRESS = "192.168.178.37"
+ADDRESS = "localhost"
+#ADDRESS = "192.168.178.37"
 #ADDRESS = "192.168.178.45"
 
 

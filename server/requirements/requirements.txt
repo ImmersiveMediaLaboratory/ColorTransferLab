@@ -32,3 +32,4 @@ cmake
 dlib
 faiss-gpu
 pyhull
+PySide6
