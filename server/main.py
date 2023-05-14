@@ -26,10 +26,7 @@ from numba import cuda
 import func_timeout
 from ColorTransferLib.MeshProcessing.PLYLoader import PLYLoader
 from ColorTransferLib.ImageProcessing.Image import Image
-from ColorTransferLib.ColorTransfer import ColorTransfer
-from ColorTransferLib.Evaluation.SSIM.SSIM import SSIM
-from ColorTransferLib.Evaluation.PSNR.PSNR import PSNR
-from ColorTransferLib.Evaluation.HistogramIntersection.HistogramIntersection import HistogramIntersection
+from ColorTransferLib.ColorTransfer import ColorTransfer, ColorTransferEvaluation
 from Request.GetRequest import GetRequest
 from Request.PostRequest import PostRequest
 import zipfile36 as zipfile
@@ -150,41 +147,57 @@ class MyServer(SimpleHTTPRequestHandler):
         elif self.path == "/evaluation":
             obj = self.getJson()
 
-            folder_com, file_com = obj["comparison"].split(":")
+            folder_src, file_src = obj["source"].split(":")
+            _, extension_src = file_src.split(".")
+            src_path = init_path + folder_src + "/" + file_src
+            src_img = Image(file_path=src_path)
+
+            folder_ref, file_ref = obj["reference"].split(":")
+            _, extension_ref = file_ref.split(".")
+            ref_path = init_path + folder_ref + "/" + file_ref
+            ref_img = Image(file_path=ref_path)
+
             folder_out, file_out = obj["output"].split(":")
-            _, extension_com = file_com.split(".")
             _, extension_out = file_out.split(".")
+            out_path = init_path + folder_out + "/" + file_out
+            out_img = Image(file_path=out_path)
 
-            com_path = init_path + "/" + folder_com + "/" + file_com
-            out_path = init_path + "/" + folder_out + "/" + file_out
+            # print(src_path)
+            # print(ref_path)
+            # print(out_path)
 
-            # check the source and reference types
+            #check the source and reference types
+            # if extension_com == "ply":
+            #     loader_src = PLYLoader(com_path)
+            #     src = loader_src.get_mesh()
+            # elif extension_com == "png" or extension_com == "jpg":
+            #     src = Image(file_path=com_path)
 
-            if extension_com == "ply":
-                loader_src = PLYLoader(com_path)
-                src = loader_src.get_mesh()
-            elif extension_com == "png" or extension_com == "jpg":
-                src = Image(file_path=com_path)
+            # if extension_out == "ply":
+            #     loader_ref = PLYLoader(out_path)
+            #     ref = loader_ref.get_mesh()
+            # elif extension_out == "png" or extension_out == "jpg":
+            #     ref = Image(file_path=out_path)
 
-            if extension_out == "ply":
-                loader_ref = PLYLoader(out_path)
-                ref = loader_ref.get_mesh()
-            elif extension_out == "png" or extension_out == "jpg":
-                ref = Image(file_path=out_path)
 
-            mssim = SSIM.apply(src, ref)
-            psnr = PSNR.apply(src, ref)
-            hint = HistogramIntersection.apply(src, ref)
 
             response["service"] = "evaluation"
             response["enabled"] = "true"
-            response["data"] = {
-                "SSIM": mssim,
-                "PSNR": psnr,
-                "Bhattacharya": 0.0,
-                "GSSIM": 0.0,
-                "HistogramIntersection": hint
-            }
+            response["data"] = {}
+
+            # get all metrics and add to response["data"]
+            cte = ColorTransferEvaluation(src_img, ref_img, out_img)
+            metrics = ColorTransferEvaluation.get_available_metrics()
+            for mm in metrics:
+                print(mm)
+                evalval = cte.apply(mm)
+                if np.isinf(evalval) or np.isnan(evalval):
+                    response["data"][mm] = 99999
+                else:
+                    response["data"][mm] = evalval
+                print(response["data"][mm])
+            print(response)
+
         elif self.path == "/object_info":
             obj = self.getJson()["object_path"]
             extensions = obj.split(".")[-1]

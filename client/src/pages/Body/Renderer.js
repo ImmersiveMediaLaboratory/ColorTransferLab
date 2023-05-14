@@ -320,11 +320,16 @@ function Renderer(props) {
                             // Has to be done within the onload functions because images are loaded asynchronously
                             const img = new Image()
                             img.onload = () => {
-                                SysConf.data_config[TITLE]["3D_color_distribution"] = <PointCloud key={Math.random()} 
+                                SysConf.data_config[TITLE]["3D_color_distribution"] = <ColorDistribution key={Math.random()} 
                                                                                 file_path={SysConf.address + "data/PointClouds/template.ply"} 
                                                                                 from_image={true}
-                                                                                image={img} 
+                                                                                image={img}
                                                                                 id={TITLE}/>
+                                // SysConf.data_config[TITLE]["3D_color_distribution"] = <PointCloud key={Math.random()} 
+                                //                                                 file_path={SysConf.address + "data/PointClouds/template.ply"} 
+                                //                                                 from_image={true}
+                                //                                                 image={img} 
+                                //                                                 id={TITLE}/>
 
                                 changeEnableupdate(Math.random())
                             }

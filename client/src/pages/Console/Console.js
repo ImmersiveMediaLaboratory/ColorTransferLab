@@ -85,10 +85,16 @@ class Console extends React.Component {
     -- Works only if the <comparison> and <output> objects are given.
     ---------------------------------------------------------------------------------------------------------------*/
     evalPrint() {
-        if(SysConf.execution_params["comparison"] == "" || SysConf.execution_params["output"] == ""){
-            Console.consolePrint("WARNING", "Both comparison and output image has to be given.")
+        // if(SysConf.execution_params["comparison"] == "" || SysConf.execution_params["output"] == ""){
+        //     Console.consolePrint("WARNING", "Both comparison and output image has to be given.")
+        //     return
+        // }
+        if(SysConf.execution_params["output"] == "" || SysConf.execution_params["source"] == "" || SysConf.execution_params["reference"] == ""){
+            Console.consolePrint("WARNING", "Source, Referemce and Output images have to be given.")
             return
         }
+
+        Console.consolePrint("INFO", "Start Evaluation ...")
 
         try {
             const xmlHttp = new XMLHttpRequest();
@@ -141,6 +147,8 @@ class Console extends React.Component {
                         tbl.setAttribute("tableLayout", "auto");
                         tbl.setAttribute("width", "100%");
                         console_eval.append(tbl)
+
+                        Console.consolePrint("INFO", "Evaluation done...")
                     
                     } else {
                         console.error(xmlHttp.statusText);
@@ -155,7 +163,9 @@ class Console extends React.Component {
             };
 
             var out_dat = {
-                "comparison": SysConf.execution_params["comparison"],
+                // "comparison": SysConf.execution_params["comparison"],
+                "source": SysConf.execution_params["source"],
+                "reference": SysConf.execution_params["reference"],
                 "output": SysConf.execution_params["output"],
             }
 

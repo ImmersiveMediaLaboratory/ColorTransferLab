@@ -9,7 +9,7 @@ Please see the LICENSE file that should have been included as part of this packa
 
 import os
 
-from ColorTransferLib.ColorTransfer import ColorTransfer
+from ColorTransferLib.ColorTransfer import ColorTransfer, ColorTransferEvaluation
 
 class GetRequest():
     # ------------------------------------------------------------------------------------------------------------------
@@ -40,7 +40,7 @@ class GetRequest():
     def available_metrics(response):
         response["service"] = "available_metrics"
         response["enabled"] = "true"
-        response["data"] = ColorTransfer.get_available_metrics()
+        response["data"] = ColorTransferEvaluation.get_available_metrics()
         return response
 
     # ------------------------------------------------------------------------------------------------------------------
