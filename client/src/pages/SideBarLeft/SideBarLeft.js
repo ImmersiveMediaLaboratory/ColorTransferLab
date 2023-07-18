@@ -13,7 +13,8 @@ import Tabs from "./../Tabs/Tabs";
 import './SideBarLeft.scss';
 import Images from 'constants/Images';
 import Texts from 'constants/Texts';
-
+import Algorithms from './Algorithms'
+import Server from './Server'
 
 /*-----------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------------
@@ -38,33 +39,9 @@ class SideBarLeft extends React.Component {
     -------------------------------------------------------------------------------------------------------------*/
     render() {
         return (
-            <div id="sidebarleft_main">
-                <div id="sidebarleft_header">
-                    <img id="sidebarleft_header_logo" src={Images.icon_algorithms}/>
-                    <div id="sidebarleft_header_name">{Texts.sidebar_algorithms}</div>
-                </div>
-                <Tabs id="sidebarleft">
-                    <div label="Color Transfer" >
-                        <div id="sidebarleft_content_colorTransfer">
-                            {/* <div className="sidebarleft_approach">PLACEHOLDER</div> */}
-                        </div>
-                    </div>
-                    <div label="Segmentation">
-                        <div id="SidebarLeft_content_classification">
-                            {/* <div className="sidebarleft_approach">PLACEHOLDER</div> */}
-                        </div>
-                    </div>
-                    <div label="Reconstruction">
-                        <div id="SidebarLeft_content_reconstruction">
-                            {/* <div className="sidebarleft_approach">PLACEHOLDER</div> */}
-                        </div>
-                    </div>
-                    <div label="Registration">
-                        <div id="SidebarLeft_content_registration">
-                            {/* <div className="sidebarleft_approach">PLACEHOLDER</div> */}
-                        </div>
-                    </div>
-                </Tabs>
+            <div id="SideBarLeft_sidebarleft">  
+                <Algorithms/> 
+                <Server/>
             </div>
         );
     }

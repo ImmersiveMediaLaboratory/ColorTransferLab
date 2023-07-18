@@ -23,6 +23,7 @@ class Images {
     static icon_objects = "assets/icons/icon_layer_grey.png";
     static icon_settings = "assets/icons/icon_settings_grey.png";
     static icon_algorithms = "assets/icons/icon_algorithm_grey.png";
+    static icon_server = "assets/icons/icon_server_grey.png";
 
     static icon_database_elem = "assets/icons/icon_database2.png";
     static icon_items_elem = "assets/icons/icon_cloud.png";

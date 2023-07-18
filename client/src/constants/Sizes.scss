@@ -27,6 +27,8 @@ $sidebarright_element_innerwidth: calc(#{$sidebarright_width} - 2 * #{$box_margi
 $sidebarright_element_height: calc((#{$sidebarright_height} - #{$sidebarright_settings_height}) / 3);
 $sidebarright_element_innerheight: calc(#{$sidebarright_element_height} - 2 * #{$box_margin} - 2 * #{$box_border});
 
+$sidebarleft_server_height: 150px;
+$sidebarleft_server_innerheight: calc(#{$sidebarleft_server_height} - 2 * #{$box_margin} - 2 * #{$box_border});
 $sidebarleft_width: 200px;
 $sidebarleft_height: calc(#{$window_height} - #{$header_height} - #{$footer_height});
 $sidebarleft_innerwidth: calc(#{$sidebarleft_width} - 2 * #{$box_margin} - 2 * #{$box_border});

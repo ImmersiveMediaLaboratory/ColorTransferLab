@@ -27,6 +27,7 @@ class Texts {
     static sidebar_database = "DATABASE"
     static sidebar_objects = "OBJECTS"
     static sidebar_settings = "SETTINGS"
+    static sidebar_server = "SERVER"
 }
 
 

@@ -21,7 +21,6 @@ import Console from 'pages/Console/Console';
 import './Renderer.scss';
 import Images from "constants/Images";
 
-
 /* ----------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------------
 -- Renderer windows for (1) Source, (2) Reference, (3) Output and (4) Comparison

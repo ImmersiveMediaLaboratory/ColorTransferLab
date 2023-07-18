@@ -40,3 +40,4 @@ pysaliency
 pyhull
 PySide6
 brisque
+func-timeout
