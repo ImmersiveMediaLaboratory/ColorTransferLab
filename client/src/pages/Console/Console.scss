@@ -88,6 +88,26 @@ Please see the LICENSE file that should have been included as part of this packa
     filter: brightness(1.5);
 }
 
+#console_export_metric_button {
+    position: absolute;
+    //background-color: green;
+    padding: 2px;
+    margin: 2px;
+    top: 0px;
+    right: 110px;
+}
+
+#console_export_metric_button_logo {
+    padding: 0px;
+    margin: 0px;
+    height: 17px;
+    width: 17px;
+}
+
+#console_export_metric:hover {
+    filter: brightness(1.5);
+}
+
 #ref_histogram {
     position: absolute;
     $scrolloffset: 20px;

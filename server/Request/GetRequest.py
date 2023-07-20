@@ -20,6 +20,16 @@ class GetRequest():
         response["service"] = "server_status"
         response["enabled"] = "true"
         response["data"] = server.address_string()
+        return response    
+    
+    # ------------------------------------------------------------------------------------------------------------------
+    # 
+    # ------------------------------------------------------------------------------------------------------------------
+    @staticmethod
+    def check_availability(server, response):
+        response["service"] = "server_status"
+        response["enabled"] = "true"
+        response["data"] = "None"
         return response
 
     # ------------------------------------------------------------------------------------------------------------------

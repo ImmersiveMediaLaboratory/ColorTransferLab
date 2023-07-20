@@ -60,6 +60,14 @@ class Settings extends React.Component {
                     <td>Voxel Grid</td>
                     <td><input id="settings_voxelgrid" type="checkbox" /></td>
                 </tr>
+                <tr>
+                    <td>Single Render View</td>
+                    <td><input id="settings_singlerenderview" type="checkbox" /></td>
+                </tr>
+                <tr>
+                    <td>Object Infromation</td>
+                    <td><input id="settings_objectinformation" type="checkbox" /></td>
+                </tr>
                 </tbody>
             </table>
             </div>

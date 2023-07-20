@@ -10,7 +10,7 @@ Please see the LICENSE file that should have been included as part of this packa
 import React, { useState, useEffect, Suspense, useRef} from 'react';
 import './ColorHistogram.scss';
 import SysConf from "settings/SystemConfiguration"
-
+import Server from 'pages/SideBarLeft/Server';
 
 /* ----------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------------
@@ -72,7 +72,7 @@ function ColorHistogram(props) {
         if (notInitialRender.current) {              
             try {
                 const xmlHttp = new XMLHttpRequest();
-                const theUrl = SysConf.address + "color_histogram";
+                const theUrl = Server.active_server + "color_histogram";
                 xmlHttp.open( "POST", theUrl, false );
 
                 var out_dat = SysConf.execution_params[props.TITLE.toLowerCase()]

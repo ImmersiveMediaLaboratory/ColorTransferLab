@@ -33,6 +33,10 @@ class Images {
     static icon_play_button = "assets/icons/icon_play.png";
     static icon_upload_button = "assets/icons/icon_upload.png";
     static icon_eval_button = "assets/icons/icon_eval.png";
+    static icon_export_metric_button = "assets/icons/icon_export_metric.png";
+
+    static icon_availability_no = "assets/icons/icon_availability_no.png";
+    static icon_availability_yes = "assets/icons/icon_availability_yes.png";
 
     static gif_loading = "assets/gifs/loading3.gif"
 }

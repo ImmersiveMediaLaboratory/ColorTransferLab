@@ -31,7 +31,7 @@ from Request.GetRequest import GetRequest
 from Request.PostRequest import PostRequest
 import zipfile36 as zipfile
 import gdown
-
+import requests
 
 #init_path = "../../VSCodeProjects/color-transfer-tool/public/data"
 init_path = "data"
@@ -52,7 +52,10 @@ class MyServer(SimpleHTTPRequestHandler):
     # ------------------------------------------------------------------------------------------------------------------
     def do_GET(self):
         print("Receive...")
-        if self.path == "/server_status" or self.path == "/available_methods" or self.path == "/database" or self.path == "/available_metrics":
+        if self.path == "/server_status" or self.path == "/available_methods" or \
+           self.path == "/database" or self.path == "/available_metrics" or \
+           self.path == "/check_availability":
+
             self.send_response(200)
             self.send_header("Content-type", "text/html")
             #self.send_header('Access-Control-Allow-Origin', '*')
@@ -72,6 +75,8 @@ class MyServer(SimpleHTTPRequestHandler):
             response = GetRequest.available_metrics(response)
         elif self.path == "/database":
             response = GetRequest.database(init_path, response)
+        elif self.path == "/check_availability":
+            response = GetRequest.check_availability(init_path, response)
         else:
             return SimpleHTTPRequestHandler.do_GET(self)
 
@@ -248,10 +253,42 @@ class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
 # ------------------------------------------------------------------------------------------------------------------
 # method description
 # ------------------------------------------------------------------------------------------------------------------
-def run(server_class=HTTPServer, handler_class=BaseHTTPRequestHandler):
-    server_address = (ADDRESS, PORT)
-    httpd = ThreadedHTTPServer(server_address, handler_class)
+def run(server_address, server_port, server_class=HTTPServer, handler_class=BaseHTTPRequestHandler):
+    url = (server_address, server_port)
+    httpd = ThreadedHTTPServer(url, handler_class)
     httpd.serve_forever()
+
+# ------------------------------------------------------------------------------------------------------------------
+# send the IP address and port to the proxy server
+# ------------------------------------------------------------------------------------------------------------------
+def sendServerInfo(proxy_address, proxy_port, ressource, server_name, my_address, my_port, server_visibility):
+    url = "http://" + proxy_address + ":" + str(proxy_port) + ressource
+    myobj = {
+        "name": server_name,
+        "address": my_address,
+        "port": my_port,
+        "visibility": server_visibility
+    }
+
+    try:
+        x = requests.post(url, json = myobj)
+    except:
+        print("No connection to the proxy server can be established.")
+        exit(1)
+
+# ------------------------------------------------------------------------------------------------------------------
+# read settings file, i.e. proxy address and port
+# ------------------------------------------------------------------------------------------------------------------
+def read_settings(path):
+    with open(path, 'r') as f:
+        data = json.load(f)
+        server_name = data["server"]["name"]
+        server_address = data["server"]["address"]
+        server_port = data["server"]["port"]
+        proxy_address = data["proxy"]["address"]
+        proxy_port = data["proxy"]["port"]
+        server_visibility = data["server"]["visibility"]
+        return server_name, server_address, server_port, server_visibility, proxy_address, proxy_port
 
 # ------------------------------------------------------------------------------------------------------------------
 # method description
@@ -271,8 +308,14 @@ def main():
         print("Delete DATA.zip ...")
         os.remove("DATA.zip")
 
-    print("Running...")
-    run(handler_class=MyServer)
+    server_name, server_address, server_port, server_visibility, proxy_address, proxy_port = read_settings("../ressources/settings.json")
+    print("#################################################################")
+    print("# Server " + server_name + " is running on " + server_address + ":" + str(server_port) + " ...")
+    print("#################################################################")
+
+    sendServerInfo(proxy_address, proxy_port, "/ip_update", server_name, server_address, server_port, server_visibility)
+           
+    run(server_address, server_port, handler_class=MyServer)
 
 
 if __name__ == '__main__':

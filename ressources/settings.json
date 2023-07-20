@@ -1,0 +1,19 @@
+{
+	"ui" : {
+		"protocol": "http",
+		"address": "localhost",
+		"port": 3000
+	},
+	"proxy" : {
+		"protocol": "http",
+		"address": "localhost",
+		"port": 8003
+	},
+	"server" : {
+		"name": "Test Server",
+		"protocol": "http",
+		"address": "localhost",
+		"port": 8001,
+		"visibility": "private"
+	}
+}

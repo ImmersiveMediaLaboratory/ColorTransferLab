@@ -20,6 +20,8 @@ import ColorHistogram from "rendering/ColorHistogram"
 import Console from 'pages/Console/Console';
 import './Renderer.scss';
 import Images from "constants/Images";
+import TriangleMesh from "rendering/TriangleMesh"
+import Server from 'pages/SideBarLeft/Server';
 
 /* ----------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------------
@@ -58,22 +60,33 @@ function Renderer(props) {
         var file_extension = fil[1].split(".")[1]
 
         if (file_extension == "obj" || file_extension == "ply") {
-            // change MODE to "Pointcloud" because a pointcloud was dropped
-            MODE = "PointCloud"
+            if(fil[0] == "/PointClouds") {
+                // change MODE to "Pointcloud" because a pointcloud was dropped
+                MODE = "PointCloud"
 
-            var filepath = SysConf.address + "data/" + fil[0] + "/" + fil[1]
-            SysConf.data_config[TITLE]["filename"] = filepath
-            SysConf.data_config[TITLE]["mesh"] = <PointCloud key={Math.random()} file_path={filepath} id={TITLE}/>
+                var filepath = Server.active_server + "data/" + fil[0] + "/" + fil[1]
+                SysConf.data_config[TITLE]["filename"] = filepath
+                SysConf.data_config[TITLE]["mesh"] = <PointCloud key={Math.random()} file_path={filepath} id={TITLE}/>
 
-            getImageInformation("data/" + fil[0] + "/" + fil[1])
+                getImageInformation("data/" + fil[0] + "/" + fil[1])
 
-            SysConf.data_config[TITLE]["3D_color_distribution"] = <ColorDistribution key={Math.random()} 
-                                                                    file_path={filepath} 
-                                                                    from_image={false}
-                                                                    id={TITLE}/>
+                SysConf.data_config[TITLE]["3D_color_distribution"] = <ColorDistribution key={Math.random()} 
+                                                                        file_path={filepath} 
+                                                                        from_image={false}
+                                                                        id={TITLE}/>
 
-            changeRendering(TITLE, "mesh")
-            show3Dview(imageID, renderCanvasID)
+                changeRendering(TITLE, "mesh")
+                show3Dview(imageID, renderCanvasID)
+            } else {
+                // change MODE to "Pointcloud" because a pointcloud was dropped
+                MODE = "PointCloud"
+
+                var filepath = Server.active_server + "data/" + fil[0] + "/" + fil[1].split(".")[0]
+                SysConf.data_config[TITLE]["mesh"] = <TriangleMesh key={Math.random()} file_name={filepath}></TriangleMesh>
+                changeRendering(TITLE, "mesh")
+                show3Dview(imageID, renderCanvasID)
+            }
+  
 
         } else if(file_extension == "png" || file_extension == "jpg") {
             // change MODE to "Image" because an image was dropped
@@ -87,7 +100,7 @@ function Renderer(props) {
             if(!rgb_colorspace_button.checked)
                 show2Dview(imageID, renderCanvasID)
     
-            var image_path = SysConf.address + "data/" + fil[0] + "/" + fil[1]
+            var image_path = Server.active_server + "data/" + fil[0] + "/" + fil[1]
             renderersrc_image_inner.src = image_path
 
             getImageInformation("data" + fil[0] + "/" + fil[1])
@@ -97,7 +110,7 @@ function Renderer(props) {
             const img = new Image()
             img.onload = () => {
                 SysConf.data_config[TITLE]["3D_color_distribution"] = <ColorDistribution key={Math.random()} 
-                                                                            file_path={SysConf.address + "data/PointClouds/template.ply"} 
+                                                                            file_path={Server.active_server + "data/PointClouds/template.ply"} 
                                                                             from_image={true}
                                                                             image={img}
                                                                             id={TITLE}/>
@@ -117,7 +130,7 @@ function Renderer(props) {
     function getImageInformation(object_path) {
         try {
             const xmlHttp = new XMLHttpRequest();
-            const theUrl = SysConf.address + "object_info";
+            const theUrl = Server.active_server + "object_info";
             xmlHttp.open( "POST", theUrl, true );
 
             xmlHttp.onload = function (e) {
@@ -266,7 +279,7 @@ function Renderer(props) {
             renderer_image_inner.src = Images.gif_loading
 
             const xmlHttp = new XMLHttpRequest();
-            const theUrl = SysConf.address + "color_transfer";
+            const theUrl = Server.active_server + "color_transfer";
             xmlHttp.open( "POST", theUrl, true );
 
             // output file has to be saved with a random name, otherwise the browser loads the cached object
@@ -290,7 +303,7 @@ function Renderer(props) {
                         if (output_extension == "ply" || output_extension == "obj") {    
                             show3Dview("renderer_image" + "renderer_out", "renderer_canvas" + "renderer_out")    
                             MODE = "PointCloud"
-                            var filename = SysConf.address + "data/Output/" + rankey + ".ply" 
+                            var filename = Server.active_server + "data/Output/" + rankey + ".ply" 
                             SysConf.execution_params["output"] = "/Output:" + rankey + ".ply"
                             SysConf.data_config[TITLE]["filename"] = filename 
 
@@ -309,7 +322,7 @@ function Renderer(props) {
                             show2Dview("renderer_image" + "renderer_out", "renderer_canvas" + "renderer_out")
                             MODE = "Image"
                             var renderer_image_inner = document.getElementById("renderer_image_inner" + "renderer_out")
-                            var image_path = SysConf.address + "data/Output/" + rankey + ".jpg"
+                            var image_path = Server.active_server + "data/Output/" + rankey + ".jpg"
                             SysConf.execution_params["output"] = "/Output:" + rankey + ".jpg"
                             renderer_image_inner.src = image_path
 
@@ -320,12 +333,12 @@ function Renderer(props) {
                             const img = new Image()
                             img.onload = () => {
                                 SysConf.data_config[TITLE]["3D_color_distribution"] = <ColorDistribution key={Math.random()} 
-                                                                                file_path={SysConf.address + "data/PointClouds/template.ply"} 
+                                                                                file_path={Server.active_server + "data/PointClouds/template.ply"} 
                                                                                 from_image={true}
                                                                                 image={img}
                                                                                 id={TITLE}/>
                                 // SysConf.data_config[TITLE]["3D_color_distribution"] = <PointCloud key={Math.random()} 
-                                //                                                 file_path={SysConf.address + "data/PointClouds/template.ply"} 
+                                //                                                 file_path={Server.active_server + "data/PointClouds/template.ply"} 
                                 //                                                 from_image={true}
                                 //                                                 image={img} 
                                 //                                                 id={TITLE}/>
@@ -472,6 +485,7 @@ function Renderer(props) {
                 <img id={innerImageID} className="renderer_image_inner"/>
             </div>
             <Canvas id={renderCanvasID}>
+                <ambientLight />
                 <PerspectiveCamera position={[4, 4, 4]} makeDefault />
                 <OrbitControls />
                 {grid}
