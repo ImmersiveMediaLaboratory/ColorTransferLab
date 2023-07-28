@@ -1,0 +1,49 @@
+/*
+Copyright 2022 by Herbert Potechius,
+Ernst-Abbe-Hochschule Jena - University of Applied Sciences - Department of Electrical Engineering and Information
+Technology - Immersive Media and AR/VR Research Group.
+All rights reserved.
+This file is released under the "MIT License Agreement".
+Please see the LICENSE file that should have been included as part of this package.
+*/
+
+@import 'settings/Global.scss';
+
+#body_preview {
+    position: absolute;
+    background-color: $grey;
+    z-index: 9999;
+    margin: $box_margin;
+    border: solid $darkgrey $box_border;
+    width: $body_preview_width;
+    height: $body_preview_height;
+    visibility: hidden;
+    // visibility: visible;
+    overflow-y: scroll;
+}
+
+.preview_card {
+    position: relative;
+    float: left;
+    margin: 10px;
+    background-color: $darkgrey;
+    color: $darkgrey;
+    width: 200px;
+    height: 150px;
+    text-align: center;
+}
+
+.preview_name {
+    position: absolute;
+    height: 30px;
+    text-align: center;
+    width: 100%;
+    top: 120px;
+    background-color: $lightgrey;
+}
+
+.preview_img {
+    // position: absolute;
+    // width: 100%;
+    height: calc(100% - 30px);
+}

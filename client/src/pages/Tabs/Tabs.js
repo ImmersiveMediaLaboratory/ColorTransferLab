@@ -1,6 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Tab from './Tab';
+import {getRandomID} from "utils/Utils"
+import $ from "jquery"
+
+import {setReferenceWindow} from "pages/Body/Body"
 
 
 // id="rendererref" tabs="tabs_rendererref" tabList="tab-list_rendererref" tabListItem="tab-list-item_rendererref" tabListActive="tab-list-active_rendererref" tabContent="tab-content_rendererref">
@@ -25,7 +29,11 @@ class Tabs extends React.Component {
 
     
       onClickTabItem = (tab) => {
-          this.setState({ activeTab: tab });
+            this.setState({ activeTab: tab });
+            setReferenceWindow(tab)
+            // active_reference = tab
+            // console.log(tab)
+            // $(this).attr("data-update", getRandomID())
       }
 
       componentDidMount() {
@@ -62,7 +70,7 @@ class Tabs extends React.Component {
     
         return (
         //   <div className={this.props.tabs}>
-          <div className={this.tabs}>
+          <div className={this.tabs} id={this.props.id} data-changed={""}>
             <ol className={this.tabList}>
             {/* <ol className={this.props.tabList}> */}
               {children.map((child) => {
@@ -102,8 +110,6 @@ class Tabs extends React.Component {
             {/* <div className={this.props.tabContent}> */}
             <div className={this.tabContent}>
               {children.map((child) => {
-
-
                 try {
                   var cc = document.getElementById(child.props.children.props.id)
                   if (child.props.label !== activeTab){

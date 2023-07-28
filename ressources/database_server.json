@@ -1,8 +1,1 @@
-[
-    {
-        "name": "Test Server",
-        "address": "localhost",
-        "port": 8001,
-        "visibility": "private"
-    }
-]
+[]

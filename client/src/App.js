@@ -9,7 +9,7 @@ Please see the LICENSE file that should have been included as part of this packa
 
 //import logo from './logo.svg';
 import './App.css';
-import './constants/GlobalStyle.scss';
+import './settings/Global.scss';
 import Main from './pages/Main/Main'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { createBrowserHistory } from 'history';

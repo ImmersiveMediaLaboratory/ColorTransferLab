@@ -28,6 +28,8 @@ import func_timeout
 import atexit
 import requests
 
+import ssl
+
 # ----------------------------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------------------
 #
@@ -65,6 +67,9 @@ class MyServer(SimpleHTTPRequestHandler):
                     "data": data
                 }
             self.wfile.write(bytes(str(response), "utf-8"))
+        else:
+            print("ZZZZZZZZzzz")
+            return SimpleHTTPRequestHandler.do_GET(self)
 
         
 
@@ -96,7 +101,7 @@ class MyServer(SimpleHTTPRequestHandler):
         if self.path == "/ip_update":
             obj = self.getJson()
             print(obj)
-            write_address_to_db(obj["name"], obj["address"], obj["port"], obj["visibility"])
+            write_address_to_db(obj["name"], obj["protocol"], obj["address"], obj["port"], obj["visibility"])
 
         response = {
             "service": None,
@@ -130,9 +135,16 @@ class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
 # ------------------------------------------------------------------------------------------------------------------
 # method description
 # ------------------------------------------------------------------------------------------------------------------
-def run(address, port, handler_class=BaseHTTPRequestHandler):
+def run(protocol, address, port, handler_class=BaseHTTPRequestHandler):
+    context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+    context.load_cert_chain(certfile='../ressources/cert.pem', keyfile='../ressources/key.pem')
+    context.check_hostname = False
+
+
     server_address = (address, port)
     httpd = ThreadedHTTPServer(server_address, handler_class)
+    if protocol == "https":
+        httpd.socket = context.wrap_socket(httpd.socket, server_side=True)
     httpd.serve_forever()
 
 # ------------------------------------------------------------------------------------------------------------------
@@ -141,9 +153,10 @@ def run(address, port, handler_class=BaseHTTPRequestHandler):
 def read_settings(path):
     with open(path, 'r') as f:
         data = json.load(f)
+        protocol = data["proxy"]["protocol"]
         address = data["proxy"]["address"]
         port = data["proxy"]["port"]
-        return address, port
+        return protocol, address, port
 
 # ------------------------------------------------------------------------------------------------------------------
 # check if servers in database are still available
@@ -158,8 +171,8 @@ def check_servers():
             for elem in data:
                 print(elem)
                 try:
-                    url = "http://" + elem["address"] + ":" + str(elem["port"]) + "/check_availability"
-                    x = requests.get(url, timeout=10)
+                    url = elem["protocol"] + "://" + elem["address"] + ":" + str(elem["port"]) + "/check_availability"
+                    x = requests.get(url, timeout=60, verify=False)
 
                     if x.status_code == 200:
                         data_update.append(elem)
@@ -180,12 +193,13 @@ def check_servers():
 # ------------------------------------------------------------------------------------------------------------------
 # write incomming server addresses into database file
 # ------------------------------------------------------------------------------------------------------------------
-def write_address_to_db(name, address, port, visibility):
+def write_address_to_db(name, protocol, address, port, visibility):
     with open("../ressources/database_server.json", 'r+') as f:
         data = json.load(f)
 
         dictionary = {
             "name": name,
+            "protocol": protocol,
             "address": address,
             "port": port,
             "visibility": visibility
@@ -217,11 +231,11 @@ def main():
 
     atexit.register(exit_handler)
 
-    address, port = read_settings("../ressources/settings.json")    
+    protocol, address, port = read_settings("../ressources/settings.json")    
     print("#################################################################")
-    print("# Proxy is running on " + address + ":" + str(port) + " ...")
+    print("# Proxy is running on " + protocol + "://" +  address + ":" + str(port) + " ...")
     print("#################################################################")
-    run(address, port, handler_class=MyServer,)
+    run(protocol, address, port, handler_class=MyServer,)
 
 
 if __name__ == '__main__':

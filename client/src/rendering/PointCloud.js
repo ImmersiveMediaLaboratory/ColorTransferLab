@@ -82,17 +82,20 @@ function PointCloud(props) {
     obj.computeBoundingBox();
     boundingBox.copy( obj.boundingBox );
 
-    var center = new THREE.Vector3(boundingBox.min.x + (boundingBox.max.x - boundingBox.min.x ) / 2.0, 
+    var cen = new THREE.Vector3(boundingBox.min.x + (boundingBox.max.x - boundingBox.min.x ) / 2.0, 
                                    boundingBox.min.y + (boundingBox.max.y - boundingBox.min.y ) / 2.0, 
                                    boundingBox.min.z + (boundingBox.max.z - boundingBox.min.z ) / 2.0)
 
     var radius = (obj.boundingBox.max.y - obj.boundingBox.min.y ) / 2.0
     var scaling = 1.0 / radius
 
-    SysConf.data_config[props.id]["pc_center"] = center
-    SysConf.data_config[props.id]["pc_scale"] = scaling
+    // SysConf.data_config[props.id]["pc_center"] = center
+    // SysConf.data_config[props.id]["pc_scale"] = scaling
+    props.center.current = cen
+    props.scale.current = scaling
+    
 
-    var position = new THREE.Vector3(-center.x*scaling, -center.y*scaling + 1.0, -center.z*scaling)
+    var position = new THREE.Vector3(-cen.x*scaling, -cen.y*scaling + 1.0, -cen.z*scaling)
     var scaling = 1.0 / radius
 
 

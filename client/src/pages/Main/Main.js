@@ -7,63 +7,74 @@ This file is released under the "MIT License Agreement".
 Please see the LICENSE file that should have been included as part of this package.
 */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import $ from 'jquery';
+
 import Header from './../Header/Header'
 import Footer from './../Footer/Footer'
 import SideBarLeft from '../SideBarLeft/SideBarLeft';
 import SideBarRight from '../SideBarRight/SideBarRight';
 import Console from '../Console/Console';
 import Body from '../Body/Body';
-import './Main.scss';
-import Requests from 'utils/utils_http';
 
+import './Main.scss';
 
 /*-----------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------------
 -- CONSTRUCTOR
 -------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------*/
-class Main extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {render: true, innerWidth: window.innerWidth, innerHeight: window.innerHeight};
-    }
+function Main(props) {
+    /*-------------------------------------------------------------------------------------------------------------
+    ---------------------------------------------------------------------------------------------------------------
+    -- STATES
+    ---------------------------------------------------------------------------------------------------------------
+    -------------------------------------------------------------------------------------------------------------*/
+    const [height, setHeight] = useState(window.innerHeight);
+    const [width, setWidth] = useState(window.innerWidth);
+
+    /*-------------------------------------------------------------------------------------------------------------
+    ---------------------------------------------------------------------------------------------------------------
+    -- HOOKS
+    ---------------------------------------------------------------------------------------------------------------
+    -------------------------------------------------------------------------------------------------------------*/
 
     /*-------------------------------------------------------------------------------------------------------------
     -- Method "componentDidMount()" will be executed after this component is inserted into the DOM
     -------------------------------------------------------------------------------------------------------------*/
-    componentDidMount() {
-        window.addEventListener("resize", this.resize.bind(this))
-        this.resize()
-        //Requests.initConsole()
-        // Requests.request_server_status();
-        // Requests.request_available_methods();
-        // Requests.request_available_metrics();
-        // Requests.request_database_content()
-    }
-
-    resize() {
-        this.setState({innerWidth: window.innerWidth, innerHeight: window.innerHeight})
+    useEffect(() => {
+        $( window ).on( "resize", function(){resize()});
+    }, []);
+    
+    /*-------------------------------------------------------------------------------------------------------------
+    ---------------------------------------------------------------------------------------------------------------
+    -- FUNCTIONS
+    ---------------------------------------------------------------------------------------------------------------
+    -------------------------------------------------------------------------------------------------------------*/
+    function resize() {
+        setHeight(window.innerHeight)
+        setWidth(window.innerWidth)
     }
 
     /*-------------------------------------------------------------------------------------------------------------
-    -- 
+    ---------------------------------------------------------------------------------------------------------------
+    -- RENDERING
+    ---------------------------------------------------------------------------------------------------------------
     -------------------------------------------------------------------------------------------------------------*/
-    render() {
-        if(this.state.innerHeight < 720 || this.state.innerWidth < 1280) {
-            return (<div id="error_message">ColorTransferLab requires a minimum resolution of 1280x720 pixels to function properly.</div>)
-        }
-        return (
-            <div>
-                <Header/>
-                <Console/>
-                <SideBarLeft/>
-                <SideBarRight/>
-                <Footer/>
-                <Body/>
-            </div>
-        );
+    if(height < 720 || width < 1280) {
+        return (<div id="error_message">ColorTransferLab requires a minimum resolution of 1280x720 pixels to function properly.</div>)
     }
+    return (
+        <div id="mainbody">
+            <Header/>
+            <Console/>
+            <SideBarLeft/>
+            <SideBarRight/>
+            <Footer/>
+            <Body/>
+        </div>
+    );
+    
 }
 
 export default Main;

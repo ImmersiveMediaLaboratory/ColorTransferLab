@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/ColorTransferLab/static/css/main.e59282bf.css",
+    "main.js": "/ColorTransferLab/static/js/main.6a7d68c8.js",
+    "static/js/787.d54f9060.chunk.js": "/ColorTransferLab/static/js/787.d54f9060.chunk.js",
+    "index.html": "/ColorTransferLab/index.html",
+    "main.e59282bf.css.map": "/ColorTransferLab/static/css/main.e59282bf.css.map",
+    "main.6a7d68c8.js.map": "/ColorTransferLab/static/js/main.6a7d68c8.js.map",
+    "787.d54f9060.chunk.js.map": "/ColorTransferLab/static/js/787.d54f9060.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e59282bf.css",
+    "static/js/main.6a7d68c8.js"
+  ]
+}

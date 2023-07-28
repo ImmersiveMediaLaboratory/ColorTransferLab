@@ -12,7 +12,7 @@ import { useLoader, useFrame } from "@react-three/fiber";
 import { PLYLoader } from 'three/examples/jsm/loaders/PLYLoader'
 import * as THREE from 'three'
 import PointShader from "shader/PointShader"
-import SysConf from "settings/SystemConfiguration"
+
 const vertexShader = PointShader.vertexShader
 const fragmentShader = PointShader.fragmentShader
 
@@ -51,8 +51,8 @@ function VoxelGrid(props) {
         return out
     }
 
-    var center = SysConf.data_config[props.id]["pc_center"]
-    var scaling = SysConf.data_config[props.id]["pc_scale"]
+    var cen = props.center.current//SysConf.data_config[props.id]["pc_center"]
+    var scaling = props.scale.current//SysConf.data_config[props.id]["pc_scale"]
     
     const boxes = []
     centers.map(function(e, i) {
@@ -63,7 +63,7 @@ function VoxelGrid(props) {
       });
 
     return (
-       <mesh ref={mesh} position={[-center.x*scaling, -center.y*scaling + 1.0, -center.z*scaling]} scale={scaling}>
+       <mesh ref={mesh} position={[-cen.x*scaling, -cen.y*scaling + 1.0, -cen.z*scaling]} scale={scaling}>
           {boxes}
        </mesh>
     );

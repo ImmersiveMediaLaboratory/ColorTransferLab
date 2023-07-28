@@ -7,24 +7,36 @@ This file is released under the "MIT License Agreement".
 Please see the LICENSE file that should have been included as part of this package.
 */
 
-import React from "react";
-import './Server.scss';
-import Images from "constants/Images"
-import Texts from "constants/Texts";
-import Requests from 'utils/utils_http';
+import React, { useState, useEffect, useRef } from "react";
 import $ from 'jquery';
+
 import Algorithms from "./Algorithms";
 import Database from "pages/SideBarRight/Database";
-import Evaluation from "pages/Console/Evaluation";
-import Terminal from "pages/Console/Terminal";
+import {consolePrint} from 'pages/Console/Terminal'
+import {request_available_metrics} from 'pages/Console/Evaluation'
+import {request_available_methods} from 'pages/SideBarLeft/Algorithms'
+import {request_database_content} from 'pages/SideBarRight/Database'
+import {server_request} from 'utils/Utils'
+
+import './Server.scss';
+
+export let active_server = ""
+export let proxy_server = "http://192.168.178.37:8003"
+// export let proxy_server = "http://10.90.37.213:8003"
 
 /*-----------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------------
 -- Contains texts
 -------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------*/
-class Server extends React.Component {
-    static active_server = null
+function Server(props) {
+    const icon_availability_no = "assets/icons/icon_availability_no.png";
+    const icon_availability_yes = "assets/icons/icon_availability_yes.png";
+    const icon_server = "assets/icons/icon_server_grey.png";
+
+    const sidebar_server = "SERVER"
+
+    
     /*-------------------------------------------------------------------------------------------------------------
     ---------------------------------------------------------------------------------------------------------------
     -- Public methods
@@ -42,35 +54,31 @@ class Server extends React.Component {
     /*-------------------------------------------------------------------------------------------------------------
     -- ...
     -------------------------------------------------------------------------------------------------------------*/
-    static #request_server_status(server_address) {
-        var stat_obj = Requests.server_request("server_status", server_address)
+    function request_server_status(server_address) {
+        var stat_obj = server_request("GET", "server_status", server_address, null)
 
-        if (stat_obj["enabled"]) {
-            Terminal.consolePrint("INFO", "Server is running at " + stat_obj["data"])
-        }
-        else {
-            Terminal.consolePrint("WARNING", "No server instance is running")
-        }
+        if (stat_obj["enabled"]) 
+            consolePrint("INFO", "Server is running at " + stat_obj["data"])
+        else 
+            consolePrint("WARNING", "No server instance is running")
     }
-
 
     /*-------------------------------------------------------------------------------------------------------------
     -- Request available color transfer methods and create buttons to apply these algorithms
     -------------------------------------------------------------------------------------------------------------*/
-    static #request_available_servers() {
-        let stat_obj = Requests.server_request("available_servers", "http://localhost:8003/")
+    function request_available_servers() {
+        let stat_obj = server_request("GET", "available_servers", proxy_server, null)
 
         // check if the request of available servers is fulfilled
-        if (stat_obj["enabled"]) {
-            Server.#createServerButtons(stat_obj)
-        } else {
+        if (stat_obj["enabled"]) 
+            createServerButtons(stat_obj)
+        else
             $("#server_body").html("")
-        }
     }
     /*-------------------------------------------------------------------------------------------------------------
     -- create the color transfer methods based on the request sent to the python server
     -------------------------------------------------------------------------------------------------------------*/
-    static #createServerButtons(stat_obj) {
+    function createServerButtons(stat_obj) {
         $("#server_body").html("")
         for (let elem of stat_obj["data"]){
             var d = document.createElement('div');
@@ -78,69 +86,59 @@ class Server extends React.Component {
             $(d).addClass("tooltip server_item").attr("title", elem["address"] + ":" + elem["port"]).appendTo($("#server_body"))
 
             var d_icon = document.createElement('img');
-            if(elem["visibility"] == "public") {
-                $(d_icon).addClass("server_item_icon").attr("src", Images.icon_availability_yes).appendTo($(d))
-            } else {
-                $(d_icon).addClass("server_item_icon").attr("src", Images.icon_availability_no).appendTo($(d))
-            }
-            
+            if(elem["visibility"] == "public") 
+                $(d_icon).addClass("server_item_icon").attr("src", icon_availability_yes).appendTo($(d))
+            else
+                $(d_icon).addClass("server_item_icon").attr("src", icon_availability_no).appendTo($(d))
 
             var d_text = document.createElement('div');
             $(d_text).addClass("server_item_text").html(elem["name"]).appendTo($(d))
 
             $(d).on("click", function(){
-                var url = "http://" + elem["address"] + ":" + elem["port"] + "/"
-                Server.active_server = url
-                Server.#request_server_status(url)
-                Algorithms.request_available_methods(url)
-                Database.request_database_content(url)
-                Evaluation.request_available_metrics(url)
+                active_server = elem["protocol"] +"://" + elem["address"] + ":" + elem["port"]
+                request_server_status(active_server)
+                request_available_methods(active_server)
+                request_database_content(active_server)
+                request_available_metrics(active_server)
             });
         }
     }
 
     /*-------------------------------------------------------------------------------------------------------------
     ---------------------------------------------------------------------------------------------------------------
-    -- Mounting and Updating methods
+    -- STATES
     ---------------------------------------------------------------------------------------------------------------
     -------------------------------------------------------------------------------------------------------------*/
+    const [time, setTime] = useState(Date.now())
+    const didMount = useRef(false)
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            mounted: false
-        }
-    }
+    /*-------------------------------------------------------------------------------------------------------------
+    -- ...
+    -------------------------------------------------------------------------------------------------------------*/
+    useEffect(() => {
+        let interval = setInterval(() => setTime(Date.now()), 1000);
+        didMount.current = true
 
-    componentDidMount() {
-        this.interval = setInterval(() => this.setState({ time: Date.now() }), 1000);
-        this.state.mounted = true
-    }
-    componentWillUnmount() {
-        clearInterval(this.interval);
-    }
+        return () => {
+            clearInterval(interval);
+        };
+    }, []);
 
 
-    render() {
-        if(this.state.mounted == true){
-            Server.#request_available_servers()
-        }
-        console.log("FUUU")
-        return (
-        <div id="server_main">
-            <div id="server_header">
-                <img id='server_header_logo' src={Images.icon_server}/>
-                <div id='server_header_name'>{Texts.sidebar_server}</div>
-            </div>
-            <div id="server_body">
-                <div className="database_elem">
-                        <img className="database_elem_icon" src={Images.icon_database_elem} />
-                        <div className="database_elem_text">PLACEHOLDER</div>
-                </div>
-            </div>
+    if(didMount.current == true)
+        request_available_servers()
+
+    return (
+    <div id="server_main">
+        <div id="server_header">
+            <img id='server_header_logo' src={icon_server}/>
+            <div id='server_header_name'>{sidebar_server}</div>
         </div>
-        );
-    }
+        <div id="server_body">
+            <div className="database_elem"/>
+        </div>
+    </div>
+    );
 }
 
 export default Server;

@@ -7,11 +7,13 @@ This file is released under the "MIT License Agreement".
 Please see the LICENSE file that should have been included as part of this package.
 */
 import React from 'react';
-import './SideBarRight.scss';
+
 import Settings from './Settings'
 import Database from './Database'
 import Items from './Items'
 import Objects from './Objects'
+
+import './SideBarRight.scss';
 
 
 /* ----------------------------------------------------------------------------------------------------------------
@@ -19,22 +21,15 @@ import Objects from './Objects'
 -- 
 -------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------*/
-class SideBarRight extends React.Component {
-    constructor(props) {
-      super(props);
-      this.state = {render: true};
-    }
-
-    render() {
-        return (
-          <div id="SideBarRight_sidebarright">  
-              <Database/> 
-              <Items/> 
-              <Objects/> 
-              <Settings/>
-          </div>
-        );
-    }
+function SideBarRight(props) {
+    return (
+        <div id="SideBarRight_sidebarright">  
+            <Database/> 
+            <Items/> 
+            <Objects/> 
+            <Settings/>
+        </div>
+    );
   }
 
 export default SideBarRight;

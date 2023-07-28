@@ -1,4 +1,4 @@
-@import "constants/Sizes";
+@import 'settings/Global.scss';
 
 .server_info {
     color: green;
@@ -16,64 +16,6 @@
     color: purple;
 }
 
-table {
-    border-collapse: collapse;
-}
-table td {
-    border: 1px solid black; 
-    padding: 4px;
-}
-table tr {
-    border: 1px solid black; 
-    padding: 4px;
-}
-table tr:first-child td {
-    border-top: 0;
-}
-table tr td:first-child {
-    border-left: 0;
-}
-table tr:last-child td {
-    border-bottom: 0;
-}
-table tr td:last-child {
-    border-right: 0;
-}
-
-table th {
-    border: 1px solid black; 
-}
-table tr:first-child th {
-    border-top: 0;
-}
-table tr th:first-child {
-    border-left: 0;
-}
-table tr:last-child th {
-    border-bottom: 0;
-}
-table tr th:last-child {
-    border-right: 0;
-}
-
-/* Chrome, Safari, Edge, Opera */
-//input::-webkit-outer-spin-button,
-//input::-webkit-inner-spin-button {
-//  -webkit-appearance: none;
-//  margin: 0;
-//}
-
-/* Firefox */
-input[type=number] {
-  //-moz-appearance: textfield;
-  //margin: 0;
-  //padding: 0;
-  border: 0;
-}
-
-select {
-    border: 0;
-}
 
 #error_message {
     text-align: center;
@@ -84,4 +26,11 @@ select {
     height: calc(#{$window_height} - 106px);
     padding: 50px;
     border: 3px dashed #1c87c9;
+}
+
+#mainbody {
+    width: $window_width;
+    height: $window_height;
+    background-color: $grey;
+    color: $lightgrey;
 }

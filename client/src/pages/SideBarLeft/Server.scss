@@ -7,13 +7,12 @@ This file is released under the "MIT License Agreement".
 Please see the LICENSE file that should have been included as part of this package.
 */
 
-@import "constants/Sizes";
-@import "constants/Colors";
+@import 'settings/Global.scss';
 
 
 #server_main {
     position: absolute;
-    top: calc(#{$window_height} - #{$footer_height} - #{$header_height} - #{$sidebarleft_server_height});
+    top: calc(#{$window_height} - #{$footer_height} - #{$header_height} - #{$sidebarleft_server_height} + 50px);
     width: $sidebarright_element_innerwidth;
     margin: $box_margin;
     border: solid $darkgrey $box_border;

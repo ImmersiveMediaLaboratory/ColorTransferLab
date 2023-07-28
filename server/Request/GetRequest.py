@@ -8,6 +8,9 @@ Please see the LICENSE file that should have been included as part of this packa
 """
 
 import os
+import cv2
+import open3d as o3d
+import numpy as np
 
 from ColorTransferLib.ColorTransfer import ColorTransfer, ColorTransferEvaluation
 
@@ -40,7 +43,6 @@ class GetRequest():
         response["service"] = "available_methods"
         response["enabled"] = "true"
         response["data"] = ColorTransfer.get_available_methods()
-        print(response["data"])
         return response
 
     # ------------------------------------------------------------------------------------------------------------------
@@ -84,3 +86,8 @@ class GetRequest():
             arr.append(folder)
 
         get_directory_content(path, out, "root")
+
+
+# GetRequest.object_information("", "data/Images/PinkRose.jpg")
+# GetRequest.object_information("", "data/PointClouds/lamp.ply")
+# GetRequest.object_information("", "data/Meshes/GameBoy_medium/GameBoy_medium.obj")

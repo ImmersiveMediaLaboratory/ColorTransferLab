@@ -7,12 +7,23 @@ This file is released under the "MIT License Agreement".
 Please see the LICENSE file that should have been included as part of this package.
 */
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import './Body.scss';
 import Renderer from './Renderer';
+import ColorTheme from './ColorTheme';
+import PreviewBoard from './PreviewBoard';
 
 import Tabs from "../Tabs/Tabs";
-import './TabsRendererRef.scss';
+
+
+export let active_reference = "Single Input"
+
+export const setReferenceWindow = (tab) => {
+    if(tab == "Single Input" || tab == "Color Theme") {
+        active_reference = tab
+        console.log(active_reference)
+    }
+}
 
 
 /*-----------------------------------------------------------------------------------------------------------------
@@ -20,42 +31,49 @@ import './TabsRendererRef.scss';
 -- 
 -------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------*/
-class Body extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {render: true};
-  }
+function Body() {
 
-  render() {
+
+    // function observer_updateReferenceWindow(mutations) {
+    //     console.log("WWWW")
+    // }
+
+
+    // useEffect(() => {
+    //     // for(let i = 0; i < 10; i++){
+    //     //     createPreviewCard("http://10.90.37.213:8001/data/Images", "TheScream.jpg")
+    //     // }
+    //     let tab_window = document.getElementById("rendererref")
+    //     console.log(tab_window)
+    //     var observer = new MutationObserver(observer_updateReferenceWindow);
+    //     let options = {
+    //         attributes: true,
+    //         // attributeFilter: ["state"]
+    //     };
+    //     observer.observe(tab_window, options);
+    // }, []);
+
     return (
       <div id='Body_body'>
-        <Renderer id="renderer_src" title="Source"/>
+        <PreviewBoard id={"body_preview"}/>
+        <Renderer id="renderer_src" title="Source" window="src" objInfo={{}}/>
 
         <div id='rendererref_main'>
-            <Tabs id="rendererref">
+            <Tabs id="rendererref" >
                 <div label="Single Input" >
                     <div id="RendererRef_single_input">
-                        <Renderer id="renderer_ref" title="Reference"/>
+                        <Renderer id="renderer_ref" title="Reference" window="ref" objInfo={{}}/>
                     </div>
-                </div>
-                {/* <div label="Multi Input">
-                    <div id="RendererRef_test2">test2</div>
                 </div>
                 <div label="Color Theme">
-                    <div id="RendererRef_test3">test3</div>
-                </div> */}
-                <div label="Comparison">
-                    <div id="RendererRef_com">
-                        <Renderer id="renderer_com" title="Comparison"/>
-                    </div>
-                </div>
+                    <ColorTheme id="colortheme"/>
+                </div> 
             </Tabs>
         </div>
 
-        <Renderer id="renderer_out" title="Output" droppable={false}/>
+        <Renderer id="renderer_out" title="Output" window="out" droppable={false} objInfo={{}}/>
       </div>
     );
-  }
 }
 
 export default Body;

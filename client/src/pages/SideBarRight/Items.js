@@ -8,37 +8,47 @@ Please see the LICENSE file that should have been included as part of this packa
 */
 
 import React from 'react';
+import $ from 'jquery';
 import './Items.scss';
-import Images from "constants/Images"
-import Texts from 'constants/Texts';
-
+import { consolePrint } from 'pages/Console/Terminal';
 
 /*-----------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------------
 -- Contains the items which will be shown after clicking an element in the DATABASE window
 -------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------*/
-class Items extends React.Component {
-    constructor(props) {
-      super(props);
-    }
+function Items(props) {
+    const icon_items = "assets/icons/icon_frames_grey.png";
 
-    render() {
-        return (
-            <div id="items_main">
-                <div id="items_header">
-                    <img id='items_header_logo' src={Images.icon_items}/>
-                    <div id='items_header_name'>{Texts.sidebar_items}</div>
-                </div>
-                <div id="items_body">
-                <div className="items_elem">
-                        <img className="items_elem_icon" src={Images.icon_items_elem} />
-                        <div className="items_elem_text">PLACEHOLDER</div>
-                    </div>
+    const icon_preview_button = "assets/icons/icon_preview.png";
+    const sidebar_items = "ITEMS"
+
+    function showPreviews() {
+        // only show the preview field if items are in the items list
+        if($("#items_body").children().length == 0) {
+            consolePrint("WARNING", "Itemslist is empty ...")
+            return
+        }
+        
+        if($("#body_preview").css("visibility") == "hidden")
+            $("#body_preview").css("visibility", "visible")
+        else
+            $("#body_preview").css("visibility", "hidden")
+
+    }
+    
+    return (
+        <div id="items_main">
+            <div id="items_header">
+                <img id='items_header_logo' src={icon_items}/>
+                <div id='items_header_name'>{sidebar_items}</div>
+                <div className='items_preview_button' onClick={showPreviews}>
+                    <img className="items_preview_icon" src={icon_preview_button}/>
                 </div>
             </div>
-        );
-  }
-  }
+            <div id="items_body"/>
+        </div>
+    );
+}
 
 export default Items;

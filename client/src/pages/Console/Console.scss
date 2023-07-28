@@ -7,8 +7,7 @@ This file is released under the "MIT License Agreement".
 Please see the LICENSE file that should have been included as part of this package.
 */
 
-@import "constants/Colors";
-@import "constants/Sizes";
+@import 'settings/Global.scss';
 
 
 #console_main {
@@ -108,14 +107,49 @@ Please see the LICENSE file that should have been included as part of this packa
     filter: brightness(1.5);
 }
 
-#ref_histogram {
-    position: absolute;
-    $scrolloffset: 20px;
-    left: calc((#{$console_innerwidth} - 2 * 5px - #{$scrolloffset}) / 3 + 8px);
+.tab-list_console {  
+    margin: 0px;
+    padding: 0px;
+    background-color: $darkgrey;
+  }
+
+.tabs_console {
+    background-color: salmon;
+}
+  
+.tab-list-item_console {
+    display: inline-block;
+    list-style: none;
+    width: 120px;
+    height: 21px;
+    text-align: center;
+    padding-top: 4px;
+    font-family: "Arial", Helvetica, sans-serif;
+    color: $lightgrey;
 }
 
-#out_histogram {
-    position: absolute;
-    $scrolloffset: 20px;
-    left: calc(((#{$console_innerwidth} - 2 * 5px - #{$scrolloffset}) / 3 + 6px) * 2);
+.tab-list-active_console {
+    background-color: $grey;
 }
+
+.tab-content_console {
+    $padding: 5px;
+    position: absolute;
+    padding: $padding;
+    background-color: $grey;
+    width: calc(#{$console_innerwidth} - 2 * #{$padding});
+    height: calc(#{$console_innerheight} - 30px - 2 * #{$padding});
+    overflow-y: scroll;
+}
+
+// #Console_tab_console_ta{
+//     width: calc(100vw - 400px - 20px);
+//     height: 180px - 20px;
+// }
+
+// .Console_tab_console_content {
+//     width: $console_innerwidth;
+//     height: $console_innerheight;
+//     position: absolute;
+//     overflow-y: scroll;
+// }

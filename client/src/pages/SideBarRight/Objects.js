@@ -9,8 +9,6 @@ Please see the LICENSE file that should have been included as part of this packa
 
 import React from 'react';
 import './Objects.scss';
-import Images from "constants/Images"
-import Texts from 'constants/Texts';
 
 
 /*-----------------------------------------------------------------------------------------------------------------
@@ -18,28 +16,19 @@ import Texts from 'constants/Texts';
 -- Contains texts
 -------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------*/
-class Objects extends React.Component {
-    constructor(props) {
-      super(props);
-    }
+function Objects(props) {
+    const icon_objects = "assets/icons/icon_layer_grey.png";
+    const sidebar_objects = "OBJECTS"
 
-    render() {
-        return (
-
-            <div id="objects_main">
-                <div id="objects_header">
-                    <img id='objects_header_logo' src={Images.icon_objects}/>
-                    <div id='objects_header_name'>{Texts.sidebar_objects}</div>
-                </div>
-                <div id="objects_body">
-                    <div className="objects_elem">
-                            <img className="objects_elem_icon" src={Images.icon_objects_elem} />
-                            <div className="objects_elem_text">PLACEHOLDER</div>
-                    </div>
-                </div>
+    return (
+        <div id="objects_main">
+            <div id="objects_header">
+                <img id='objects_header_logo' src={icon_objects}/>
+                <div id='objects_header_name'>{sidebar_objects}</div>
             </div>
-        );
-  }
-  }
+            <div id="objects_body"/>
+        </div>
+    );
+}
 
 export default Objects;

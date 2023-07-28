@@ -12,6 +12,7 @@ function TriangleMesh (props){
 
     // var objd = useLoader(OBJLoader, process.env.PUBLIC_URL + '/' + props.file_name +'.obj')
     // var mtl = useLoader(MTLLoader, process.env.PUBLIC_URL + '/' + props.file_name +'.mtl')
+    console.log(props.file_name)
     var objd = useLoader(OBJLoader, props.file_name +'.obj')
     var mtl = useLoader(MTLLoader, props.file_name +'.mtl')
     mtl.preload()
@@ -19,6 +20,8 @@ function TriangleMesh (props){
 
 
     SystemConfiguration.mesh = objd.children[0]
+
+    console.log(objd.children[0])
 
 
     if(!Array.isArray(objd.children[0].material)) {

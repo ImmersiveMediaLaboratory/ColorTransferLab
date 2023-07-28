@@ -7,8 +7,7 @@ This file is released under the "MIT License Agreement".
 Please see the LICENSE file that should have been included as part of this package.
 */
 
-@import "constants/Sizes";
-@import "constants/Colors";
+@import 'settings/Global.scss';
 
 
 .renderer_title{
@@ -39,4 +38,104 @@ Please see the LICENSE file that should have been included as part of this packa
     width: 100%;
     height: 100%; 
     object-fit: contain;
+}
+
+#renderer_src {
+    background-color: $grey;
+}
+
+#renderer_ref {
+    background-color: blue; // not Working
+}
+
+#renderer_com {
+    background-color: blue; // not Working
+}
+
+#renderer_out {
+    background-color: $grey;
+}
+
+.renderer_mesh_texture_button {
+    position: absolute;
+    // background-color: blue;
+    width: 15px;
+    padding: 5px;
+    height: 15px;
+    z-index: 9998;
+    right: 0px;
+    // pointer-events:none;
+    // filter: grayscale(100%); 
+}
+
+.renderer_mesh_texture_button:hover {
+    filter: brightness(1.5);
+}
+
+.renderer_mesh_texture_icon {
+    height: 100%;
+}
+
+.renderer_info_button {
+    position: absolute;
+    // background-color: blue;
+    width: 15px;
+    padding: 5px;
+    height: 15px;
+    z-index: 9998;
+    right: 25px;
+    // pointer-events:none;
+    // filter: grayscale(100%); 
+}
+
+.renderer_info_button:hover {
+    filter: brightness(1.5);
+}
+
+.renderer_info_icon {
+    height: 100%;
+}
+
+.renderer_info_box{
+    padding: 5px;
+    position: absolute;
+    z-index: 9998;
+    background-color: $darkgrey;
+    opacity: 0.0;
+    height: 80px;
+    bottom: 0px;
+    width: calc(100% - 10px);
+    pointer-events: none;
+}
+
+.tab-list_rendererref { 
+    margin: 0px;
+    padding: 0px;
+  }
+
+.tabs_rendererref {
+    position: absolute;
+}
+  
+.tab-list-item_rendererref {
+    display: inline-block;
+    list-style: none;
+    background-color: $darkgrey;
+    width: calc(#{$renderer_innerwidth} / 4);
+    height: 21px;
+    text-align: center;
+    padding-top: 4px;
+    margin: 0px;
+    font-size: 11px;
+
+    color: $lightgrey;
+}
+
+.tab-list-active_rendererref {
+    background-color: $grey;
+}
+
+.tab-content_rendererref {
+    width: $renderer_innerwidth;
+    height: calc(#{$renderer_innerheight} - 25px);
 }

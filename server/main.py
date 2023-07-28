@@ -25,6 +25,7 @@ import numpy as np
 from numba import cuda
 import func_timeout
 from ColorTransferLib.MeshProcessing.PLYLoader import PLYLoader
+from ColorTransferLib.MeshProcessing.Mesh2 import Mesh2
 from ColorTransferLib.ImageProcessing.Image import Image
 from ColorTransferLib.ColorTransfer import ColorTransfer, ColorTransferEvaluation
 from Request.GetRequest import GetRequest
@@ -32,14 +33,9 @@ from Request.PostRequest import PostRequest
 import zipfile36 as zipfile
 import gdown
 import requests
+import ssl
 
-#init_path = "../../VSCodeProjects/color-transfer-tool/public/data"
 init_path = "data"
-PORT = 8001
-ADDRESS = "localhost"
-#ADDRESS = "192.168.178.37"
-#ADDRESS = "192.168.178.45"
-
 
 # ----------------------------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------------------
@@ -51,10 +47,12 @@ class MyServer(SimpleHTTPRequestHandler):
     # method description
     # ------------------------------------------------------------------------------------------------------------------
     def do_GET(self):
-        print("Receive...")
-        if self.path == "/server_status" or self.path == "/available_methods" or \
-           self.path == "/database" or self.path == "/available_metrics" or \
-           self.path == "/check_availability":
+        print("#################################################################")
+        print("# Receive...")
+        uri = self.path.split("?")
+        if uri[0] == "/server_status" or uri[0] == "/available_methods" or \
+           uri[0] == "/database" or uri[0] == "/available_metrics" or \
+           uri[0] == "/check_availability" or uri[0] == "/object_information":
 
             self.send_response(200)
             self.send_header("Content-type", "text/html")
@@ -67,16 +65,18 @@ class MyServer(SimpleHTTPRequestHandler):
             "data": None
         }
 
-        if self.path == "/server_status":
+        if uri[0] == "/server_status":
             response = GetRequest.server_status(self, response)
-        elif self.path == "/available_methods":
+        elif uri[0] == "/available_methods":
             response = GetRequest.available_methods(response)
-        elif self.path == "/available_metrics":
+        elif uri[0] == "/available_metrics":
             response = GetRequest.available_metrics(response)
-        elif self.path == "/database":
+        elif uri[0] == "/database":
             response = GetRequest.database(init_path, response)
-        elif self.path == "/check_availability":
+        elif uri[0] == "/check_availability":
             response = GetRequest.check_availability(init_path, response)
+        elif uri[0] == "/object_information":
+            response = GetRequest.object_information(response, uri[1])
         else:
             return SimpleHTTPRequestHandler.do_GET(self)
 
@@ -105,6 +105,7 @@ class MyServer(SimpleHTTPRequestHandler):
         self.send_response(200)
         self.send_header("Content-type", "text/html")
         self.send_header("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS")
+        self.send_header("keep-alive", "timeout=60, max=60")
         #self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With")
         #self.send_header('Access-Control-Allow-Origin', '*')
         self.end_headers()
@@ -126,6 +127,8 @@ class MyServer(SimpleHTTPRequestHandler):
             response = PostRequest.color_transfer(self, init_path, response)
         elif self.path == "/color_histogram":
             response = PostRequest.color_histogram(self, init_path, response)
+        elif self.path == "/color_distribution":
+            response = PostRequest.color_distribution(self, init_path, response)
         elif self.path == "/upload":
             """Handle a POST request."""
             PostRequest.upload(self)
@@ -153,20 +156,23 @@ class MyServer(SimpleHTTPRequestHandler):
         elif self.path == "/evaluation":
             obj = self.getJson()
 
-            folder_src, file_src = obj["source"].split(":")
+            file_src = obj["source"]
             _, extension_src = file_src.split(".")
-            src_path = init_path + folder_src + "/" + file_src
+            src_path = init_path + "/" + file_src
+            print(src_path)
             src_img = Image(file_path=src_path)
 
-            folder_ref, file_ref = obj["reference"].split(":")
+            file_ref = obj["reference"]
             _, extension_ref = file_ref.split(".")
-            ref_path = init_path + folder_ref + "/" + file_ref
+            ref_path = init_path + "/" + file_ref
             ref_img = Image(file_path=ref_path)
 
-            folder_out, file_out = obj["output"].split(":")
+            file_out = obj["output"]
             _, extension_out = file_out.split(".")
-            out_path = init_path + folder_out + "/" + file_out
+            out_path = init_path + "/" + file_out
             out_img = Image(file_path=out_path)
+
+
 
             # print(src_path)
             # print(ref_path)
@@ -194,6 +200,7 @@ class MyServer(SimpleHTTPRequestHandler):
             # get all metrics and add to response["data"]
             cte = ColorTransferEvaluation(src_img, ref_img, out_img)
             metrics = ColorTransferEvaluation.get_available_metrics()
+            #metrics = ["NIQE"]
             for mm in metrics:
                 print(mm)
                 evalval = cte.apply(mm)
@@ -205,24 +212,7 @@ class MyServer(SimpleHTTPRequestHandler):
             print(response)
 
         elif self.path == "/object_info":
-            obj = self.getJson()["object_path"]
-            extensions = obj.split(".")[-1]
-            if extensions == "ply":
-                loader_src = PLYLoader(obj)
-                src = loader_src.get_mesh()
-                voxelgrid = src.get_voxel_grid()
-            elif extensions == "png" or extensions == "jpg":
-                src = Image(file_path=obj)
-                voxelgrid = {"centers": np.empty([1]), "colors": np.empty([1]), "scale": 1}
-
-            response["service"] = "object_info"
-            response["enabled"] = "true"
-            response["data"] = {
-                "histogram": src.get_3D_color_histogram().tolist(),
-                "voxelgrid_centers": voxelgrid["centers"].tolist(),
-                "voxelgrid_colors": voxelgrid["colors"].tolist(),
-                "scale": voxelgrid["scale"]
-            }
+            response = PostRequest.object_info(self, init_path, response)
 
         print("\033[92m" + "Request fulfilled" + "\033[0m")
         self.wfile.write(bytes(str(response), "utf-8"))
@@ -253,25 +243,34 @@ class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
 # ------------------------------------------------------------------------------------------------------------------
 # method description
 # ------------------------------------------------------------------------------------------------------------------
-def run(server_address, server_port, server_class=HTTPServer, handler_class=BaseHTTPRequestHandler):
+def run(server_protocol, server_address, server_port, server_class=HTTPServer, handler_class=BaseHTTPRequestHandler):    
+    
+    context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+    context.load_cert_chain(certfile='../ressources/cert.pem', keyfile='../ressources/key.pem')
+    context.check_hostname = False
+
     url = (server_address, server_port)
     httpd = ThreadedHTTPServer(url, handler_class)
+    if server_protocol == "https":
+        httpd.socket = context.wrap_socket(httpd.socket, server_side=True)
     httpd.serve_forever()
 
 # ------------------------------------------------------------------------------------------------------------------
 # send the IP address and port to the proxy server
 # ------------------------------------------------------------------------------------------------------------------
-def sendServerInfo(proxy_address, proxy_port, ressource, server_name, my_address, my_port, server_visibility):
-    url = "http://" + proxy_address + ":" + str(proxy_port) + ressource
+def sendServerInfo(proxy_protocol, proxy_address, proxy_port, ressource, server_name, server_protocol, my_address, my_port, server_visibility):
+    url = proxy_protocol + "://" + proxy_address + ":" + str(proxy_port) + ressource
+    print(url)
     myobj = {
         "name": server_name,
+        "protocol": server_protocol,
         "address": my_address,
         "port": my_port,
         "visibility": server_visibility
     }
 
     try:
-        x = requests.post(url, json = myobj)
+        x = requests.post(url, json = myobj, verify=False)
     except:
         print("No connection to the proxy server can be established.")
         exit(1)
@@ -283,12 +282,14 @@ def read_settings(path):
     with open(path, 'r') as f:
         data = json.load(f)
         server_name = data["server"]["name"]
+        server_protocol = data["server"]["protocol"]
         server_address = data["server"]["address"]
         server_port = data["server"]["port"]
+        proxy_protocol = data["proxy"]["protocol"]
         proxy_address = data["proxy"]["address"]
         proxy_port = data["proxy"]["port"]
         server_visibility = data["server"]["visibility"]
-        return server_name, server_address, server_port, server_visibility, proxy_address, proxy_port
+        return server_name, server_protocol, server_address, server_port, server_visibility, proxy_protocol, proxy_address, proxy_port
 
 # ------------------------------------------------------------------------------------------------------------------
 # method description
@@ -308,14 +309,14 @@ def main():
         print("Delete DATA.zip ...")
         os.remove("DATA.zip")
 
-    server_name, server_address, server_port, server_visibility, proxy_address, proxy_port = read_settings("../ressources/settings.json")
+    server_name, server_protocol, server_address, server_port, server_visibility, proxy_protocol, proxy_address, proxy_port = read_settings("../ressources/settings.json")
     print("#################################################################")
-    print("# Server " + server_name + " is running on " + server_address + ":" + str(server_port) + " ...")
+    print("# Server " + server_name + " is running on " + server_protocol + "://" + server_address + ":" + str(server_port) + " ...")
     print("#################################################################")
 
-    sendServerInfo(proxy_address, proxy_port, "/ip_update", server_name, server_address, server_port, server_visibility)
+    sendServerInfo(proxy_protocol, proxy_address, proxy_port, "/ip_update", server_name, server_protocol, server_address, server_port, server_visibility)
            
-    run(server_address, server_port, handler_class=MyServer)
+    run(server_protocol, server_address, server_port, handler_class=MyServer)
 
 
 if __name__ == '__main__':

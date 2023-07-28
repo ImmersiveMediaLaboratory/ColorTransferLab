@@ -8,13 +8,12 @@ Please see the LICENSE file that should have been included as part of this packa
 */
 
 import React from 'react';
-import './TabsSideBarLeft.scss';
-import Tabs from "./../Tabs/Tabs";
-import './SideBarLeft.scss';
-import Images from 'constants/Images';
-import Texts from 'constants/Texts';
+
 import Algorithms from './Algorithms'
 import Server from './Server'
+
+// import './TabsSideBarLeft.scss';
+import './SideBarLeft.scss';
 
 /*-----------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------------
@@ -25,26 +24,16 @@ import Server from './Server'
 -- (4) Registration (currently unsupported)
 -------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------*/
-class SideBarLeft extends React.Component {
+function SideBarLeft(props) {
     /*-------------------------------------------------------------------------------------------------------------
     --
     -------------------------------------------------------------------------------------------------------------*/
-    constructor(props) {
-        super(props);
-        this.state = {render: true};
-    }
-
-    /*-------------------------------------------------------------------------------------------------------------
-    --
-    -------------------------------------------------------------------------------------------------------------*/
-    render() {
-        return (
-            <div id="SideBarLeft_sidebarleft">  
-                <Algorithms/> 
-                <Server/>
-            </div>
-        );
-    }
+    return (
+        <div id="SideBarLeft_sidebarleft">  
+            <Algorithms/> 
+            <Server/>
+        </div>
+    );
 }
 
 export default SideBarLeft;

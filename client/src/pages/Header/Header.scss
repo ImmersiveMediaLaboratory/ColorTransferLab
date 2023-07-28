@@ -7,7 +7,7 @@ This file is released under the "MIT License Agreement".
 Please see the LICENSE file that should have been included as part of this package.
 */
 
-@import "constants/Colors";
+@import 'settings/Global.scss';
 
 
 #Header_header {
@@ -25,6 +25,16 @@ Please see the LICENSE file that should have been included as part of this packa
 #Header_logo {
     position: absolute;
     height: 30px;
+}
+
+#Header_darkmode {
+    position: absolute;
+    margin-left: calc(100vw - 100px);
+    height: 30px;
+}
+
+#Header_darkmode:hover {
+    box-shadow:0px 0px 2px 0px cyan;
 }
 
 #Header_text {

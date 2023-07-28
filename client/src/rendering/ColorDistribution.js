@@ -47,7 +47,6 @@ function ColorDistribution(props) {
 
 
     var obj = useLoader(PLYLoader, props.file_path)
-
     let colors = new Float32Array(obj.attributes.color.array)
 
     if(props.from_image) {
@@ -62,7 +61,6 @@ function ColorDistribution(props) {
         const vv = new Float32Array(canvas.width * canvas.height * 3);
         const nn = new Float32Array(canvas.width * canvas.height * 3);
         const cc = new Float32Array(canvas.width * canvas.height * 3);
-
         var count = 0
         for(var i = 0; i < canvas.height; i++) 
         {
