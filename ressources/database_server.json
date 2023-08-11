@@ -1,1 +1,9 @@
-[]
+[
+    {
+        "name": "Test Server",
+        "protocol": "http",
+        "address": "10.90.37.213",
+        "port": 8001,
+        "visibility": "private"
+    }
+]

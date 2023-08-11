@@ -177,8 +177,6 @@ function Renderer(props) {
             if(file_exist) {
                 mode.current = "Mesh"
                 var filepath = pathjoin(active_server, "data", file_path, file_name)
-                console.log("Yogurette statt Zigarette")
-                console.log(filepath)
                 obj_path.current = pathjoin(file_path, file_name_with_ext)
                 object3D.current = <TriangleMesh key={Math.random()} file_name={filepath}></TriangleMesh>
                 changeRendering(object3D.current)

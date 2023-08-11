@@ -50,6 +50,8 @@ function ColorTheme(props) {
         // console.log(color_palette)
         $(cp_btn).html(colorpick.value)
         $(cp_btn).css("background-color", colorpick.value);
+        $(cp_btn).css("color", "#FFFFFF");
+        $(cp_btn).css("text-shadow", "0px 0px 5px #000000");
         $(colorpick).css("visibility", "hidden");
 
 

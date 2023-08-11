@@ -21,8 +21,8 @@ import {server_request} from 'utils/Utils'
 import './Server.scss';
 
 export let active_server = ""
-export let proxy_server = "http://192.168.178.37:8003"
-// export let proxy_server = "http://10.90.37.213:8003"
+//export let proxy_server = "http://192.168.178.37:8003"
+export let proxy_server = "http://10.90.37.213:8003"
 
 /*-----------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------------
