@@ -19,9 +19,7 @@ class ColorDistributionShader {
             vColor = color;
 
             vec3 pos = vec3(position.xyz);
-
-            vec4 re = vec4( mix( pow( vColor.rgb, vec3( 0.41666 ) ) * 1.055 - vec3( 0.055 ), vColor.rgb * 12.92, vec3( lessThanEqual( vColor.rgb, vec3( 0.0031308 ) ) ) ), 1.0 );
-            pos = vec3(re.rgb) * 4.0;
+            pos = vec3(pos.rgb) * 4.0;
 
             gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0 );
             gl_PointSize = pointsize;

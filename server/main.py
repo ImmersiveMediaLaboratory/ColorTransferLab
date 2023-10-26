@@ -22,7 +22,7 @@ import os
 import json
 import re
 import numpy as np
-from numba import cuda
+#from numba import cuda
 import func_timeout
 from ColorTransferLib.MeshProcessing.PLYLoader import PLYLoader
 from ColorTransferLib.MeshProcessing.Mesh2 import Mesh2
@@ -34,6 +34,8 @@ import zipfile36 as zipfile
 import gdown
 import requests
 import ssl
+
+import subprocess
 
 init_path = "data"
 
@@ -124,7 +126,34 @@ class MyServer(SimpleHTTPRequestHandler):
 
         # apply color transfer if this url is posted by user
         if self.path == "/color_transfer":
-            response = PostRequest.color_transfer(self, init_path, response)
+            #response = PostRequest.color_transfer(self.getJson(), init_path, response)
+
+            try:
+                manager = multiprocessing.Manager()
+                return_dict = manager.dict()
+                p = multiprocessing.Process(target=PostRequest.color_transfer, args=(self.getJson(), init_path, response, return_dict), daemon=True)
+                p.start()
+                p.join()
+                response = return_dict.values()[0]
+            except:
+                response
+
+            #print(response)
+
+            # python_bin = os.path.dirname(os.path.abspath(__file__)) + "/env/bin/python"
+            # # Path to the script that must run under the virtualenv
+            # script_file = "Request/ColorTransfer.py"
+            # script_args = [str(self.getJson()), "arg2_value"]
+            # p = subprocess.Popen([python_bin, script_file] + script_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            # stdout, stderr = p.communicate()
+
+            # # Den Rückgabewert ausgeben
+            # print("Standardausgabe:", stdout.decode())
+            # print("Fehlerausgabe:", stderr.decode())
+            # print("Rückgabewert:", p.returncode)
+
+
+
         elif self.path == "/color_histogram":
             response = PostRequest.color_histogram(self, init_path, response)
         elif self.path == "/color_distribution":
@@ -154,62 +183,18 @@ class MyServer(SimpleHTTPRequestHandler):
             # self.end_headers()
             # self.wfile.write(response_str.encode('utf-8'))
         elif self.path == "/evaluation":
-            obj = self.getJson()
+            #response = PostRequest.evaluation(self.getJson(), init_path, response)
 
-            file_src = obj["source"]
-            _, extension_src = file_src.split(".")
-            src_path = init_path + "/" + file_src
-            print(src_path)
-            src_img = Image(file_path=src_path)
+            try:
+                manager = multiprocessing.Manager()
+                return_dict = manager.dict()
+                p = multiprocessing.Process(target=PostRequest.evaluation, args=(self.getJson(), init_path, response, return_dict), daemon=True)
+                p.start()
+                p.join()
+                response = return_dict.values()[0]
+            except:
+                response
 
-            file_ref = obj["reference"]
-            _, extension_ref = file_ref.split(".")
-            ref_path = init_path + "/" + file_ref
-            ref_img = Image(file_path=ref_path)
-
-            file_out = obj["output"]
-            _, extension_out = file_out.split(".")
-            out_path = init_path + "/" + file_out
-            out_img = Image(file_path=out_path)
-
-
-
-            # print(src_path)
-            # print(ref_path)
-            # print(out_path)
-
-            #check the source and reference types
-            # if extension_com == "ply":
-            #     loader_src = PLYLoader(com_path)
-            #     src = loader_src.get_mesh()
-            # elif extension_com == "png" or extension_com == "jpg":
-            #     src = Image(file_path=com_path)
-
-            # if extension_out == "ply":
-            #     loader_ref = PLYLoader(out_path)
-            #     ref = loader_ref.get_mesh()
-            # elif extension_out == "png" or extension_out == "jpg":
-            #     ref = Image(file_path=out_path)
-
-
-
-            response["service"] = "evaluation"
-            response["enabled"] = "true"
-            response["data"] = {}
-
-            # get all metrics and add to response["data"]
-            cte = ColorTransferEvaluation(src_img, ref_img, out_img)
-            metrics = ColorTransferEvaluation.get_available_metrics()
-            #metrics = ["NIQE"]
-            for mm in metrics:
-                print(mm)
-                evalval = cte.apply(mm)
-                if np.isinf(evalval) or np.isnan(evalval):
-                    response["data"][mm] = 99999
-                else:
-                    response["data"][mm] = evalval
-                print(response["data"][mm])
-            print(response)
 
         elif self.path == "/object_info":
             response = PostRequest.object_info(self, init_path, response)
@@ -246,7 +231,8 @@ class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
 def run(server_protocol, server_address, server_port, server_class=HTTPServer, handler_class=BaseHTTPRequestHandler):    
     
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-    context.load_cert_chain(certfile='../ressources/cert.pem', keyfile='../ressources/key.pem')
+    context.load_verify_locations('../ressources/babblingbird/ca_bundle.crt')
+    context.load_cert_chain(certfile='../ressources/babblingbird/certificate.crt', keyfile='../ressources/babblingbird/private.key')
     context.check_hostname = False
 
     url = (server_address, server_port)
@@ -270,7 +256,7 @@ def sendServerInfo(proxy_protocol, proxy_address, proxy_port, ressource, server_
     }
 
     try:
-        x = requests.post(url, json = myobj, verify=False)
+        x = requests.post(url, json = myobj, verify=True)
     except:
         print("No connection to the proxy server can be established.")
         exit(1)
@@ -285,36 +271,42 @@ def read_settings(path):
         server_protocol = data["server"]["protocol"]
         server_address = data["server"]["address"]
         server_port = data["server"]["port"]
+        server_wan = data["server"]["wan"]
         proxy_protocol = data["proxy"]["protocol"]
         proxy_address = data["proxy"]["address"]
+        proxy_wan = data["proxy"]["wan"]
         proxy_port = data["proxy"]["port"]
         server_visibility = data["server"]["visibility"]
-        return server_name, server_protocol, server_address, server_port, server_visibility, proxy_protocol, proxy_address, proxy_port
+        return server_name, server_protocol, server_address, server_port, server_wan, server_visibility, proxy_protocol, proxy_address, proxy_port, proxy_wan
 
 # ------------------------------------------------------------------------------------------------------------------
 # method description
 # ------------------------------------------------------------------------------------------------------------------
 def main():
     # download Models folder
-    if not os.path.exists("Models") and not os.path.exists("data"):
-        print("Download DATA.zip ...")
-        url = "https://drive.google.com/file/d/1TuWldLgf00A5tcLdftTy2g-XDdSXBFuG/view?usp=share_link"
-        output_path = 'DATA.zip'
-        gdown.download(url, output_path, quiet=False, fuzzy=True)
-        # Extract DATA.zip
-        print("Extract DATA.zip ...")
-        with zipfile.ZipFile("DATA.zip","r") as zip_ref:
-            zip_ref.extractall()
-        # Delete DATA.zip
-        print("Delete DATA.zip ...")
-        os.remove("DATA.zip")
+    # if not os.path.exists("Models") and not os.path.exists("data"):
+    #     print("Download DATA.zip ...")
+    #     url = "https://drive.google.com/file/d/1TuWldLgf00A5tcLdftTy2g-XDdSXBFuG/view?usp=share_link"
+    #     output_path = 'DATA.zip'
+    #     gdown.download(url, output_path, quiet=False, fuzzy=True)
+    #     # Extract DATA.zip
+    #     print("Extract DATA.zip ...")
+    #     with zipfile.ZipFile("DATA.zip","r") as zip_ref:
+    #         zip_ref.extractall()
+    #     # Delete DATA.zip
+    #     print("Delete DATA.zip ...")
+    #     os.remove("DATA.zip")
 
-    server_name, server_protocol, server_address, server_port, server_visibility, proxy_protocol, proxy_address, proxy_port = read_settings("../ressources/settings.json")
+
+    #os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+    multiprocessing.set_start_method('spawn')
+
+    server_name, server_protocol, server_address, server_port, server_wan, server_visibility, proxy_protocol, proxy_address, proxy_port, proxy_wan = read_settings("../ressources/settings/settings.json")
     print("#################################################################")
     print("# Server " + server_name + " is running on " + server_protocol + "://" + server_address + ":" + str(server_port) + " ...")
     print("#################################################################")
 
-    sendServerInfo(proxy_protocol, proxy_address, proxy_port, "/ip_update", server_name, server_protocol, server_address, server_port, server_visibility)
+    sendServerInfo(proxy_protocol, proxy_wan, proxy_port, "/ip_update", server_name, server_protocol, server_wan, server_port, server_visibility)
            
     run(server_protocol, server_address, server_port, handler_class=MyServer)
 

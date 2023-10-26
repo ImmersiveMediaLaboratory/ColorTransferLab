@@ -8,8 +8,8 @@ Please see the LICENSE file that should have been included as part of this packa
 """
 
 # Note: Tensorflow has to be imported before everything else otherwise a CUBLAS error appears
-import tensorflow as tf
-tf.compat.v1.disable_eager_execution()
+#import tensorflow as tf
+#tf.compat.v1.disable_eager_execution()
 #config = tf.compat.v1.ConfigProto()
 #config.gpu_options.allow_growth = True
 #session = tf.compat.v1.Session(config=config)
@@ -22,9 +22,9 @@ from http.server import BaseHTTPRequestHandler, HTTPServer, SimpleHTTPRequestHan
 import os
 import json
 import re
-import numpy as np
-from numba import cuda
-import func_timeout
+#import numpy as np
+#from numba import cuda
+#import func_timeout
 import atexit
 import requests
 
@@ -51,7 +51,7 @@ class MyServer(SimpleHTTPRequestHandler):
             self.send_header("Content-type", "text/html")
             self.end_headers()
 
-            with open("../ressources/database_server.json", 'r') as f:
+            with open("../ressources/settings/database_server.json", 'r') as f:
                 data = json.load(f)
 
             if len(data) == 0:
@@ -137,7 +137,8 @@ class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
 # ------------------------------------------------------------------------------------------------------------------
 def run(protocol, address, port, handler_class=BaseHTTPRequestHandler):
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-    context.load_cert_chain(certfile='../ressources/cert.pem', keyfile='../ressources/key.pem')
+    context.load_verify_locations('../ressources/security/ca_bundle.crt')
+    context.load_cert_chain(certfile='../ressources/security/certificate.crt', keyfile='../ressources/security/private.key')
     context.check_hostname = False
 
 
@@ -165,7 +166,7 @@ def check_servers():
     while(True):
         sleep(1)
         data_update = []
-        with open("../ressources/database_server.json", 'r') as f:
+        with open("../ressources/settings/database_server.json", 'r') as f:
             data = json.load(f)
             #print(data)
             for elem in data:
@@ -185,7 +186,7 @@ def check_servers():
                     print(data_update)
 
 
-        with open("../ressources/database_server.json", 'w') as f:
+        with open("../ressources/settings/database_server.json", 'w') as f:
             json_object = json.dumps(data_update, indent=4)
             f.write(json_object)
 
@@ -194,7 +195,7 @@ def check_servers():
 # write incomming server addresses into database file
 # ------------------------------------------------------------------------------------------------------------------
 def write_address_to_db(name, protocol, address, port, visibility):
-    with open("../ressources/database_server.json", 'r+') as f:
+    with open("../ressources/settings/database_server.json", 'r+') as f:
         data = json.load(f)
 
         dictionary = {
@@ -219,7 +220,7 @@ def exit_handler():
     print("#################################################################")
     print("# Proxy is ending ...")
     print("#################################################################")
-    with open("../ressources/database_server.json", 'w') as f:
+    with open("../ressources/settings/database_server.json", 'w') as f:
         f.write("[]")
 
 # ------------------------------------------------------------------------------------------------------------------
@@ -231,7 +232,7 @@ def main():
 
     atexit.register(exit_handler)
 
-    protocol, address, port = read_settings("../ressources/settings.json")    
+    protocol, address, port = read_settings("../ressources/settings/settings.json")    
     print("#################################################################")
     print("# Proxy is running on " + protocol + "://" +  address + ":" + str(port) + " ...")
     print("#################################################################")

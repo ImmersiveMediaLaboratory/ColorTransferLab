@@ -151,8 +151,6 @@ function Console(props) {
             ref_val = execution_params_objects["ref"]
         else if(active_reference == "Color Theme")
             ref_val = color_palette
-        console.log("REF VAL")
-        console.log(ref_val)
 
         // check if source object, reference object and approach are selected
         console.log(execution_params_objects)

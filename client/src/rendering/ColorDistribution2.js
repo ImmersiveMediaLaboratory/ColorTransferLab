@@ -44,46 +44,7 @@ function ColorDistribution2(props) {
     })
 
 
-    // var obj = useLoader(PLYLoader, props.file_path)
-    // let colors = new Float32Array(obj.attributes.color.array)
-
-    // if(props.from_image) {
-    //     var canvas = document.createElement('canvas');
-    //     // TODO: Number of vertices in 3D histogram has to be scaled properly 
-    //     canvas.width = props.image.width / 2
-    //     canvas.height = props.image.height / 2
-    //     // {willReadFrequently:true} removes the warning "Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true."
-    //     var context = canvas.getContext('2d', {willReadFrequently:true});
-    //     context.drawImage(props.image, 0, 0);
-
-    //     // const vv = new Float32Array(canvas.width * canvas.height * 3);
-    //     // const nn = new Float32Array(canvas.width * canvas.height * 3);
-    //     const cc = new Float32Array(canvas.width * canvas.height * 3);
-    //     var count = 0
-    //     for(var i = 0; i < canvas.height; i++) 
-    //     {
-    //         for(var j = 0; j < canvas.width; j++) 
-    //         {
-    //             var pxData = context.getImageData(j, i, 2, 2).data
-    //             // vv[count] = pxData[0] / 255.0
-    //             // vv[count+1] = pxData[1]/ 255.0
-    //             // vv[count+2] = pxData[2]/ 255.0
-
-    //             // nn[count] = 1.0
-    //             // nn[count+1] = 0.0
-    //             // nn[count+2] = 0.0
-
-    //             cc[count] = pxData[0] / 255.0
-    //             cc[count+1] = pxData[1]/ 255.0
-    //             cc[count+2] = pxData[2]/ 255.0
-    //             count += 3
-    //         }
-    //     }
-
-    //     obj.setAttribute( 'color', new THREE.BufferAttribute( cc, 3 ) );
     let colors = new Float32Array(props.dist_vals)
-    // }
-
 
     return(
         <points key={Math.random} ref={ref}>

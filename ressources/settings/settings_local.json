@@ -1,18 +1,20 @@
 {
 	"ui" : {
 		"protocol": "http",
-        "address": "10.90.37.213",
+        "address": "192.168.178.49",
 		"port": 8003
 	},
 	"proxy" : {
 		"protocol": "http",
-        "address": "10.90.37.213",
-		"port": 8003
+        "address": "192.168.178.49",
+        "wan": "192.168.178.49",
+		"port": 8002
 	},
 	"server" : {
 		"name": "Test Server",
 		"protocol": "http",
-        "address": "10.90.37.213",
+        "address": "192.168.178.49",
+        "wan": "192.168.178.49",
 		"port": 8001,
 		"visibility": "private"
 	}

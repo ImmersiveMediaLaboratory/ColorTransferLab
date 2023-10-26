@@ -49,57 +49,63 @@ export const evalPrint = () => {
                     var stat_obj = JSON.parse(stat);
                     var eval_values = stat_obj["data"]
                     console.log("EVAL")
-                    console.log(eval_values)
+                    console.log(stat_obj)
 
-                    // init evaluation
-                    var console_eval = document.getElementById("Console_tab_console_evaluation")
-                    console_eval.innerHTML = ""
+                    if(stat_obj["enabled"] == "false")
+                    {
+                        consolePrint("ERROR", "Evaluation only for images available...")
+                    }
+                    else 
+                    {
+                        // init evaluation
+                        var console_eval = document.getElementById("Console_tab_console_evaluation")
+                        console_eval.innerHTML = ""
 
-                    const tbl = document.createElement("table");
-                    const tblBody = document.createElement("tbody");
+                        const tbl = document.createElement("table");
+                        const tblBody = document.createElement("tbody");
 
-                    // create table header
-                    const cell = document.createElement("th");
-                    const cellText = document.createTextNode("Metric")
-                    cell.appendChild(cellText);
-                    const cell2 = document.createElement("th");
-                    const cellText2 = document.createTextNode("Value")
-                    cell2.appendChild(cellText2);
-
-                    const row = document.createElement("tr");
-                    row.appendChild(cell);
-                    row.appendChild(cell2);
-                    tblBody.appendChild(row)
-
-                    for(let j = 0; j < available_metrics.length; j++) {
-                        const cell = document.createElement("td");
-                        const cellText = document.createTextNode(available_metrics[j])
+                        // create table header
+                        const cell = document.createElement("th");
+                        const cellText = document.createTextNode("Metric")
                         cell.appendChild(cellText);
-
-                        const cell2 = document.createElement("td");
-                        let cellText2
-                        let eval_result
-                        if (typeof eval_values[available_metrics[j]] !== 'undefined')
-                            eval_result = eval_values[available_metrics[j]]
-                        else
-                            eval_result = -1
-                        cellText2 = document.createTextNode(eval_result)
-                        evaluation_results[available_metrics[j]] = eval_result
-
+                        const cell2 = document.createElement("th");
+                        const cellText2 = document.createTextNode("Value")
                         cell2.appendChild(cellText2);
 
                         const row = document.createElement("tr");
                         row.appendChild(cell);
                         row.appendChild(cell2);
                         tblBody.appendChild(row)
+
+                        for(let j = 0; j < available_metrics.length; j++) {
+                            const cell = document.createElement("td");
+                            const cellText = document.createTextNode(available_metrics[j])
+                            cell.appendChild(cellText);
+
+                            const cell2 = document.createElement("td");
+                            let cellText2
+                            let eval_result
+                            if (typeof eval_values[available_metrics[j]] !== 'undefined')
+                                eval_result = eval_values[available_metrics[j]]
+                            else
+                                eval_result = -1
+                            cellText2 = document.createTextNode(eval_result)
+                            evaluation_results[available_metrics[j]] = eval_result
+
+                            cell2.appendChild(cellText2);
+
+                            const row = document.createElement("tr");
+                            row.appendChild(cell);
+                            row.appendChild(cell2);
+                            tblBody.appendChild(row)
+                        }
+
+                        tbl.appendChild(tblBody);
+                        tbl.setAttribute("tableLayout", "auto");
+                        tbl.setAttribute("width", "100%");
+                        console_eval.append(tbl)
+                        consolePrint("INFO", "Evaluation done...")
                     }
-
-                    tbl.appendChild(tblBody);
-                    tbl.setAttribute("tableLayout", "auto");
-                    tbl.setAttribute("width", "100%");
-                    console_eval.append(tbl)
-
-                    consolePrint("INFO", "Evaluation done...")
                 
                 } else {
                     console.error(xmlHttp.statusText);

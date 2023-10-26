@@ -37,13 +37,15 @@ Please see the LICENSE file that should have been included as part of this packa
     position: absolute;
     height: 30px;
     text-align: center;
+    font-size: 10px;
     width: 100%;
     top: 120px;
     background-color: $lightgrey;
 }
 
 .preview_img {
-    // position: absolute;
-    // width: 100%;
-    height: calc(100% - 30px);
+    max-width:200px;
+    max-height:120px;
+    width: auto;
+    height: auto;
 }

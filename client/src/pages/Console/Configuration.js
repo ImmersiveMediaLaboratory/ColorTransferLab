@@ -12,7 +12,7 @@ import $ from 'jquery'
 
 import './Configuration.scss';
 import 'settings/Global.scss'
-
+import {execution_approach} from 'pages/SideBarLeft/Algorithms'
 
 export const execution_params_options = []
 
@@ -55,11 +55,17 @@ export const setConfiguration = (param) => {
 
             function set_option(event, num, type) {
                 if(type == "int" || type == "float")
-                    execution_params_options[num]["default"] = Number(event.currentTarget.value)
+                    execution_approach["options"][num]["default"] = Number(event.currentTarget.value)
                 else if(type == "bool")
-                    execution_params_options[num]["default"] = (event.currentTarget.value === "true")
+                    execution_approach["options"][num]["default"] = (event.currentTarget.value === "true")
                 else
-                    execution_params_options[num]["default"] = event.currentTarget.value
+                    execution_approach["options"][num]["default"] = event.currentTarget.value
+                // if(type == "int" || type == "float")
+                //     execution_params_options[num]["default"] = Number(event.currentTarget.value)
+                // else if(type == "bool")
+                //     execution_params_options[num]["default"] = (event.currentTarget.value === "true")
+                // else
+                //     execution_params_options[num]["default"] = event.currentTarget.value
             }
 
             if (optionsVal[j] == "default") {
