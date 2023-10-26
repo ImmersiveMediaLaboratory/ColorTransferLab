@@ -21,8 +21,8 @@ import {server_request} from 'utils/Utils'
 import './Server.scss';
 
 export let active_server = ""
-//export let proxy_server = "http://192.168.178.37:8003"
-export let proxy_server = "http://10.90.37.213:8003"
+export let proxy_server = "http://192.168.178.49:8002"
+//export let proxy_server = "https://arctic.vision"
 
 /*-----------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------------
@@ -33,6 +33,8 @@ function Server(props) {
     const icon_availability_no = "assets/icons/icon_availability_no.png";
     const icon_availability_yes = "assets/icons/icon_availability_yes.png";
     const icon_server = "assets/icons/icon_server_grey.png";
+
+    const icon_server_request_button = "assets/icons/icon_export_metric.png";
 
     const sidebar_server = "SERVER"
 
@@ -89,7 +91,7 @@ function Server(props) {
             if(elem["visibility"] == "public") 
                 $(d_icon).addClass("server_item_icon").attr("src", icon_availability_yes).appendTo($(d))
             else
-                $(d_icon).addClass("server_item_icon").attr("src", icon_availability_no).appendTo($(d))
+                $(d_icon).addClass("server_item_icon").attr("src", icon_availability_yes).appendTo($(d))
 
             var d_text = document.createElement('div');
             $(d_text).addClass("server_item_text").html(elem["name"]).appendTo($(d))
@@ -109,24 +111,31 @@ function Server(props) {
     -- STATES
     ---------------------------------------------------------------------------------------------------------------
     -------------------------------------------------------------------------------------------------------------*/
-    const [time, setTime] = useState(Date.now())
+    // const [time, setTime] = useState(Date.now())
     const didMount = useRef(false)
 
     /*-------------------------------------------------------------------------------------------------------------
     -- ...
     -------------------------------------------------------------------------------------------------------------*/
-    useEffect(() => {
-        let interval = setInterval(() => setTime(Date.now()), 1000);
-        didMount.current = true
+    // useEffect(() => {
+    //     let interval = setInterval(() => setTime(Date.now()), 1000);
+    //     didMount.current = true
 
-        return () => {
-            clearInterval(interval);
-        };
-    }, []);
+    //     return () => {
+    //         clearInterval(interval);
+    //     };
+    // }, []);
 
 
-    if(didMount.current == true)
+    // if(didMount.current == true)
+    //     request_available_servers()
+
+    /*---------------------------------------------------------------------------------------------------------------
+    -- ...
+    ---------------------------------------------------------------------------------------------------------------*/
+    function handleRequestServers() {
         request_available_servers()
+    }
 
     return (
     <div id="server_main">
@@ -136,6 +145,9 @@ function Server(props) {
         </div>
         <div id="server_body">
             <div className="database_elem"/>
+        </div>
+        <div id="server_request_button">
+            <img id="server_request_button_logo" onClick={handleRequestServers} src={icon_server_request_button} title={"Checks for new available servers."}/>
         </div>
     </div>
     );

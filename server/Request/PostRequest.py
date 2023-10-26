@@ -15,26 +15,98 @@ import numpy as np
 import cv2
 import open3d as o3d
 from zipfile import ZipFile
+import gc
+import torch
+import multiprocessing
 
-from ColorTransferLib.ColorTransfer import ColorTransfer
+from ColorTransferLib.ColorTransfer import ColorTransfer, ColorTransferEvaluation
 from ColorTransferLib.MeshProcessing.PLYLoader import PLYLoader
 from ColorTransferLib.MeshProcessing.Mesh2 import Mesh2
 from ColorTransferLib.ImageProcessing.Image import Image
+
+import subprocess
 
 class PostRequest():
     # ------------------------------------------------------------------------------------------------------------------
     # 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
-    def color_transfer(server, init_path, response):
-        export_type = ""
-        obj = server.getJson()
+    def evaluation(obj, init_path, response, return_dict):
+        file_src = obj["source"]
+        _, extension_src = file_src.split(".")
+        src_path = init_path + "/" + file_src
 
-        # folder_src, file_src = obj["source"].split(":")
-        # folder_ref, file_ref = obj["reference"].split(":")
-        # _, extension_src = file_src.split(".")
-        # _, extension_ref = file_ref.split(".")
-        # approach = obj["approach"]
+        file_ref = obj["reference"]
+        _, extension_ref = file_ref.split(".")
+        ref_path = init_path + "/" + file_ref
+
+        file_out = obj["output"]
+        _, extension_out = file_out.split(".")
+        out_path = init_path + "/" + file_out
+
+
+
+        # print(src_path)
+        # print(ref_path)
+        # print(out_path)
+
+        #check the source and reference types
+        # if extension_com == "ply":
+        #     loader_src = PLYLoader(com_path)
+        #     src = loader_src.get_mesh()
+        # elif extension_com == "png" or extension_com == "jpg":
+        #     src = Image(file_path=com_path)
+
+        # if extension_out == "ply":
+        #     loader_ref = PLYLoader(out_path)
+        #     ref = loader_ref.get_mesh()
+        # elif extension_out == "png" or extension_out == "jpg":
+        #     ref = Image(file_path=out_path)
+
+
+
+        response["service"] = "evaluation"
+        response["enabled"] = "true"
+        response["data"] = {}
+
+
+        # Evaluation only for images
+        if (extension_out == "jpg" or extension_out == "png") and (extension_ref == "jpg" or extension_ref == "png") and (extension_src == "jpg" or extension_src == "png"):
+            src_img = Image(file_path=src_path)
+            ref_img = Image(file_path=ref_path)
+            out_img = Image(file_path=out_path)
+
+
+            # get all metrics and add to response["data"]
+            cte = ColorTransferEvaluation(src_img, ref_img, out_img)
+            metrics = ColorTransferEvaluation.get_available_metrics()
+            #metrics = ["NIQE"]
+            for mm in metrics:
+                print(mm)
+                evalval = cte.apply(mm)
+                if np.isinf(evalval) or np.isnan(evalval):
+                    response["data"][mm] = 99999
+                else:
+                    response["data"][mm] = evalval
+                print(response["data"][mm])
+            print(response)
+        else:
+            response["enabled"] = "false"
+
+        return_dict[0] = response
+        #return response
+    # ------------------------------------------------------------------------------------------------------------------
+    # 
+    # ------------------------------------------------------------------------------------------------------------------
+    @staticmethod
+    def evaluation_subprocess(obj, init_path, response):
+        pass
+    # ------------------------------------------------------------------------------------------------------------------
+    # 
+    # ------------------------------------------------------------------------------------------------------------------
+    @staticmethod
+    def color_transfer(obj, init_path, response, return_dict):
+        export_type = ""
 
         file_src = obj["source"]
         file_ref = obj["reference"]
@@ -50,16 +122,7 @@ class PostRequest():
         else:
             extension_ref = "palette"
 
-
-
-        print(file_src)
-        print(approach)
-        print(extension_src)
-        print(extension_ref)
-
         src_path = init_path + "/" + file_src
-
-
 
         # check file extension
         file_src_path_no_ext, file_ext = src_path.split(".")
@@ -96,13 +159,10 @@ class PostRequest():
             image_path = fp_no_ext + ".png"
             material_path = fp_no_ext + ".mtl"
             if os.path.isfile(image_path) and os.path.isfile(material_path):
-                # src = Image(file_path=image_path)
                 src = Mesh2(file_path=file_path, datatype="Mesh")
                 extension_out = "obj"
                 export_type = "Mesh"
             else:
-                # loader_src = PLYLoader(file_path)
-                # src = loader_src.get_mesh()
                 src = Mesh2(file_path=file_path, datatype="PointCloud")
                 extension_out = "ply"
                 export_type = "PointCloud"
@@ -116,24 +176,32 @@ class PostRequest():
             image_path = fp_no_ext + ".png"
             material_path = fp_no_ext + ".mtl"
             if os.path.isfile(image_path) and os.path.isfile(material_path):
-                # ref = Image(file_path=image_path)
                 ref = Mesh2(file_path=file_path, datatype="Mesh")
             else:
-                # loader_src = PLYLoader(file_path)
-                # ref = loader_src.get_mesh()
                 ref = Mesh2(file_path=file_path, datatype="PointCloud")
 
 
         ct = ColorTransfer(src, ref, approach)
         ct.set_options(obj["options"])
-        # output = ct.apply()
+
 
 
         response["service"] = "color_transfer"
 
         try:
             response["enabled"] = "true"
-            output = func_timeout.func_timeout(60, ct.apply, args=(), kwargs=None)
+
+            output = func_timeout.func_timeout(240, ct.apply, args=(), kwargs=None)
+            #output = ct.apply()
+
+            print(output)
+            if output["status_code"] == -1:
+                response["enabled"] = "false"
+                response["data"]["message"] = output["response"]
+                return_dict[0] = response
+                return
+
+
             print(extension_out)
             if export_type == "PointCloud":
                 print("Write PointCloud:")
@@ -146,7 +214,7 @@ class PostRequest():
                 print("Write File:")
                 output_folder, out_filename = file_out.split("/")
                 print(init_path + "/" + file_out + ".obj")
-                path = init_path + "/" + output_folder + "/" "$mesh$" + out_filename#os.path.join(init_path, "$mesh$" + file_out)
+                path = init_path + "/" + output_folder + "/" "$mesh$" + out_filename
                 os.mkdir(path)
                 # out_loader = PLYLoader(mesh=output["object"])
                 out_loader = output["object"]
@@ -157,33 +225,13 @@ class PostRequest():
                 print(init_path + "/" + file_out + ".png")
                 output["object"].write(init_path + "/" + file_out + ".png")
                 response["data"]["extension"] = "png"
-                # response["data"]["histogram"] = output.get_color_statistic()[0].tolist()
-                # response["data"]["mean"] = output.get_color_statistic()[1].tolist()
-                # response["data"]["std"] = output.get_color_statistic()[2].tolist()
         except func_timeout.FunctionTimedOut:
             response["enabled"] = "false"
-            response["data"]["message"] = "Algorithms takes longer than 1 minute. Change the Configuration parameters to reduce execution time."
+            response["data"]["message"] = "Algorithms takes longer than 4 minute. Change the Configuration parameters to reduce execution time."
             print("\033[92m" + "Request fulfilled" + "\033[0m")
 
-
-        # check the source and reference types
-        # if extension_src == "ply":
-        #     loader_src = PLYLoader(src_path)
-        #     src = loader_src.get_mesh()
-        # elif extension_src == "png" or extension_src == "jpg":
-        #     src = Image(file_path=src_path)
-
-        # if extension_ref == "ply":
-        #     loader_ref = PLYLoader(ref_path)
-        #     ref = loader_ref.get_mesh()
-        # elif extension_ref == "png" or extension_ref == "jpg":
-        #     ref = Image(file_path=ref_path)
-
-        # ct = ColorTransfer(src, ref, obj["approach"])
-        # ct.set_options(obj["options"]
-        # #output = ct.apply(approach)
-
-        return response
+        return_dict[0] = response
+        #return response
 
     # ------------------------------------------------------------------------------------------------------------------
     # 
@@ -281,7 +329,8 @@ class PostRequest():
             "vertexnormals": -1,        # only pointclouds and meshes
         }
 
-        obj = server.getJson()["object_path"]
+        json_obj = server.getJson()
+        obj = json_obj["object_path"]
 
         # check file extension
         file_path_no_ext, file_ext = obj.split(".")
@@ -322,6 +371,8 @@ class PostRequest():
                 # sent_data["trianglenormals"] = "yes" if np.asarray(mesh.triangle_normals).shape[0] != 0 else "no"
        
             else:
+
+                print("HERE I AM")
                 mesh = Mesh2(file_path=file_path, datatype="PointCloud")
                 sent_data["num_vertices"] = mesh.get_num_vertices()
                 sent_data["vertexcolors"] = "yes" if mesh.has_vertex_colors() else "no"
@@ -334,10 +385,11 @@ class PostRequest():
                 # sent_data["vertexcolors"] = "yes" if np.asarray(pcd.colors).shape[0] != 0 else "no"
                 # sent_data["vertexnormals"] = "yes" if np.asarray(pcd.normals).shape[0] != 0 else "no"
 
-                # voxelgrid = src.get_voxel_grid()
-                # sent_data["voxelgrid_centers"] = voxelgrid["centers"].tolist()
-                # sent_data["voxelgrid_colors"] = voxelgrid["colors"].tolist()
-                # sent_data["scale"] = voxelgrid["scale"]
+                voxel_level = json_obj["voxel_level"]
+                voxelgrid = mesh.get_voxel_grid(voxel_level)
+                sent_data["voxelgrid_centers"] = voxelgrid["centers"].tolist()
+                sent_data["voxelgrid_colors"] = voxelgrid["colors"].tolist()
+                sent_data["scale"] = voxelgrid["scale"]
         else:
             data = "FUUHII"
 

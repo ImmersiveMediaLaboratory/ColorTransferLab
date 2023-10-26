@@ -52,7 +52,18 @@ export const server_post_request = (address, path, data, method, parameters) => 
         const xmlHttp = new XMLHttpRequest();
         const theUrl = pathjoin(address, path);
 
-        var out_dat = { "object_path": data}
+        // TEMP: Shouldn't be inside of this method
+        var settings_voxellevel = document.getElementById('settings_voxellevel')
+        var voxellevel = 0.02
+        if(settings_voxellevel.value == 1)
+            voxellevel = 0.02
+        if(settings_voxellevel.value == 2)
+            voxellevel = 0.09
+        if(settings_voxellevel.value == 3)
+            voxellevel = 0.15
+
+        var out_dat = { "object_path": data,
+                        "voxel_level": voxellevel}
 
         xmlHttp.open("POST", theUrl, true );
         xmlHttp.send(JSON.stringify(out_dat));

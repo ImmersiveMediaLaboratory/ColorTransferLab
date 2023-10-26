@@ -42,7 +42,6 @@ class Tabs extends React.Component {
 
           
           try {
-            
             var cc = document.getElementById(child.props.children.props.id)
             if (child.props.label !== this.state.activeTab){
               

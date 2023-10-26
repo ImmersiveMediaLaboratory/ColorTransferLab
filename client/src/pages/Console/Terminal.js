@@ -37,7 +37,10 @@ export const consolePrint = (type, output) => {
                today.getMinutes().toString().padStart(2, '0') + ":" +
                today.getSeconds().toString().padStart(2, '0');
     var output = "<span class='" + sClass + "'>[" + type + " - " + time +"]</span>" + " " + output + "...<br>"
-    document.getElementById("Console_tab_console_ta").innerHTML += output
+    //document.getElementById("Console_tab_console_ta").innerHTML += output
+
+    var objDiv = document.getElementById("Console_tab_console_ta")
+    objDiv.innerHTML += output
 }
 
 /*-----------------------------------------------------------------------------------------------------------------
@@ -55,9 +58,9 @@ function Terminal(props) {
     /*-------------------------------------------------------------------------------------------------------------
     -- ...
     -------------------------------------------------------------------------------------------------------------*/
-    // useEffect(() => {
-    //     initTerminal()
-    // }, []);
+    useEffect(() => {
+        consolePrint("INFO", "To reveal the available Compute Engines (CE), simply press the button located within the SERVER section. One of the Compute Engines, named 'Test Server', operates on an EC2 Instance within the AWS framework. Notably, this instance is dedicated solely to demonstration objectives, equipped with a lower-performance CPU and memory engine. Consequently, it's important to note that certain algorithms may not function optimally due to the constrained computational resources.")
+    }, []);
 
     /*-------------------------------------------------------------------------------------------------------------
     -- set empty tables for console tabs

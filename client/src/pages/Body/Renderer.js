@@ -119,6 +119,7 @@ function Renderer(props) {
     const infoboxID = "renderer_info" + ID
  
 
+    const initPath = "data"
     
     /* ------------------------------------------------------------------------------------------------------------
     -- 
@@ -154,7 +155,6 @@ function Renderer(props) {
         // Pointclouds have the extensions "obj" and "ply"
         // Meshes have the extension "obj" and a corresponding png texture has to exist
         if(file_ext == "png" || file_ext == "jpg") {
-            console.log("FUCK YEASSSSS")
             console.log(file_path)
             console.log(file_name)
 
@@ -164,19 +164,20 @@ function Renderer(props) {
                 showView(imageID, renderCanvasID, "2D")
 
             // show the dropped image
-            var image_path = pathjoin(active_server, "data", file_path, file_name_with_ext)
+            var image_path = pathjoin(active_server, initPath, file_path, file_name_with_ext)
+            console.log(image_path)
             $("#" + innerImageID).attr("src", image_path)
 
             obj_path.current = pathjoin(file_path, file_name_with_ext)
 
         } else if(file_ext == "obj" || file_ext == "ply") {
             // check if texture for mesh exists -> if not, it is a pointcloud
-            console.log(pathjoin(active_server, "data", file_path, file_name + ".png"))
-            let texture_path = pathjoin(active_server, "data", file_path, file_name + ".png")
+            console.log(pathjoin(active_server, initPath, file_path, file_name + ".png"))
+            let texture_path = pathjoin(active_server, initPath, file_path, file_name + ".png")
             let file_exist = request_file_existence("HEAD", texture_path)
             if(file_exist) {
                 mode.current = "Mesh"
-                var filepath = pathjoin(active_server, "data", file_path, file_name)
+                var filepath = pathjoin(active_server, initPath, file_path, file_name)
                 obj_path.current = pathjoin(file_path, file_name_with_ext)
                 object3D.current = <TriangleMesh key={Math.random()} file_name={filepath}></TriangleMesh>
                 changeRendering(object3D.current)
@@ -184,7 +185,7 @@ function Renderer(props) {
 
             } else {
                 mode.current = "PointCloud"
-                var filepath = pathjoin(active_server, "data", file_path, file_name_with_ext)
+                var filepath = pathjoin(active_server, initPath, file_path, file_name_with_ext)
                 obj_path.current = pathjoin(file_path, file_name_with_ext)
                 object3D.current = <PointCloud key={Math.random()} file_path={filepath} id={TITLE} center={ref_pc_center} scale={ref_pc_scale}/>
                 changeRendering(object3D.current)
@@ -194,9 +195,9 @@ function Renderer(props) {
             }
         }
 
-        server_post_request(active_server, "color_distribution", pathjoin("data", file_path, file_name_with_ext), updateColorDistribution, window)
-        server_post_request(active_server, "color_histogram", pathjoin("data", file_path, file_name_with_ext), updateHistogram, window)
-        server_post_request(active_server, "object_info", pathjoin("data", file_path, file_name_with_ext), updateObjectInfo, null)
+        server_post_request(active_server, "color_distribution", pathjoin(initPath, file_path, file_name_with_ext), updateColorDistribution, window)
+        server_post_request(active_server, "color_histogram", pathjoin(initPath, file_path, file_name_with_ext), updateHistogram, window)
+        server_post_request(active_server, "object_info", pathjoin(initPath, file_path, file_name_with_ext), updateObjectInfo, null)
  
         // if the infobox is visible, disable and rerender it if a new object is loaded
         if(infoBoxEnabled.current) {
@@ -214,7 +215,7 @@ function Renderer(props) {
         var dist_vals = data["data"]["distribution"]
         console.log("DISTRIBUTION")
         let scaled_dist_vals = (dist_vals.flat()).map(function(x) { return x / 255.0; })
-        colorDistribution3D.current = <ColorDistribution2 key={Math.random()} file_path={pathjoin(active_server, "data/PointClouds/template.ply")} dist_vals={scaled_dist_vals} id={TITLE}/>
+        colorDistribution3D.current = <ColorDistribution2 key={Math.random()} file_path={pathjoin(active_server, initPath, "PointClouds/template.ply")} dist_vals={scaled_dist_vals} id={TITLE}/>
     }
 
 
@@ -440,7 +441,7 @@ function Renderer(props) {
             // change the visibility of the image canvas only if the RGB color space button is not checked
             $("#" + innerImageID).attr("src", gif_loading)
             showView(imageID, renderCanvasID, "2D")
-            $("#" + innerImageID).attr("src", pathjoin(active_server, "data", obj_path.current.split(".")[0] + ".png"))
+            $("#" + innerImageID).attr("src", pathjoin(active_server, initPath, obj_path.current.split(".")[0] + ".png"))
             mode.current = "Texture"
         } else if(mode.current == "Texture") {
             showView(imageID, renderCanvasID, "3D")
