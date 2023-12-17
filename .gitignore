@@ -3,6 +3,7 @@ instances/client/node_modules/
 instances/client/package-lock.json
 
 instances/server_2/data/
+instances/server_2/previews/
 instances/server_2/Models/
 
 instances/server_1/ColorTransferLab
