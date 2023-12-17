@@ -22,16 +22,8 @@ import os
 import json
 import re
 import numpy as np
-#from numba import cuda
-import func_timeout
-from ColorTransferLib.MeshProcessing.PLYLoader import PLYLoader
-from ColorTransferLib.MeshProcessing.Mesh2 import Mesh2
-from ColorTransferLib.ImageProcessing.Image import Image
-from ColorTransferLib.ColorTransfer import ColorTransfer, ColorTransferEvaluation
 from Request.GetRequest import GetRequest
 from Request.PostRequest import PostRequest
-import zipfile36 as zipfile
-import gdown
 import requests
 import ssl
 
@@ -156,6 +148,7 @@ class MyServer(SimpleHTTPRequestHandler):
 
         elif self.path == "/color_histogram":
             response = PostRequest.color_histogram(self, init_path, response)
+            print(response)
         elif self.path == "/color_distribution":
             response = PostRequest.color_distribution(self, init_path, response)
         elif self.path == "/upload":
@@ -233,8 +226,8 @@ def run(server_protocol, server_address, server_port, server_class=HTTPServer, h
     httpd = ThreadedHTTPServer(url, handler_class)
     if server_protocol == "https":
         context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-        context.load_verify_locations('../ressources/security/ca_bundle.crt')
-        context.load_cert_chain(certfile='../ressources/security/certificate.crt', keyfile='../ressources/security/private.key')
+        context.load_verify_locations('../../ressources/security/ca_bundle.crt')
+        context.load_cert_chain(certfile='../../ressources/security/certificate.crt', keyfile='../../ressources/security/private.key')
         context.check_hostname = False
         httpd.socket = context.wrap_socket(httpd.socket, server_side=True)
     httpd.serve_forever()
@@ -285,7 +278,7 @@ def main():
     #os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
     multiprocessing.set_start_method('spawn')
 
-    SI2_name, SI2_protocol, SI2_lan, SI2_port, SI2_wan, SI2_visibility, SI1_protocol, SI1_port, SI1_wan = read_settings("../ressources/settings/settings.json")
+    SI2_name, SI2_protocol, SI2_lan, SI2_port, SI2_wan, SI2_visibility, SI1_protocol, SI1_port, SI1_wan = read_settings("../../ressources/settings/settings.json")
     print("#################################################################")
     print("# Server " + SI2_name + " is running on " + SI2_protocol + "://" + SI2_lan + ":" + str(SI2_port) + " ...")
     print("#################################################################")

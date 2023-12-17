@@ -41,12 +41,13 @@ source ressources/env/bin/activate
 pip install -U -r ressources/requirements/requirements.txt
 ```
 
-4. Modify server information:
-Open the file `<project_root>/ressources/settings/settings.json` and modify the entries of **Server Instance 1 & 2** based on your system. It is necessary to set the **protocol** of both instances to `https`. The **wan** entries are a registered domain which will be used to access the web app via `https://<SI1[wan]>/ColorTransferLab:<SI1[port]>`. The application via **Server Instance 1** will be available via **SI1[port]** and the **Server Instance 2** via **SI12[port]**. **Port Forwarding** has to be enabled in your router settings. The **SI2[visibility]** entry has currently no purpose. The **SI2[name]** entry will be visible in the user interface as an available **Server Instance 2**. The **SI2[lan]** entry is the local address of your system.
+4. Modify server information:<br>
+Open the file `<project_root>/ressources/settings/settings.json` and modify the entries of **Server Instance 1 & 2** based on your system. It is necessary to set the **protocol** of both instances to `https`. The **wan** entries are a registered domain which will be used to access the web app via `https://<SI1[wan]>:<SI1[port]>/ColorTransferLab`. The application via **Server Instance 1** will be available via **SI1[port]** and the **Server Instance 2** via **SI12[port]**. **Port Forwarding** has to be enabled in your router settings. The **SI2[visibility]** entry has currently no purpose. The **SI2[name]** entry will be visible in the user interface as an available **Server Instance 2**. The **SIX[lan]** entries are the local address of your system.
 ```
 {
 	"SI1" : {
 		"protocol": "https",
+        "lan": "192.168.178.182",
         "wan": "potechius.com",
 		"port": 9000
 	},
@@ -86,7 +87,8 @@ cp -a build/. ../server_1/ColorTransferLab
 
 4. Run Server Instance 1:
 ```
-python ../server_1/main.py
+cd ../server_1
+python main.py
 ```
 
 
@@ -94,11 +96,14 @@ python ../server_1/main.py
 Run the following commands within the folder `<project_root>/instances/server_2`.
 1. Download the [`Models.zip`](https://potechius.com/Downloads/Models.zip) file, unpack it and place the `Models` folder at `<project_root>/server/Models`. This folder contains weights for algorithms based on neural networks.
 ```
-wget ...
+wget https://potechius.com/Downloads/Models.zip
+unzip Models.zip
+rm Models.zip
 ```
 
-2. Download datasets:
+2. Download datasets and previews:
 ...
+
 
 3. Run Server Instance 2:
 ```

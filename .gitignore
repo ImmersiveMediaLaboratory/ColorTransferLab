@@ -2,10 +2,16 @@ instances/client/build/
 instances/client/node_modules/
 instances/client/package-lock.json
 
-instances/server_2/env/
 instances/server_2/data/
 instances/server_2/Models/
+
+instances/server_1/ColorTransferLab
 
 ressources/security/ca_bundle.crt
 ressources/security/certificate.crt
 ressources/security/private.key
+
+ressources/env/
+
+__pycache__/
+__MACOSX/

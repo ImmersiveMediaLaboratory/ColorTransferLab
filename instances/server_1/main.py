@@ -51,7 +51,7 @@ class MyServer(SimpleHTTPRequestHandler):
             self.send_header("Content-type", "text/html")
             self.end_headers()
 
-            with open("../ressources/settings/database_server.json", 'r') as f:
+            with open("../../ressources/settings/database_server.json", 'r') as f:
                 data = json.load(f)
 
             if len(data) == 0:
@@ -139,8 +139,8 @@ def run(protocol, address, port, handler_class=BaseHTTPRequestHandler):
     httpd = ThreadedHTTPServer(server_address, handler_class)
     if protocol == "https":
         context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-        context.load_verify_locations('../ressources/security/ca_bundle.crt')
-        context.load_cert_chain(certfile='../ressources/security/certificate.crt', keyfile='../ressources/security/private.key')
+        context.load_verify_locations('../../ressources/security/ca_bundle.crt')
+        context.load_cert_chain(certfile='../../ressources/security/certificate.crt', keyfile='../../ressources/security/private.key')
         context.check_hostname = False
         httpd.socket = context.wrap_socket(httpd.socket, server_side=True)
     httpd.serve_forever()
@@ -152,9 +152,9 @@ def read_settings(path):
     with open(path, 'r') as f:
         data = json.load(f)
         protocol = data["SI1"]["protocol"]
-        wan = data["SI1"]["wan"]
+        lan = data["SI1"]["lan"]
         port = data["SI1"]["port"]
-        return protocol, wan, port
+        return protocol, lan, port
 
 # ------------------------------------------------------------------------------------------------------------------
 # check if servers in database are still available
@@ -163,7 +163,7 @@ def check_servers():
     while(True):
         sleep(1)
         data_update = []
-        with open("../ressources/settings/database_server.json", 'r') as f:
+        with open("../../ressources/settings/database_server.json", 'r') as f:
             data = json.load(f)
             #print(data)
             for elem in data:
@@ -183,7 +183,7 @@ def check_servers():
                     print(data_update)
 
 
-        with open("../ressources/settings/database_server.json", 'w') as f:
+        with open("../../ressources/settings/database_server.json", 'w') as f:
             json_object = json.dumps(data_update, indent=4)
             f.write(json_object)
 
@@ -192,7 +192,7 @@ def check_servers():
 # write incomming server addresses into database file
 # ------------------------------------------------------------------------------------------------------------------
 def write_address_to_db(name, protocol, address, port, visibility):
-    with open("../ressources/settings/database_server.json", 'r+') as f:
+    with open("../../ressources/settings/database_server.json", 'r+') as f:
         data = json.load(f)
 
         dictionary = {
@@ -217,7 +217,7 @@ def exit_handler():
     print("#################################################################")
     print("# Server Instance 1 is ending ...")
     print("#################################################################")
-    with open("../ressources/settings/database_server.json", 'w') as f:
+    with open("../../ressources/settings/database_server.json", 'w') as f:
         f.write("[]")
 
 # ------------------------------------------------------------------------------------------------------------------
@@ -229,11 +229,11 @@ def main():
 
     atexit.register(exit_handler)
 
-    protocol, wan, port = read_settings("../ressources/settings/settings.json")    
+    protocol, lan, port = read_settings("../../ressources/settings/settings.json")    
     print("#################################################################")
-    print("# Server Instance 1 is running on " + protocol + "://" +  wan + ":" + str(port) + " ...")
+    print("# Server Instance 1 is running on " + protocol + "://" +  lan + ":" + str(port) + " ...")
     print("#################################################################")
-    run(protocol, wan, port, handler_class=MyServer,)
+    run(protocol, lan, port, handler_class=MyServer,)
 
 
 if __name__ == '__main__':
