@@ -12,7 +12,14 @@
 ## 2. Initialization
 This tool offers two ways of running the algorithms. Either by using the provided [frontend](https://potechius.com/ColorTransferLab) and running your own compute engine (see cahpter 2.1) or by hosting the whole system by yourself (see chapter 2.2) 
 
-Server:
+General:
+1. Download the repository:
+```
+git clone 
+```
+Server Instance 1:
+
+Server Instance 2:
 1. Create and activate environment:
 ```
 python3 -m venv env
