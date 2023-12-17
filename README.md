@@ -125,15 +125,15 @@ TODO
     <td>This tab provides a collection of 12 color transfer algorithms for images and 3D point clouds. A list of available algorithms can be find in the <a href="https://github.com/ImmersiveMediaLaboratory/ColorTransferLib">ColorTransferLib</a>.</td>
   </tr>
   <tr>
-    <td>$\textcolor{red}{\textrm{\textbf{Classification}}}$</td>
+    <td>$\textcolor{red}{\textrm{\textbf{Classification (not available yet)}}}$</td>
     <td>This tab will provide a collection of classification algorithms for images, 3D point clouds and 3D meshes.</td>
   </tr>
   <tr>
-    <td>$\textcolor{red}{\textrm{\textbf{Reconstruction}}}$</td>
+    <td>$\textcolor{red}{\textrm{\textbf{Reconstruction (not available yet)}}}$</td>
     <td>This tab will provide a collection of reconstruction algorithms for images in order to generate 3D point clouds.</td>
   </tr>
   <tr>
-    <td>$\textcolor{red}{\textrm{\textbf{Registration}}}$</td>
+    <td>$\textcolor{red}{\textrm{\textbf{Registration (not available yet)}}}$</td>
     <td>This tab will provide a collection of 3D point cloud registration algorithms.</td>
   </tr>
 </table>
