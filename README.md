@@ -157,7 +157,7 @@ TODO
     <td>This area allows the user to set multiple reference images.</td>
   </tr>
   <tr>
-    <td width="25%" align="right">$\textcolor{red}{\textrm{\textbf{Color Theme}}}$</td>
+    <td width="25%" align="right"><b>Color Palette</b></td>
     <td>This area allows the user to select multiple colors which will be used as reference.</td>
   </tr>
   <tr>
@@ -186,7 +186,7 @@ TODO
   </tr>
   <tr>
     <td width="25%" align="right"><b>Meshes</b></td>
-    <td>Will contain a variety of triangulated and textured meshes.</td>
+    <td>Containa a variety of triangulated and textured meshes.</td>
   </tr>
   <tr>
     <td width="25%" align="right"><b>Uploads</b></td>
@@ -201,7 +201,7 @@ TODO
     <td>Shows the folders and objects which are contained within the corresponding Database-Folder.</td>
   </tr>
   <tr>
-    <td width="25%">$\textcolor{red}{\textrm{\textbf{Objects}}}$</td>
+    <td width="25%">$\textcolor{red}{\textrm{\textbf{Objects (not available yet)}}}$</td>
     <td>This area will contain the seperate object within one selected and segemented object.</td>
   </tr>
 </table>
