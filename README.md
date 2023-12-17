@@ -117,6 +117,16 @@ python main.py
 
 </details>
 
+<details>
+<summary>[2] Hosting the whole system locally by yourself without remote access</summary>
+TODO
+</details>
+
+<details>
+<summary>[3] Using the provided frontend and running your own Server Instance 2</summary>
+TODO
+</details>
+
 ## 2. Datatypes
 
 TODO
