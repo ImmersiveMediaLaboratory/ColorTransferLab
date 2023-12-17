@@ -217,18 +217,6 @@ TODO
 
 --- 
 
-## 4. Info
-- All red highlighted features are curently not supported.
-- Output data and uploaded data are currently visible for all users.
-
-## 5. Future extensions
-:black_square_button: Loading and applying color transfer on triangulated meshes in ply/png or obj/mtl/png format and on videos.  
-:black_square_button: Support for color transfer based on multi-references and color palettes.  
-:black_square_button: Sementaic segmentation modules  
-:black_square_button: Export of results and standardized comparison statistics.  
-:black_square_button: More image examples from existing papers  
-:black_square_button: Increased number of color transfer algorithms  
-
 ## Citation
 If you utilize this code in your research, kindly provide a citation:
 ```
