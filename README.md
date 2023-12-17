@@ -101,8 +101,13 @@ unzip Models.zip
 rm Models.zip
 ```
 
-2. Download datasets and previews:
-...
+2. Download testdata and previews:<br>
+Currently not all previews for the test data are available.
+```
+wget https://potechius.com/Downloads/Testdata.zip
+unzip Testdata.zip
+rm Testdata.zip
+```
 
 
 3. Run Server Instance 2:
