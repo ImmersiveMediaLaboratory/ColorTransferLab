@@ -4,45 +4,107 @@
 ![python3.10.12](https://img.shields.io/badge/build-3.10.12-blue?logo=python&label=Python) ![](https://img.shields.io/badge/build-22.04.3%20LTS-orange?logo=ubuntu&label=Ubuntu
 ) ![](https://img.shields.io/badge/build-MIT-purple?label=License) ![](https://img.shields.io/badge/build-6.4.0-brown?logo=octave&label=Octave) ![](https://img.shields.io/badge/build-GeForce%20RTX%203060-white?logo=nvidia&label=GPU) ![](https://img.shields.io/badge/build-intel%20Core%20i7--13700KF-white?logo=intel&label=CPU) ![](https://img.shields.io/badge/npm-8.9.0-red?logo=npm) ![](https://img.shields.io/badge/Node.js-16.15.0-green?logo=node.js)
 
+ColorTransferLab is web-based user interface for the application and the evaluation of color transfer algorithms. It is based on a two server architecture as described in the chapter **1. System Architecture**. This tool uses the python library [ColorTransferLib](...) which contains availabe color transfer and image quality assessment metrics. This tool not only allows the application of color transfer on images, but also on 3D objects (see chapter XX. Datatypes).
+
 ## 1. System Architecture
+...
 ![SystemArchitecture](https://github.com/ImmersiveMediaLaboratory/ColorTransferLab/assets/15614886/1a47b46d-f097-4151-a4ef-62c7f8533938)
 
 
 
 ## 2. Initialization
-This tool offers two ways of running the algorithms. Either by using the provided [frontend](https://potechius.com/ColorTransferLab) and running your own **Server Instance 2** (see chapter 2.1) or by hosting the whole system by yourself (see chapter 2.2) 
+This tool offers three ways of running the algorithms via the web interface. 
+- Using the provided [frontend](https://potechius.com/ColorTransferLab) and running your own **Server Instance 2**
+- Hosting the whole system locally by yourself with remote access
+- Hosting the whole system locally by yourself without remote access
 
-### **General**:
+<details>
+<summary>1) Hosting the whole system locally by yourself with remote access</summary>
+<br>
+### **General Preparation**:
+Run the following commands within the folder `<project_root>`.
+
 1. Download the repository:
 ```
 git clone git@github.com:ImmersiveMediaLaboratory/ColorTransferLab.git
 ```
 
+2. Create and activate environment:
+```
+python3 -m venv ressources/env
+source ressources/env/bin/activate
+```
+
+3. Install requirements:
+```
+pip install -U -r ressources/requirements/requirements.txt
+```
+
+4. Modify server information:
+Open the file `<project_root>/ressources/settings/settings.json` and modify the entries of **Server Instance 1 & 2** based on your system. It is necessary to set the **protocol** of both instances to `https`. The **wan** entries are a registered domain which will be used to access the web app via `https://<SI1[wan]>/ColorTransferLab:<SI1[port]>`. The application via **Server Instance 1** will be available via **SI1[port]** and the **Server Instance 2** via **SI12[port]**. **Port Forwarding** has to be enabled in your router settings. The **SI2[visibility]** entry has currently no purpose. The **SI2[name]** entry will be visible in the user interface as an available **Server Instance 2**. The **SI2[lan]** entry is the local address of your system.
+```
+{
+	"SI1" : {
+		"protocol": "https",
+        "wan": "potechius.com",
+		"port": 9000
+	},
+	"SI2" : {
+		"name": "GPU Server",
+		"protocol": "https",
+        "lan": "192.168.178.182",
+        "wan": "potechius.com",
+		"port": 9001,
+		"visibility": "private"
+	}
+}
+```
+The **SI1** entries have to be additionally set in `<project_root>/instances/client/src/pages/SideBarLeft/Server.js`. Change the variable `export let SE1` to `<SI1[protocol]>://<SI1[wan]>:<SI1[port]>`.
+
+5. SSL certificates:
+In order to run the tool via HTTPS, SSL certificates are necessary. Three files have to be generated via e.g. (ZeroSSL)[https://zerossl.com/] and placed in `<project_root>/ressources/security`. (1) **ca_bundle.crt** containing the root and intermediate certificates, (2) **certificate.crt** containing the SSL certificate and (3) **private.key** containing the private key.
+
+
 ### **Server Instance 1**:
-This step is only necessary when you want to host the whole system by yourself
+This step is only necessary when you want to host the whole system by yourself. Run the following commands within the folder `<project_root>/instances/client`.
 1. Install NodeJS Packages:
 ```
 npm install
 ```
 
-2. Start the test server:
+2. Compiles the React project into HTML/CSS/JS files:
 ```
-npm start
+npm run build
 ```
+
+3. Move build to Server Instance 1:
+The generated build files in `<project_root>/instances/client/build` have to be copied to `<project_root>/instances/server_1` to make the web interface available.
+```
+cp -a build/. ../server_1/ColorTransferLab
+```
+
+4. Run Server Instance 1:
+```
+python ../server_1/main.py
+```
+
 
 ### **Server Instance 2**:
+Run the following commands within the folder `<project_root>/instances/server_2`.
 1. Download the [`Models.zip`](https://potechius.com/Downloads/Models.zip) file, unpack it and place the `Models` folder at `<project_root>/server/Models`. This folder contains weights for algorithms based on neural networks.
-
-1. Create and activate environment:
 ```
-python3 -m venv env
-source env/bin/activate
+wget ...
 ```
 
-2. Install requirements:
+2. Download datasets:
+...
+
+3. Run Server Instance 2:
 ```
-pip install -U -r reauirements/requirements.txt
+python main.py
 ```
+
+</details>
 
 ## 2. Datatypes
 

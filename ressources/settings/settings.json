@@ -1,21 +1,15 @@
 {
-	"ui" : {
-		"protocol": "http",
-        "address": "192.168.178.49",
-		"port": 8003
-	},
-	"proxy" : {
+	"SI1" : {
 		"protocol": "https",
-        "address": "potechius.com",
         "wan": "potechius.com",
-		"port": 8003
+		"port": 9000
 	},
-	"server" : {
+	"SI2" : {
 		"name": "GPU Server",
 		"protocol": "https",
-        "address": "192.168.178.182",
+        "lan": "192.168.178.182",
         "wan": "potechius.com",
-		"port": 8001,
+		"port": 9001,
 		"visibility": "private"
 	}
 }
