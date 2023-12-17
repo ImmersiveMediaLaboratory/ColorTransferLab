@@ -1,8 +1,8 @@
-client/build/
-client/node_modules/
-client/package-lock.json
+instances/client/build/
+instances/client/node_modules/
+instances/client/package-lock.json
 
-server/env/
-server/data/
-server/Models/
+instances/server_2/env/
+instances/server_2/data/
+instances/server_2/Models/
 
