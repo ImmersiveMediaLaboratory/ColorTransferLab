@@ -20,8 +20,7 @@ import torch
 import multiprocessing
 
 from ColorTransferLib.ColorTransfer import ColorTransfer, ColorTransferEvaluation
-from ColorTransferLib.MeshProcessing.PLYLoader import PLYLoader
-from ColorTransferLib.MeshProcessing.Mesh2 import Mesh2
+from ColorTransferLib.MeshProcessing.Mesh import Mesh
 from ColorTransferLib.ImageProcessing.Image import Image
 
 import subprocess
@@ -159,11 +158,11 @@ class PostRequest():
             image_path = fp_no_ext + ".png"
             material_path = fp_no_ext + ".mtl"
             if os.path.isfile(image_path) and os.path.isfile(material_path):
-                src = Mesh2(file_path=file_path, datatype="Mesh")
+                src = Mesh(file_path=file_path, datatype="Mesh")
                 extension_out = "obj"
                 export_type = "Mesh"
             else:
-                src = Mesh2(file_path=file_path, datatype="PointCloud")
+                src = Mesh(file_path=file_path, datatype="PointCloud")
                 extension_out = "ply"
                 export_type = "PointCloud"
 
@@ -176,9 +175,9 @@ class PostRequest():
             image_path = fp_no_ext + ".png"
             material_path = fp_no_ext + ".mtl"
             if os.path.isfile(image_path) and os.path.isfile(material_path):
-                ref = Mesh2(file_path=file_path, datatype="Mesh")
+                ref = Mesh(file_path=file_path, datatype="Mesh")
             else:
-                ref = Mesh2(file_path=file_path, datatype="PointCloud")
+                ref = Mesh(file_path=file_path, datatype="PointCloud")
 
 
         ct = ColorTransfer(src, ref, approach)
@@ -208,7 +207,8 @@ class PostRequest():
                 print(init_path + "/" + file_out + ".ply")
                 # out_loader = PLYLoader(mesh=output["object"])
                 out_loader = output["object"]
-                out_loader.write(init_path + "/" + file_out + ".ply")
+                #out_loader.write(init_path + "/" + file_out + ".ply")
+                out_loader.write(init_path + "/" + file_out)
                 response["data"]["extension"] = "ply"
             elif export_type == "Mesh":
                 print("Write File:")
@@ -218,12 +218,14 @@ class PostRequest():
                 os.mkdir(path)
                 # out_loader = PLYLoader(mesh=output["object"])
                 out_loader = output["object"]
-                out_loader.write(path + "/" + out_filename + ".obj")
+                #out_loader.write(path + "/" + out_filename + ".obj")
+                out_loader.write(path + "/" + out_filename)
                 response["data"]["extension"] = "obj"
             elif export_type == "Image":
                 print("Write File:")
                 print(init_path + "/" + file_out + ".png")
-                output["object"].write(init_path + "/" + file_out + ".png")
+                #output["object"].write(init_path + "/" + file_out + ".png")
+                output["object"].write(init_path + "/" + file_out)
                 response["data"]["extension"] = "png"
         except func_timeout.FunctionTimedOut:
             response["enabled"] = "false"
@@ -257,11 +259,11 @@ class PostRequest():
             if os.path.isfile(image_path) and os.path.isfile(material_path):
                 # print(image_path)
                 # src = Image(file_path=image_path)
-                src = Mesh2(file_path=file_path, datatype="Mesh")
+                src = Mesh(file_path=file_path, datatype="Mesh")
             else:
                 # loader_src = PLYLoader(file_path)
                 # src = loader_src.get_mesh()
-                src = Mesh2(file_path=file_path, datatype="PointCloud")
+                src = Mesh(file_path=file_path, datatype="PointCloud")
                 
         else:
             data = "FUUHII"
@@ -296,9 +298,9 @@ class PostRequest():
             image_path = fp_no_ext + ".png"
             material_path = fp_no_ext + ".mtl"
             if os.path.isfile(image_path) and os.path.isfile(material_path):
-                src = Mesh2(file_path=file_path, datatype="Mesh")
+                src = Mesh(file_path=file_path, datatype="Mesh")
             else:
-                src = Mesh2(file_path=file_path, datatype="PointCloud")
+                src = Mesh(file_path=file_path, datatype="PointCloud")
         else:
             data = "FUUHII"
 
@@ -354,7 +356,7 @@ class PostRequest():
             image_path = fp_no_ext + ".png"
             material_path = fp_no_ext + ".mtl"
             if os.path.isfile(image_path) and os.path.isfile(material_path):
-                mesh = Mesh2(file_path=file_path, datatype="Mesh")
+                mesh = Mesh(file_path=file_path, datatype="Mesh")
                 sent_data["num_vertices"] = mesh.get_num_vertices()
                 sent_data["num_faces"] = mesh.get_num_faces()
                 sent_data["vertexcolors"] = "yes" if mesh.has_vertex_colors() else "no"
@@ -373,7 +375,7 @@ class PostRequest():
             else:
 
                 print("HERE I AM")
-                mesh = Mesh2(file_path=file_path, datatype="PointCloud")
+                mesh = Mesh(file_path=file_path, datatype="PointCloud")
                 sent_data["num_vertices"] = mesh.get_num_vertices()
                 sent_data["vertexcolors"] = "yes" if mesh.has_vertex_colors() else "no"
                 sent_data["vertexnormals"] = "yes" if mesh.has_vertex_normals() else "no"

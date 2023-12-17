@@ -21,8 +21,8 @@ import {server_request} from 'utils/Utils'
 import './Server.scss';
 
 export let active_server = ""
-export let SE1_server = "http://192.168.178.49:8002"
-//export let SE1_server = "https://potechius.com:"
+//export let SE1_server = "http://192.168.178.49:8002"
+export let SE1_server = "https://potechius.com:9000"
 
 /*-----------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------------
