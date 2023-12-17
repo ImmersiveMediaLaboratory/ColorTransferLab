@@ -6,15 +6,15 @@
 	},
 	"proxy" : {
 		"protocol": "https",
-        "address": "arctic.vision",
-        "wan": "arctic.vision",
-		"port": 443
+        "address": "potechius.com",
+        "wan": "potechius.com",
+		"port": 8003
 	},
 	"server" : {
 		"name": "GPU Server",
 		"protocol": "https",
-        "address": "192.168.178.65",
-        "wan": "babblingbird.com",
+        "address": "192.168.178.182",
+        "wan": "potechius.com",
 		"port": 8001,
 		"visibility": "private"
 	}
