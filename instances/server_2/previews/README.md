@@ -1,0 +1,1 @@
+Preview images for the objects in <project_root>/instances/server_2/data have to be placed here.
