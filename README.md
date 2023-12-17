@@ -185,7 +185,7 @@ TODO
     <td>Images, i.e., source, references and outputs from published color transfer algorithms were extracted and are available here.</td>
   </tr>
   <tr>
-    <td width="25%" align="right">$\textcolor{red}{\textrm{\textbf{Meshes}}}$</td>
+    <td width="25%" align="right"><b>Meshes</b></td>
     <td>Will contain a variety of triangulated and textured meshes.</td>
   </tr>
   <tr>
