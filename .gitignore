@@ -6,3 +6,6 @@ instances/server_2/env/
 instances/server_2/data/
 instances/server_2/Models/
 
+ressources/security/ca_bundle.crt
+ressources/security/certificate.crt
+ressources/security/private.key

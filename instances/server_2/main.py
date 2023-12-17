@@ -229,15 +229,13 @@ class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
 # method description
 # ------------------------------------------------------------------------------------------------------------------
 def run(server_protocol, server_address, server_port, server_class=HTTPServer, handler_class=BaseHTTPRequestHandler):    
-    
-    context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-    context.load_verify_locations('../ressources/security/ca_bundle.crt')
-    context.load_cert_chain(certfile='../ressources/security/certificate.crt', keyfile='../ressources/security/private.key')
-    context.check_hostname = False
-
     url = (server_address, server_port)
     httpd = ThreadedHTTPServer(url, handler_class)
     if server_protocol == "https":
+        context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+        context.load_verify_locations('../ressources/security/ca_bundle.crt')
+        context.load_cert_chain(certfile='../ressources/security/certificate.crt', keyfile='../ressources/security/private.key')
+        context.check_hostname = False
         httpd.socket = context.wrap_socket(httpd.socket, server_side=True)
     httpd.serve_forever()
 
@@ -267,48 +265,34 @@ def sendServerInfo(proxy_protocol, proxy_address, proxy_port, ressource, server_
 def read_settings(path):
     with open(path, 'r') as f:
         data = json.load(f)
-        server_name = data["server"]["name"]
-        server_protocol = data["server"]["protocol"]
-        server_address = data["server"]["address"]
-        server_port = data["server"]["port"]
-        server_wan = data["server"]["wan"]
-        proxy_protocol = data["proxy"]["protocol"]
-        proxy_address = data["proxy"]["address"]
-        proxy_wan = data["proxy"]["wan"]
-        proxy_port = data["proxy"]["port"]
-        server_visibility = data["server"]["visibility"]
-        return server_name, server_protocol, server_address, server_port, server_wan, server_visibility, proxy_protocol, proxy_address, proxy_port, proxy_wan
+
+        SI2_name = data["SI2"]["name"]
+        SI2_protocol = data["SI2"]["protocol"]
+        SI2_lan = data["SI2"]["lan"]
+        SI2_port = data["SI2"]["port"]
+        SI2_wan = data["SI2"]["wan"]
+        SI2_visibility = data["SI2"]["visibility"]
+
+        SI1_protocol = data["SI1"]["protocol"]
+        SI1_wan = data["SI1"]["wan"]
+        SI1_port = data["SI1"]["port"]
+        return SI2_name, SI2_protocol, SI2_lan, SI2_port, SI2_wan, SI2_visibility, SI1_protocol, SI1_port, SI1_wan
 
 # ------------------------------------------------------------------------------------------------------------------
 # method description
 # ------------------------------------------------------------------------------------------------------------------
 def main():
-    # download Models folder
-    # if not os.path.exists("Models") and not os.path.exists("data"):
-    #     print("Download DATA.zip ...")
-    #     url = "https://drive.google.com/file/d/1TuWldLgf00A5tcLdftTy2g-XDdSXBFuG/view?usp=share_link"
-    #     output_path = 'DATA.zip'
-    #     gdown.download(url, output_path, quiet=False, fuzzy=True)
-    #     # Extract DATA.zip
-    #     print("Extract DATA.zip ...")
-    #     with zipfile.ZipFile("DATA.zip","r") as zip_ref:
-    #         zip_ref.extractall()
-    #     # Delete DATA.zip
-    #     print("Delete DATA.zip ...")
-    #     os.remove("DATA.zip")
-
-
     #os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
     multiprocessing.set_start_method('spawn')
 
-    server_name, server_protocol, server_address, server_port, server_wan, server_visibility, proxy_protocol, proxy_address, proxy_port, proxy_wan = read_settings("../ressources/settings/settings.json")
+    SI2_name, SI2_protocol, SI2_lan, SI2_port, SI2_wan, SI2_visibility, SI1_protocol, SI1_port, SI1_wan = read_settings("../ressources/settings/settings.json")
     print("#################################################################")
-    print("# Server " + server_name + " is running on " + server_protocol + "://" + server_address + ":" + str(server_port) + " ...")
+    print("# Server " + SI2_name + " is running on " + SI2_protocol + "://" + SI2_lan + ":" + str(SI2_port) + " ...")
     print("#################################################################")
 
-    sendServerInfo(proxy_protocol, proxy_wan, proxy_port, "/ip_update", server_name, server_protocol, server_wan, server_port, server_visibility)
+    sendServerInfo(SI1_protocol, SI1_wan, SI1_port, "/ip_update", SI2_name, SI2_protocol, SI2_wan, SI2_port, SI2_visibility)
            
-    run(server_protocol, server_address, server_port, handler_class=MyServer)
+    run(SI2_protocol, SI2_lan, SI2_port, handler_class=MyServer)
 
 
 if __name__ == '__main__':

@@ -68,7 +68,6 @@ class MyServer(SimpleHTTPRequestHandler):
                 }
             self.wfile.write(bytes(str(response), "utf-8"))
         else:
-            print("ZZZZZZZZzzz")
             return SimpleHTTPRequestHandler.do_GET(self)
 
         
@@ -136,15 +135,13 @@ class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
 # method description
 # ------------------------------------------------------------------------------------------------------------------
 def run(protocol, address, port, handler_class=BaseHTTPRequestHandler):
-    context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-    context.load_verify_locations('../ressources/security/ca_bundle.crt')
-    context.load_cert_chain(certfile='../ressources/security/certificate.crt', keyfile='../ressources/security/private.key')
-    context.check_hostname = False
-
-
     server_address = (address, port)
     httpd = ThreadedHTTPServer(server_address, handler_class)
     if protocol == "https":
+        context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+        context.load_verify_locations('../ressources/security/ca_bundle.crt')
+        context.load_cert_chain(certfile='../ressources/security/certificate.crt', keyfile='../ressources/security/private.key')
+        context.check_hostname = False
         httpd.socket = context.wrap_socket(httpd.socket, server_side=True)
     httpd.serve_forever()
 
@@ -154,10 +151,10 @@ def run(protocol, address, port, handler_class=BaseHTTPRequestHandler):
 def read_settings(path):
     with open(path, 'r') as f:
         data = json.load(f)
-        protocol = data["proxy"]["protocol"]
-        address = data["proxy"]["address"]
-        port = data["proxy"]["port"]
-        return protocol, address, port
+        protocol = data["SI1"]["protocol"]
+        wan = data["SI1"]["wan"]
+        port = data["SI1"]["port"]
+        return protocol, wan, port
 
 # ------------------------------------------------------------------------------------------------------------------
 # check if servers in database are still available
@@ -218,7 +215,7 @@ def write_address_to_db(name, protocol, address, port, visibility):
 # ------------------------------------------------------------------------------------------------------------------
 def exit_handler():
     print("#################################################################")
-    print("# Proxy is ending ...")
+    print("# Server Instance 1 is ending ...")
     print("#################################################################")
     with open("../ressources/settings/database_server.json", 'w') as f:
         f.write("[]")
@@ -232,11 +229,11 @@ def main():
 
     atexit.register(exit_handler)
 
-    protocol, address, port = read_settings("../ressources/settings/settings.json")    
+    protocol, wan, port = read_settings("../ressources/settings/settings.json")    
     print("#################################################################")
-    print("# Proxy is running on " + protocol + "://" +  address + ":" + str(port) + " ...")
+    print("# Server Instance 1 is running on " + protocol + "://" +  wan + ":" + str(port) + " ...")
     print("#################################################################")
-    run(protocol, address, port, handler_class=MyServer,)
+    run(protocol, wan, port, handler_class=MyServer,)
 
 
 if __name__ == '__main__':
