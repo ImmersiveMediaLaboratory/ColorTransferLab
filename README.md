@@ -21,6 +21,7 @@ This tool offers three ways of running the algorithms via the web interface.
 <details>
 <summary>1) Hosting the whole system locally by yourself with remote access</summary>
 <br>
+
 ### **General Preparation**:
 Run the following commands within the folder `<project_root>`.
 
