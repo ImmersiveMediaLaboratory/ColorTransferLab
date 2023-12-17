@@ -22,7 +22,7 @@ git clone git@github.com:ImmersiveMediaLaboratory/ColorTransferLab.git
 
 
 ### **Server Instance 2**:
-1. Download the [`Models.zip`](https://potechius.com/Downloads/Models.zip) file, unpack it and place the `Models` folder at `<path_to_project>/ColorTransferLab/server/Models`. This folder contains weights for algorithms based on neural networks.
+1. Download the [`Models.zip`](https://potechius.com/Downloads/Models.zip) file, unpack it and place the `Models` folder at `<project_root>/server/Models`. This folder contains weights for algorithms based on neural networks.
 
 1. Create and activate environment:
 ```
