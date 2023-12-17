@@ -231,8 +231,8 @@ class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
 def run(server_protocol, server_address, server_port, server_class=HTTPServer, handler_class=BaseHTTPRequestHandler):    
     
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-    context.load_verify_locations('../ressources/babblingbird/ca_bundle.crt')
-    context.load_cert_chain(certfile='../ressources/babblingbird/certificate.crt', keyfile='../ressources/babblingbird/private.key')
+    context.load_verify_locations('../ressources/security/ca_bundle.crt')
+    context.load_cert_chain(certfile='../ressources/security/certificate.crt', keyfile='../ressources/security/private.key')
     context.check_hostname = False
 
     url = (server_address, server_port)
