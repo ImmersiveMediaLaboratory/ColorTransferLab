@@ -1,2 +1,0 @@
-# Color Transfer Tool Server
-
