@@ -12,16 +12,16 @@
 ## 2. Initialization
 This tool offers two ways of running the algorithms. Either by using the provided [frontend](https://potechius.com/ColorTransferLab) and running your own compute engine (see cahpter 2.1) or by hosting the whole system by yourself (see chapter 2.2) 
 
-**General**:
+### **General**:
 1. Download the repository:
 ```
 git clone git@github.com:ImmersiveMediaLaboratory/ColorTransferLab.git
 ```
 
-Server Instance 1:
+### **Server Instance 1**:
 
 
-**Server Instance 2**:
+### **Server Instance 2**:
 1. Download the [`Models.zip`](https://potechius.com/Downloads/Models.zip) file, unpack it and place the `Models` folder at `<path_to_project>/ColorTransferLab/server/Models`. This folder contains weights for algorithms based on neural networks.
 
 1. Create and activate environment:
