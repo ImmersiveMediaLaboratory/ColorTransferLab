@@ -62,8 +62,8 @@ The **SI1** entries have to be additionally set in `<project_root>/instances/cli
 }
 ```
 
-5. SSL certificates:
-In order to run the tool via HTTPS, SSL certificates are necessary. Three files have to be generated via e.g. (ZeroSSL)[https://zerossl.com/] and placed in `<project_root>/ressources/security`. (1) **ca_bundle.crt** containing the root and intermediate certificates, (2) **certificate.crt** containing the SSL certificate and (3) **private.key** containing the private key.
+5. SSL certificates:<br>
+In order to run the tool via HTTPS, SSL certificates are necessary. Three files have to be generated via e.g. [ZeroSSL](https://zerossl.com/) and placed in `<project_root>/ressources/security`. (1) **ca_bundle.crt** containing the root and intermediate certificates, (2) **certificate.crt** containing the SSL certificate and (3) **private.key** containing the private key.
 
 
 ### **Server Instance 1**:
