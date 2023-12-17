@@ -1,0 +1,23 @@
+/*
+Copyright 2022 by Herbert Potechius,
+Ernst-Abbe-Hochschule Jena - University of Applied Sciences - Department of Electrical Engineering and Information
+Technology - Immersive Media and AR/VR Research Group.
+All rights reserved.
+This file is released under the "MIT License Agreement".
+Please see the LICENSE file that should have been included as part of this package.
+*/
+
+@import 'settings/Global.scss';
+
+
+#Footer_footer {
+    position: absolute;
+    margin-top: calc(100vh - 50px);
+    padding-top: 15px;
+    height: 35px;
+    width: 100vw;
+    background-color: $grey;
+    color: $lightgrey;
+    text-align: center;
+    
+}

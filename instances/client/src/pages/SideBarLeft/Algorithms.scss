@@ -1,0 +1,129 @@
+/*
+Copyright 2022 by Herbert Potechius,
+Ernst-Abbe-Hochschule Jena - University of Applied Sciences - Department of Electrical Engineering and Information
+Technology - Immersive Media and AR/VR Research Group.
+All rights reserved.
+This file is released under the "MIT License Agreement".
+Please see the LICENSE file that should have been included as part of this package.
+*/
+
+/*
+Copyright 2022 by Herbert Potechius,
+Ernst-Abbe-Hochschule Jena - University of Applied Sciences - Department of Electrical Engineering and Information
+Technology - Immersive Media and AR/VR Research Group.
+All rights reserved.
+This file is released under the "MIT License Agreement".
+Please see the LICENSE file that should have been included as part of this package.
+*/
+
+@import 'settings/Global.scss';
+
+
+#algorithms_main {
+    position: absolute;
+    top: $header_height;
+    margin: $box_margin;
+    height: calc(#{$sidebarleft_innerheight} - 200px);
+    width: $sidebarleft_innerwidth;
+    background-color: $grey;
+    border: solid $darkgrey $box_border;
+}
+
+#algorithms_header {
+    width: $sidebarleft_innerwidth;
+    height: 25px;
+    background-color: $darkgrey;
+    color: $lightgrey;
+}
+
+#algorithms_header_logo {
+    height: 25px;
+    width: 25px;
+}
+
+#algorithms_header_name {
+    position: absolute;
+    left: 30px;
+    top: 4px;
+    font-family: "Arial", Helvetica, sans-serif;
+    font-size: 14px;
+}
+
+.algorithms_approach {
+    position: relative;
+    background-color: $grey;
+    margin: 10px;
+    padding: 5px;
+    border: solid $darkgrey 1px;
+    border-radius: 3px;
+    //box-shadow:0px 0px 5px 0px #AAAAAA;
+}
+
+.algorithms_approach:hover {
+    box-shadow:0px 0px 5px 0px cyan;
+}
+
+.algorithms_list {
+    position: absolute;
+    width: $sidebarleft_algorithms_width;
+    height: calc(#{$sidebarleft_algorithms_height} - 25px + 50px);
+    color: $lightgrey;
+    overflow-y: scroll;
+}
+
+.algorithms_item_icon {
+    position: absolute;
+    height: 10px;
+    top: 6px;
+    left: 110px;
+}
+
+.algorithms_item_text {
+    // position: absolute;
+    left: 30px;
+    top: 6px;
+}
+
+.tab-list_algorithms {  
+    position: absolute;
+    background-color: $darkgrey;
+    margin: 0px;
+    width: 30px;
+    padding: 0px;
+  }
+
+.tabs_algorithms {
+    background-color: salmon;
+}
+  
+.tab-list-item_algorithms {
+    padding-right: 4px;
+    list-style: none;
+    width: 30px;
+    height: calc((#{$sidebarleft_innerheight} - 25px - 200px) / 4);
+    writing-mode: tb-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    text-align: center;
+    font-family: "Arial", Helvetica, sans-serif;
+    color: $lightgrey;
+}
+
+.tab-list-active_algorithms {
+    background-color: $grey;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.tab-content_algorithms::-webkit-scrollbar {
+    display: none;
+  }
+
+.tab-content_algorithms {
+    position: absolute;
+    width: 170px;
+    margin-left: 30px;
+    overflow-y: scroll;
+    height: calc((#{$sidebarleft_innerheight} - 25px));
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
