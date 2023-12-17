@@ -42,7 +42,7 @@ npm start
 <table>
   <tr>
     <td width="25%"><b>Color Transfer</b></td>
-    <td>This tab provides a collection of 12 color transfer algorithms for images and 3D point clouds. A list of available algorithms can be find in the <a href="https://github.com/hpotechius/ColorTransferLib">ColorTransferLib</a>.</td>
+    <td>This tab provides a collection of 12 color transfer algorithms for images and 3D point clouds. A list of available algorithms can be find in the <a href="https://github.com/ImmersiveMediaLaboratory/ColorTransferLib">ColorTransferLib</a>.</td>
   </tr>
   <tr>
     <td>$\textcolor{red}{\textrm{\textbf{Classification}}}$</td>
