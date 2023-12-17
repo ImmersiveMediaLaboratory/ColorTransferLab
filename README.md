@@ -228,3 +228,15 @@ TODO
 :black_square_button: Export of results and standardized comparison statistics.  
 :black_square_button: More image examples from existing papers  
 :black_square_button: Increased number of color transfer algorithms  
+
+## Citation
+If you utilize this code in your research, kindly provide a citation:
+```
+@inproceeding{potechius2023,
+  title={A software test bed for sharing and evaluating color transfer algorithms for images and 3D objects},
+  author={Herbert Potechius, Thomas Sikora, Gunasekaran Raja, Sebastian Knorr},
+  year={2023},
+  booktitle={European Conference on Visual Media Production (CVMP)},
+  doi={10.1145/3626495.3626509}
+}
+```
