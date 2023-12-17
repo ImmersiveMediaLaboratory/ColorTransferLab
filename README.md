@@ -2,7 +2,8 @@
 
 # ColorTransferLab
 ![python3.10.12](https://img.shields.io/badge/build-3.10.12-blue?logo=python&label=Python) ![](https://img.shields.io/badge/build-22.04.3%20LTS-orange?logo=ubuntu&label=Ubuntu
-) ![](https://img.shields.io/badge/build-MIT-purple?label=License) ![](https://img.shields.io/badge/build-6.4.0-brown?logo=octave&label=Octave) ![](https://img.shields.io/badge/build-GeForce%20RTX%203060-white?logo=nvidia&label=GPU) ![](https://img.shields.io/badge/build-intel%20Core%20i7--13700KF-white?logo=intel&label=CPU) ![](https://img.shields.io/badge/npm-8.9.0-red?logo=npm)
+) ![](https://img.shields.io/badge/build-MIT-purple?label=License) ![](https://img.shields.io/badge/build-6.4.0-brown?logo=octave&label=Octave) ![](https://img.shields.io/badge/build-GeForce%20RTX%203060-white?logo=nvidia&label=GPU) ![](https://img.shields.io/badge/build-intel%20Core%20i7--13700KF-white?logo=intel&label=CPU) ![](https://img.shields.io/badge/npm-8.9.0-red?logo=npm) ![](https://img.shields.io/badge/Node.js-16.15.0-green?logo=node.js)
+
 
 
 
