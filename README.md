@@ -42,6 +42,7 @@ pip install -U -r ressources/requirements/requirements.txt
 
 4. Modify server information:<br>
 Open the file `<project_root>/ressources/settings/settings.json` and modify the entries of **Server Instance 1 & 2** based on your system. It is necessary to set the **protocol** of both instances to `https`. The **wan** entries are a registered domain which will be used to access the web app via `https://<SI1[wan]>:<SI1[port]>/ColorTransferLab`. The application via **Server Instance 1** will be available via **SI1[port]** and the **Server Instance 2** via **SI12[port]**. **Port Forwarding** has to be enabled in your router settings. The **SI2[visibility]** entry has currently no purpose. The **SI2[name]** entry will be visible in the user interface as an available **Server Instance 2**. The **SIX[lan]** entries are the local address of your system.
+The **SI1** entries have to be additionally set in `<project_root>/instances/client/src/pages/SideBarLeft/Server.js`. Change the variable `export let SE1` to `<SI1[protocol]>://<SI1[wan]>:<SI1[port]>`.
 ```
 {
 	"SI1" : {
@@ -60,7 +61,6 @@ Open the file `<project_root>/ressources/settings/settings.json` and modify the 
 	}
 }
 ```
-The **SI1** entries have to be additionally set in `<project_root>/instances/client/src/pages/SideBarLeft/Server.js`. Change the variable `export let SE1` to `<SI1[protocol]>://<SI1[wan]>:<SI1[port]>`.
 
 5. SSL certificates:
 In order to run the tool via HTTPS, SSL certificates are necessary. Three files have to be generated via e.g. (ZeroSSL)[https://zerossl.com/] and placed in `<project_root>/ressources/security`. (1) **ca_bundle.crt** containing the root and intermediate certificates, (2) **certificate.crt** containing the SSL certificate and (3) **private.key** containing the private key.
