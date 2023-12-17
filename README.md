@@ -22,8 +22,7 @@ Server Instance 1:
 
 
 **Server Instance 2**:
-1. Download the *Models*-Folder and place it at `<path_to_project>/ColorTransferLab/server`.
-
+1. Download the [`Models.zip`](https://potechius.com/Downloads/Models.zip) file, unpack it and place the `Models` folder at `<path_to_project>/ColorTransferLab/server/Models`. This folder contains weights for algorithms based on neural networks.
 
 1. Create and activate environment:
 ```
