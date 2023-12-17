@@ -1,5 +1,6 @@
+<img width="1708" alt="infographic" src="https://github.com/ImmersiveMediaLaboratory/ColorTransferLab/assets/15614886/2d8c5d04-0db2-4352-bb48-e29173f8ec15">
+
 # ColorTransferLab
-![framework](https://user-images.githubusercontent.com/15614886/192980651-d65aa3d1-f131-48ae-b335-701f6751a610.png)
 
 ## 1. Datatypes
 
