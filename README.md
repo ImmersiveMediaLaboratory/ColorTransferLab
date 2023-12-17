@@ -19,7 +19,16 @@ git clone git@github.com:ImmersiveMediaLaboratory/ColorTransferLab.git
 ```
 
 ### **Server Instance 1**:
+This step is only necessary when you want to host the whole system by yourself
+1. Install NodeJS Packages:
+```
+npm install
+```
 
+2. Start the test server:
+```
+npm start
+```
 
 ### **Server Instance 2**:
 1. Download the [`Models.zip`](https://potechius.com/Downloads/Models.zip) file, unpack it and place the `Models` folder at `<project_root>/server/Models`. This folder contains weights for algorithms based on neural networks.
@@ -33,17 +42,6 @@ source env/bin/activate
 2. Install requirements:
 ```
 pip install -U -r reauirements/requirements.txt
-```
-
-Client:
-1. Install NodeJS Packages:
-```
-npm install
-```
-
-2. Start the test server:
-```
-npm start
 ```
 
 ## 2. Datatypes
