@@ -152,7 +152,7 @@ TODO
     <td>This area can visualize images and 3D point clouds by dragging it from the Items-Menu and dropping it to this area. The object within this area will be used as *Reference*-Input for the color transfer.</td>
   </tr>
   <tr>
-    <td width="25%" align="right">$\textcolor{red}{\textrm{\textbf{Multi Input}}}$</td>
+    <td width="25%" align="right">$\textcolor{red}{\textrm{\textbf{Multi Input (not available yet)}}}$</td>
     <td>This area allows the user to set multiple reference images.</td>
   </tr>
   <tr>
