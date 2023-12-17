@@ -10,7 +10,7 @@
 
 
 ## 2. Initialization
-This tool offers two ways of running the algorithms. Either by using the provided [frontend](https://potechius.com/ColorTransferLab) and running your own compute engine (see cahpter 2.1) or by hosting the whole system by yourself (see chapter 2.2) 
+This tool offers two ways of running the algorithms. Either by using the provided [frontend](https://potechius.com/ColorTransferLab) and running your own **Server Instance 2** (see chapter 2.1) or by hosting the whole system by yourself (see chapter 2.2) 
 
 ### **General**:
 1. Download the repository:
