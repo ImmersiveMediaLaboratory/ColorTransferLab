@@ -145,9 +145,23 @@ TODO
 
 ## 3. Interface
 
-### Algorithms-Sidebar
-
 <table>
+<th align="center">
+<img width="441" height="1">
+<p> 
+<small>
+ALGORITHMS SIDEBAR
+</small>
+</p>
+</th>
+<th align="center">
+<img width="441" height="1">
+<p> 
+<small>
+DESCRIPTION
+</small>
+</p>
+</th>
   <tr>
     <td width="25%"><b>Color Transfer</b></td>
     <td>This tab provides a collection of 12 color transfer algorithms for images and 3D point clouds. A list of available algorithms can be find in the <a href="https://github.com/ImmersiveMediaLaboratory/ColorTransferLib">ColorTransferLib</a>.</td>
@@ -166,8 +180,23 @@ TODO
   </tr>
 </table>
 
-### Renderer-Area
 <table>
+<th align="center">
+<img width="441" height="1">
+<p> 
+<small>
+RENDERER AREA
+</small>
+</p>
+</th>
+<th align="center">
+<img width="441" height="1">
+<p> 
+<small>
+DESCRIPTION
+</small>
+</p>
+</th>
   <tr>
     <td width="25%"><b>Source</b></td>
     <td>This area can visualize images and 3D point clouds by dragging it from the Items-Menu and dropping it to this area. The object within this area will be used as *Source*-Input for the color transfer.</td>
@@ -190,8 +219,23 @@ TODO
   </tr>
 </table>
 
-### Data-Sidebar
 <table>
+<th align="center">
+<img width="441" height="1">
+<p> 
+<small>
+DATA SIDEBAR
+</small>
+</p>
+</th>
+<th align="center">
+<img width="441" height="1">
+<p> 
+<small>
+DESCRIPTION
+</small>
+</p>
+</th>
   <tr>
     <td width="25%"><b>Database</b></td>
     <td>...</td>
