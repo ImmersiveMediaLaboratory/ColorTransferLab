@@ -135,6 +135,7 @@ TODO
 
 <details>
 <summary>[3] Using the provided frontend and running your own Server Instance 2</summary>
+	
 ### **General Preparation**:
 Run the following commands within the folder `<project_root>`.
 
