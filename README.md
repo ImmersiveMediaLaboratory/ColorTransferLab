@@ -54,14 +54,14 @@ The **SI1** entries have to be additionally set in `<project_root>/instances/cli
 	"SI1" : {
 		"protocol": "https",
 		"lan": "192.168.178.182",
-        	"wan": "potechius.com",
+        	"wan": "yourdomain.com",
 		"port": 9000
 	},
 	"SI2" : {
 		"name": "GPU Server",
 		"protocol": "https",
         	"lan": "192.168.178.182",
-        	"wan": "potechius.com",
+        	"wan": "yourdomain.com",
 		"port": 9001,
 		"visibility": "private"
 	}
@@ -118,11 +118,14 @@ unzip Testdata.zip
 rm Testdata.zip
 ```
 
-
 $\textcolor{orange}{\textrm{\textbf{3. Run Server Instance 2}}}$
 ```
 python main.py
 ```
+
+$\textcolor{orange}{\textrm{\textbf{4. Access the web app}}}$<br>
+The web app will be availabe at `https://yourdomain:9000/ColorTransferLab`.
+
 ![BlueLine](https://github.com/ImmersiveMediaLaboratory/ColorTransferLab/assets/15614886/0e61929f-c0d1-41ab-9eaa-44e21fc6dfbe)
 
 
@@ -198,6 +201,10 @@ The web app will be available at `http://192.168.178.182:3000/ColorTransferLab/`
 cd ../server_1
 python main.py
 ```
+
+$\textcolor{orange}{\textrm{\textbf{4. Access the web app}}}$<br>
+The web app will be availabe at `http://192.168.178.182:3000/ColorTransferLab`.
+
 ![BlueLine](https://github.com/ImmersiveMediaLaboratory/ColorTransferLab/assets/15614886/0e61929f-c0d1-41ab-9eaa-44e21fc6dfbe)
 
 ### **Server Instance 2**:
@@ -299,6 +306,10 @@ $\textcolor{orange}{\textrm{\textbf{3. Run Server Instance 2}}}$
 ```
 python main.py
 ```
+
+$\textcolor{orange}{\textrm{\textbf{4. Access the web app}}}$<br>
+The web app will be availabe at `https://potechius.com/ColorTransferLab`.
+
 ![BlueLine](https://github.com/ImmersiveMediaLaboratory/ColorTransferLab/assets/15614886/0e61929f-c0d1-41ab-9eaa-44e21fc6dfbe)
 
 </details>
