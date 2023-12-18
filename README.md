@@ -62,45 +62,48 @@ The **SI1** entries have to be additionally set in `<project_root>/instances/cli
 }
 ```
 
-5. SSL certificates:<br>
+
+$\textcolor{orange}{\textrm{\textbf{5. SSL certificates}}}$<br>
 In order to run the tool via HTTPS, SSL certificates are necessary. Three files have to be generated via e.g. [ZeroSSL](https://zerossl.com/) and placed in `<project_root>/ressources/security`. (1) **ca_bundle.crt** containing the root and intermediate certificates, (2) **certificate.crt** containing the SSL certificate and (3) **private.key** containing the private key.
 
+![BlueLine](https://github.com/ImmersiveMediaLaboratory/ColorTransferLab/assets/15614886/0e61929f-c0d1-41ab-9eaa-44e21fc6dfbe)
 
 ### **Server Instance 1**:
 This step is only necessary when you want to host the whole system by yourself. Run the following commands within the folder `<project_root>/instances/client`.
-1. Install NodeJS Packages:
+$\textcolor{orange}{\textrm{\textbf{1. Install NodeJS Packages}}}$
 ```
 npm install
 ```
 
-2. Compiles the React project into HTML/CSS/JS files:
+$\textcolor{orange}{\textrm{\textbf{2. Compiles the React project into HTML/CSS/JS files}}}$
 ```
 npm run build
 ```
 
-3. Move build to Server Instance 1:
+$\textcolor{orange}{\textrm{\textbf{3. Move build to Server Instance 1}}}$
 The generated build files in `<project_root>/instances/client/build` have to be copied to `<project_root>/instances/server_1` to make the web interface available.
 ```
 cp -a build/. ../server_1/ColorTransferLab
 ```
 
-4. Run Server Instance 1:
+$\textcolor{orange}{\textrm{\textbf{4. Run Server Instance 1}}}$
 ```
 cd ../server_1
 python main.py
 ```
-
+![BlueLine](https://github.com/ImmersiveMediaLaboratory/ColorTransferLab/assets/15614886/0e61929f-c0d1-41ab-9eaa-44e21fc6dfbe)
 
 ### **Server Instance 2**:
 Run the following commands within the folder `<project_root>/instances/server_2`.
-1. Download the [`Models.zip`](https://potechius.com/Downloads/Models.zip) file, unpack it and place the `Models` folder at `<project_root>/server/Models`. This folder contains weights for algorithms based on neural networks.
+$\textcolor{orange}{\textrm{\textbf{1. Download weights}}}$<br>
+Download the [`Models.zip`](https://potechius.com/Downloads/Models.zip) file, unpack it and place the `Models` folder at `<project_root>/server/Models`. This folder contains weights for algorithms based on neural networks.
 ```
 wget https://potechius.com/Downloads/Models.zip
 unzip Models.zip
 rm Models.zip
 ```
 
-2. Download testdata and previews:<br>
+$\textcolor{orange}{\textrm{\textbf{2. Download testdata and previews}}}$<br>
 Currently not all previews for the test data are available.
 ```
 wget https://potechius.com/Downloads/Testdata.zip
@@ -109,7 +112,7 @@ rm Testdata.zip
 ```
 
 
-3. Run Server Instance 2:
+$\textcolor{orange}{\textrm{\textbf{3. Run Server Instance 2}}}$
 ```
 python main.py
 ```
