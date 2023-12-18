@@ -23,9 +23,6 @@ The system's main purpose is color transfer application and evaluation, achieved
 
 ## 2. Initialization
 This tool offers three ways of running the algorithms via the web interface. 
-- Using the provided [frontend](https://potechius.com/ColorTransferLab) and running your own **Server Instance 2**
-- Hosting the whole system locally by yourself with remote access
-- Hosting the whole system locally by yourself without remote access
 
 <details>
 <summary>[1] Hosting the whole system locally by yourself with remote access</summary>
