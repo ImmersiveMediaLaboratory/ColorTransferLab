@@ -153,15 +153,15 @@ TODO
     <td>This tab provides a collection of 12 color transfer algorithms for images and 3D point clouds. A list of available algorithms can be find in the <a href="https://github.com/ImmersiveMediaLaboratory/ColorTransferLib">ColorTransferLib</a>.</td>
   </tr>
   <tr>
-    <td>$\textcolor{red}{\textrm{\textbf{Classification (not available yet)}}}$</td>
+    <td>$\textcolor{red}{\textrm{\textbf{Classification (N/A)}}}$</td>
     <td>This tab will provide a collection of classification algorithms for images, 3D point clouds and 3D meshes.</td>
   </tr>
   <tr>
-    <td>$\textcolor{red}{\textrm{\textbf{Reconstruction (not available yet)}}}$</td>
+    <td>$\textcolor{red}{\textrm{\textbf{Reconstruction (N/A)}}}$</td>
     <td>This tab will provide a collection of reconstruction algorithms for images in order to generate 3D point clouds.</td>
   </tr>
   <tr>
-    <td>$\textcolor{red}{\textrm{\textbf{Registration (not available yet)}}}$</td>
+    <td>$\textcolor{red}{\textrm{\textbf{Registration (N/A)}}}$</td>
     <td>This tab will provide a collection of 3D point cloud registration algorithms.</td>
   </tr>
 </table>
@@ -221,7 +221,7 @@ TODO
     <td>Shows the folders and objects which are contained within the corresponding Database-Folder.</td>
   </tr>
   <tr>
-    <td width="25%">$\textcolor{red}{\textrm{\textbf{Objects (not available yet)}}}$</td>
+    <td width="25%">$\textcolor{red}{\textrm{\textbf{Objects (N/A)}}}$</td>
     <td>This area will contain the seperate object within one selected and segemented object.</td>
   </tr>
 </table>
@@ -239,6 +239,22 @@ TODO
    ![information](https://user-images.githubusercontent.com/15614886/193003445-86d08284-4923-43fd-9e54-5d9bc6546525.png)
 
 <table>
+<th align="center">
+<img width="441" height="1">
+<p> 
+<small>
+CONSOLE TAB
+</small>
+</p>
+</th>
+<th align="center">
+<img width="441" height="1">
+<p> 
+<small>
+DESCRIPTION
+</small>
+</p>
+</th>
   <tr>
     <td width="25%"><b>Console</b></td>
     <td>Shows information about the current state of the application with corresponding time stamps.</td>
@@ -261,8 +277,23 @@ TODO
   </tr>
 </table>
 
-### Buttons
 <table width="100%" leftmargin=0 rightmargin=0>
+<th align="center">
+<img width="441" height="1">
+<p> 
+<small>
+BUTTONS
+</small>
+</p>
+</th>
+<th align="center">
+<img width="441" height="1">
+<p> 
+<small>
+DESCRIPTION
+</small>
+</p>
+</th>
   <tr>
     <td width="25%"><b>Compare</b></td>
     <td>By clicking on this button objective evaluation metrics will be applied on the object in the `Comparison`-Area and the `Output`-Area. This only works if an output was generated and a comparison object was selected.</td>
@@ -277,13 +308,12 @@ TODO
   </tr>
 </table>
 
-### Settings
 <table>
 <th align="center">
 <img width="441" height="1">
 <p> 
 <small>
-SETTING
+SETTINGS
 </small>
 </p>
 </th>
