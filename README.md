@@ -226,6 +226,7 @@ TODO
   </tr>
 </table>
 
+<!---
 ### Console-Area
 1. **Console**  
    ![console](https://user-images.githubusercontent.com/15614886/192982467-3f2b23e3-e88f-475e-a507-a71c999b263c.png)
@@ -237,6 +238,7 @@ TODO
    ![colorstatistics](https://user-images.githubusercontent.com/15614886/192982998-dba4b666-59ba-4fe8-979b-39794ae8f1b5.png)
 5. **Information**  
    ![information](https://user-images.githubusercontent.com/15614886/193003445-86d08284-4923-43fd-9e54-5d9bc6546525.png)
+--->
 
 <table>
 <th align="center">
