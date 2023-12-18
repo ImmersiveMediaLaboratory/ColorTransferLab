@@ -161,15 +161,15 @@ The **SI1** entries have to be additionally set in `<project_root>/instances/cli
 {
 	"SI1" : {
 		"protocol": "https",
-        "lan": "192.168.178.182",
-        "wan": "potechius.com",
-		"port": 9000
+        	"lan": "0.0.0.0",
+        	"wan": "potechius.com",
+		"port": 443
 	},
 	"SI2" : {
 		"name": "GPU Server",
 		"protocol": "https",
-        "lan": "192.168.178.182",
-        "wan": "potechius.com",
+        	"lan": "192.168.178.182",
+        	"wan": "potechius.com",
 		"port": 9001,
 		"visibility": "private"
 	}
