@@ -95,6 +95,7 @@ python main.py
 
 ### **Server Instance 2**:
 Run the following commands within the folder `<project_root>/instances/server_2`.
+
 $\textcolor{orange}{\textrm{\textbf{1. Download weights}}}$<br>
 Download the [`Models.zip`](https://potechius.com/Downloads/Models.zip) file, unpack it and place the `Models` folder at `<project_root>/server/Models`. This folder contains weights for algorithms based on neural networks.
 ```
