@@ -379,7 +379,7 @@ DESCRIPTION
   </tr>
   <tr>
     <td width="25%"><b>Reference</b></td>
-    <td>...</td>
+    <td> </td>
   </tr>
   <tr>
     <td width="25%" align="right"><b>Single Input</b></td>
@@ -414,7 +414,7 @@ DESCRIPTION
 </th>
   <tr>
     <td width="25%"><b>Database</b></td>
-    <td>...</td>
+    <td> </td>
   </tr>
   <tr>
     <td width="25%" align="right"><b>Output</b></td>
