@@ -7,7 +7,16 @@
 ColorTransferLab is a web-based user interface for the application and evaluation of color transfer algorithms. It is based on a two-server architecture as described in Chapter 1, **System Architecture**. This tool utilizes the Python library [ColorTransferLib](https://github.com/ImmersiveMediaLaboratory/ColorTransferLib), which contains available color transfer and image quality assessment metrics. ColorTransferLab not only enables the application of color transfer to images but also extends to 3D objects (as explained in Chapter 3, **Datatypes**).
 
 ## 1. System Architecture
-...
+The core of this system is Server Instance 2 (SE2) with the Compute Engine (CE) acting as an HTTP-Python server for color transfer algorithms and evaluations using ColorTransferLib. SE2 offers test objects (images, point clouds, meshes) and is compatible with CPU-supported systems, preferably GPUs.
+
+During operation, SE2 registers itself with Server Instance 1 (SE1) by sending its IP address via a POST request, and this info is stored in the CE storage. The Backend checks CE availability regularly.
+
+Users access the Frontend via SE1, which delivers compiled React Code as HTML/CSS/JS files. CE addresses are displayed on the Frontend for users to choose a compute system. Selection triggers requests for object paths, color transfer methods, and IQA metrics from SE2.
+
+Upon selecting an item from the database, a request is sent to SE2 for downloading and displaying the item on the Frontend. Alternatively, users can upload an item to the Object Storage via a POST request, initiating object information calculations on SE2 (color distribution, 3D color histograms, etc.).
+
+The system's main purpose is color transfer application and evaluation, achieved through a corresponding POST request to CE, which responds with results.
+
 ![SystemArchitecture](https://github.com/ImmersiveMediaLaboratory/ColorTransferLab/assets/15614886/1a47b46d-f097-4151-a4ef-62c7f8533938)
 
 
