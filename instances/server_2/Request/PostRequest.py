@@ -44,26 +44,6 @@ class PostRequest():
         out_path = init_path + "/" + file_out
 
 
-
-        # print(src_path)
-        # print(ref_path)
-        # print(out_path)
-
-        #check the source and reference types
-        # if extension_com == "ply":
-        #     loader_src = PLYLoader(com_path)
-        #     src = loader_src.get_mesh()
-        # elif extension_com == "png" or extension_com == "jpg":
-        #     src = Image(file_path=com_path)
-
-        # if extension_out == "ply":
-        #     loader_ref = PLYLoader(out_path)
-        #     ref = loader_ref.get_mesh()
-        # elif extension_out == "png" or extension_out == "jpg":
-        #     ref = Image(file_path=out_path)
-
-
-
         response["service"] = "evaluation"
         response["enabled"] = "true"
         response["data"] = {}
@@ -81,14 +61,11 @@ class PostRequest():
             metrics = ColorTransferEvaluation.get_available_metrics()
             #metrics = ["NIQE"]
             for mm in metrics:
-                print(mm)
                 evalval = cte.apply(mm)
                 if np.isinf(evalval) or np.isnan(evalval):
                     response["data"][mm] = 99999
                 else:
                     response["data"][mm] = evalval
-                print(response["data"][mm])
-            print(response)
         else:
             response["enabled"] = "false"
 
@@ -191,9 +168,7 @@ class PostRequest():
             response["enabled"] = "true"
 
             output = func_timeout.func_timeout(240, ct.apply, args=(), kwargs=None)
-            #output = ct.apply()
 
-            print(output)
             if output["status_code"] == -1:
                 response["enabled"] = "false"
                 response["data"]["message"] = output["response"]
@@ -241,8 +216,6 @@ class PostRequest():
     @staticmethod
     def color_histogram(server, init_path, response):
         fpath = server.getJson()["object_path"]
-        print("fpath")
-        print(fpath)
         # check file extension
         file_path_no_ext, file_ext = fpath.split(".")
         if file_ext == "png" or file_ext == "jpg":
@@ -257,12 +230,8 @@ class PostRequest():
             image_path = fp_no_ext + ".png"
             material_path = fp_no_ext + ".mtl"
             if os.path.isfile(image_path) and os.path.isfile(material_path):
-                # print(image_path)
-                # src = Image(file_path=image_path)
                 src = Mesh(file_path=file_path, datatype="Mesh")
             else:
-                # loader_src = PLYLoader(file_path)
-                # src = loader_src.get_mesh()
                 src = Mesh(file_path=file_path, datatype="PointCloud")
                 
         else:
@@ -373,8 +342,6 @@ class PostRequest():
                 # sent_data["trianglenormals"] = "yes" if np.asarray(mesh.triangle_normals).shape[0] != 0 else "no"
        
             else:
-
-                print("HERE I AM")
                 mesh = Mesh(file_path=file_path, datatype="PointCloud")
                 sent_data["num_vertices"] = mesh.get_num_vertices()
                 sent_data["vertexcolors"] = "yes" if mesh.has_vertex_colors() else "no"
@@ -395,20 +362,11 @@ class PostRequest():
         else:
             data = "FUUHII"
 
-        # print(sent_data)
-
         response["service"] = "object_info"
         response["enabled"] = "true"
         response["data"] = sent_data
         return response
-    
 
-
-        # response["service"] = "object_information"
-        # response["enabled"] = "true"
-        # response["data"] = data
-        # print(response["data"])
-        # return response
     
     # ------------------------------------------------------------------------------------------------------------------
     # 
@@ -533,6 +491,5 @@ class PostRequest():
                 # into a specific location.
                 zObject.extractall(path=folderpath)
             os.remove(filepath)
-        # print(filepath)
 
         return wasSuccess, files_uploaded

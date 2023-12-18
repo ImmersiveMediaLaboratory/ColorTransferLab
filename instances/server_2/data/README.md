@@ -1,1 +1,0 @@
-All data, e.g., images, 3D point clouds and meshes have to be placed here.

@@ -1,6 +1,3 @@
-# kill the process which uses port 3000
-#sudo kill -9 `sudo lsof -t -i:3000`
-
 ##########################################################################################################
 # Removes all previous in- and outputs
 ##########################################################################################################
@@ -16,7 +13,6 @@ NC='\033[0m' # No Color
 
 
 source "../ressources/env/bin/activate"
-
 
 ##########################################################################################################
 #  Run Server Instance 1
@@ -36,17 +32,13 @@ cd ../server_2
 
 gnome-terminal -- bash -c "python main.py"
 
-sleep 2
-
-#python ../../scripts/localapp.py
-
 ##########################################################################################################
 #  Show User URL
 ##########################################################################################################
-echo -e "${GREEN}[3] Open app via http://192.168.178.182:3000/ColorTransferLab/${NC}"
+echo -e "${GREEN}[3] Open app via https://potechius.com:9000/ColorTransferLab/${NC}"
 
 # URL of the webpage you want to open
-webpage_url="http://192.168.178.182:3000/ColorTransferLab/"
+webpage_url="https://potechius.com:9000/ColorTransferLab/"
 
 # Open the webpage in the default web browser
 xdg-open "$webpage_url"

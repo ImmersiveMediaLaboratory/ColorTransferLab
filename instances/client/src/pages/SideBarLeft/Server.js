@@ -21,8 +21,7 @@ import {server_request} from 'utils/Utils'
 import './Server.scss';
 
 export let active_server = ""
-//export let SE1_server = "http://192.168.178.49:8002"
-export let SE1_server = "https://potechius.com:9000"
+export let SE1_server = "https://potechius.com:9000";
 
 /*-----------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------------
@@ -70,6 +69,11 @@ function Server(props) {
     -------------------------------------------------------------------------------------------------------------*/
     function request_available_servers() {
         let stat_obj = server_request("GET", "available_servers", SE1_server, null)
+
+        if (stat_obj["enabled"]) 
+            consolePrint("INFO", "Servers were found... ")
+        else 
+            consolePrint("INFO", "No server instance is running")
 
         // check if the request of available servers is fulfilled
         if (stat_obj["enabled"]) 
