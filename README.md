@@ -22,7 +22,7 @@ The system's main purpose is color transfer application and evaluation, achieved
 
 
 ## 2. Initialization
-This tool offers three ways of running the algorithms via the web interface. 
+This tool offers three ways of running the algorithms via the web interface. Either follow the steps below or run the script `initialization.sh` within the `scripts` folder
 
 <details>
 <summary>[1] Hosting the whole system locally by yourself with remote access</summary>
