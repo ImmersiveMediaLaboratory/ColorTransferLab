@@ -129,7 +129,7 @@ python main.py
 </details>
 
 <details>
-<summary>[2] Hosting the whole system locally by yourself without remote access</summary>
+<summary>[2] Running the system locally</summary>
 TODO
 </details>
 
