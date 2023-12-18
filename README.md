@@ -158,23 +158,19 @@ The **SI1** entries have to be additionally set in `<project_root>/instances/cli
 	"SI1" : {
 		"protocol": "https",
 		"lan": "192.168.178.182",
-        	"wan": "potechius.com",
-		"port": 9000
+        	"wan": "192.168.178.182",
+		"port": 3000
 	},
 	"SI2" : {
 		"name": "GPU Server",
 		"protocol": "https",
         	"lan": "192.168.178.182",
-        	"wan": "potechius.com",
-		"port": 9001,
+        	"wan": "192.168.178.182",
+		"port": 3001,
 		"visibility": "private"
 	}
 }
 ```
-
-
-$\textcolor{orange}{\textrm{\textbf{5. SSL certificates}}}$<br>
-In order to run the tool via HTTPS, SSL certificates are necessary. Three files have to be generated via e.g. [ZeroSSL](https://zerossl.com/) and placed in `<project_root>/ressources/security`. (1) **ca_bundle.crt** containing the root and intermediate certificates, (2) **certificate.crt** containing the SSL certificate and (3) **private.key** containing the private key.
 
 ![BlueLine](https://github.com/ImmersiveMediaLaboratory/ColorTransferLab/assets/15614886/0e61929f-c0d1-41ab-9eaa-44e21fc6dfbe)
 
@@ -197,6 +193,7 @@ cp -a build/. ../server_1/ColorTransferLab
 ```
 
 $\textcolor{orange}{\textrm{\textbf{4. Run Server Instance 1}}}$
+The web app will be available at `http://192.168.178.182:3000/ColorTransferLab/`. Change the server address depending on your system.
 ```
 cd ../server_1
 python main.py
@@ -221,7 +218,6 @@ wget https://potechius.com/Downloads/Testdata.zip
 unzip Testdata.zip
 rm Testdata.zip
 ```
-
 
 $\textcolor{orange}{\textrm{\textbf{3. Run Server Instance 2}}}$
 ```
