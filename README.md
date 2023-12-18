@@ -169,7 +169,7 @@ Open the file `<project_root>/ressources/settings/settings.json` and modify the 
 		"name": "GPU Server",
 		"protocol": "https",
         	"lan": "192.168.178.182",
-        	"wan": "potechius.com",
+        	"wan": "yourdomain.com",
 		"port": 9001,
 		"visibility": "private"
 	}
