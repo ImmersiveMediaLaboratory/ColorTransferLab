@@ -1,6 +1,10 @@
 # Copyright (C) 2022 The Qt Company Ltd.
 # SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
 
+# sudo apt-get install libxcb-cursor0
+# sudo apt install mesa-utils
+# sudo apt-get install --reinstall libgl1-mesa-glx libgl1-mesa-dri
+
 """PySide6 WebEngineWidgets Example"""
 
 import sys
@@ -36,8 +40,8 @@ class MainWindow(QMainWindow):
 
         self.webEngineView = QWebEngineView()
         self.setCentralWidget(self.webEngineView)
-        #initialUrl = 'http://qt.io'
-        initialUrl = 'http://localhost:3000/ColorTransferLab'
+        initialUrl = 'http://qt.io'
+        #initialUrl = 'http://192.168.178.182:3000/ColorTransferLab'
         #self.addressLineEdit.setText(initialUrl)
         self.webEngineView.load(QUrl(initialUrl))
         #self.webEngineView.page().titleChanged.connect(self.setWindowTitle)

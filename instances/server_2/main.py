@@ -148,7 +148,6 @@ class MyServer(SimpleHTTPRequestHandler):
 
         elif self.path == "/color_histogram":
             response = PostRequest.color_histogram(self, init_path, response)
-            print(response)
         elif self.path == "/color_distribution":
             response = PostRequest.color_distribution(self, init_path, response)
         elif self.path == "/upload":

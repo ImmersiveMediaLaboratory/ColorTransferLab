@@ -1,16 +1,16 @@
 {
-	"SI1" : {
-		"protocol": "https",
-        "lan": "0.0.0.0",
-        "wan": "potechius.com",
-		"port": 8003
-	},
-	"SI2" : {
-		"name": "GPU Server",
-		"protocol": "https",
-        "lan": "192.168.178.182",
-        "wan": "potechius.com",
-		"port": 9001,
-		"visibility": "private"
-	}
+  "SI1": {
+    "protocol": "https",
+    "lan": "192.168.178.182",
+    "wan": "potechius.com",
+    "port": 9000
+  },
+  "SI2": {
+    "name": "dfg",
+    "protocol": "https",
+    "lan": "192.168.178.182",
+    "wan": "potechius.com",
+    "port": 9001,
+    "visibility": "private"
+  }
 }
