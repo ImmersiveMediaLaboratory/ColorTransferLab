@@ -146,6 +146,7 @@ TODO
 ## 3. Interface
 
 ### Algorithms-Sidebar
+
 <table>
   <tr>
     <td width="25%"><b>Color Transfer</b></td>
@@ -278,6 +279,22 @@ TODO
 
 ### Settings
 <table>
+<th align="center">
+<img width="441" height="1">
+<p> 
+<small>
+SETTING
+</small>
+</p>
+</th>
+<th align="center">
+<img width="441" height="1">
+<p> 
+<small>
+DESCRIPTION
+</small>
+</p>
+</th>
   <tr>
     <td width="25%"><b>Grid</b></td>
     <td>Enables/Disables the grid on the XZ-plane in the 3D view of all renderers.</td>
