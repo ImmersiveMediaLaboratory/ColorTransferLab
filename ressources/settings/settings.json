@@ -1,9 +1,9 @@
 {
 	"SI1" : {
 		"protocol": "https",
-        "lan": "192.168.178.182",
+        "lan": "0.0.0.0",
         "wan": "potechius.com",
-		"port": 9000
+		"port": 8003
 	},
 	"SI2" : {
 		"name": "GPU Server",

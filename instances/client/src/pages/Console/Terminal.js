@@ -59,7 +59,7 @@ function Terminal(props) {
     -- ...
     -------------------------------------------------------------------------------------------------------------*/
     useEffect(() => {
-        consolePrint("INFO", "To reveal the available Compute Engines (CE), simply press the button located within the SERVER section. One of the Compute Engines, named 'Test Server', operates on an EC2 Instance within the AWS framework. Notably, this instance is dedicated solely to demonstration objectives, equipped with a lower-performance CPU and memory engine. Consequently, it's important to note that certain algorithms may not function optimally due to the constrained computational resources.")
+        consolePrint("INFO", "To reveal the available Compute Engines (CE), simply press the button located within the SERVER section. To set up and make your server visible here, please follow the instructions provided on out GitHub page at https://github.com/ImmersiveMediaLaboratory/ColorTransferLab ...")
     }, []);
 
     /*-------------------------------------------------------------------------------------------------------------
