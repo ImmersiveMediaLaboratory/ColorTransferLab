@@ -184,10 +184,6 @@ TODO
     <td>This area allows the user to select multiple colors which will be used as reference.</td>
   </tr>
   <tr>
-    <td width="25%" align="right"><b>Comparison</b></td>
-    <td>This area can visualize images and 3D point clouds by dragging it from the Items-Menu and dropping it to this area. The object within this area will be used as *Comparison*-Input for the color transfer. See `Buttons/Compare`-Section for more information.</td>
-  </tr>
-  <tr>
     <td width="25%"><b>Output</b></td>
     <td>his area can visualize images and 3D point clouds applying a color transfer algorithm. Only the results can be visualized here. See `Buttons/Start`-Section for more information.</td>
   </tr>
