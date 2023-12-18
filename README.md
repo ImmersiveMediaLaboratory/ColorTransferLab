@@ -143,7 +143,8 @@ TODO
 
 ## 2. Datatypes
 
-TODO
+![datatypes](https://github.com/ImmersiveMediaLaboratory/ColorTransferLab/assets/15614886/2191f2f7-901c-4247-a257-fac0eb8123b3)
+
 
 ## 3. Interface
 
