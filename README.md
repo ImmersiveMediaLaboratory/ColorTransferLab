@@ -569,6 +569,11 @@ DESCRIPTION
 
 --- 
 
+## List of other Color Transfer Tools
+- [Palette-based Photo Recoloring](https://recolor.cs.princeton.edu/demo/index.html)
+
+--- 
+
 ## Citation
 If you utilize this code in your research, kindly provide a citation:
 ```
