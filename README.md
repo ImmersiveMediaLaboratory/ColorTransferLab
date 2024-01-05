@@ -572,6 +572,8 @@ DESCRIPTION
 ## List of other Color Transfer Tools
 - [Palette-based Photo Recoloring](https://recolor.cs.princeton.edu/demo/index.html)
 - [L2 Divergence for robust colour transfer: Demo](https://colourtransferdemo.scss.tcd.ie/colourTransferDemo.html)
+- [A Web App Implementation for Image Colour Transfer](https://www.dustfreesolutions.com/CT/CT.html)
+- [Photo Recoloring](http://b-z.github.io/photo_recoloring/)
 
 --- 
 
