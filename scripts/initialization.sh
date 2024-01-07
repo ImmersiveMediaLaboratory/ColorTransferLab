@@ -173,7 +173,7 @@ elif [[ ${usecase} == 2 ]]; then
     SE2_PROTOCOL="http"
     SE1_WAN=${SE1_LAN}
 elif [[ ${usecase} == 3 ]]; then
-    SE1_PORT=8003
+    SE1_PORT=8002
     SE2_PORT=9001
     SE1_PROTOCOL="https"
     SE2_PROTOCOL="https"

@@ -3,10 +3,10 @@
     "protocol": "https",
     "lan": "192.168.178.182",
     "wan": "potechius.com",
-    "port": 8003
+    "port": 8002
   },
   "SI2": {
-    "name": "qw",
+    "name": "ttt",
     "protocol": "https",
     "lan": "192.168.178.182",
     "wan": "potechius.com",
