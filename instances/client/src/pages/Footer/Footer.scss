@@ -12,7 +12,8 @@ Please see the LICENSE file that should have been included as part of this packa
 
 #Footer_footer {
     position: absolute;
-    margin-top: calc(100vh - 50px);
+    // margin-top: calc(100vh - 50px);
+    top: calc(100% - #{$footer_height});
     padding-top: 15px;
     height: 35px;
     width: 100vw;

@@ -18,10 +18,12 @@ Please see the LICENSE file that should have been included as part of this packa
     border: solid $darkgrey $box_border;
     //height: calc((#{$sidebarright_element_innerheight} + 3px) * 2);//sidebarright_element_innerheight;
     height: $sidebarright_element_innerheight;
+    pointer-events: auto;
+    // background-color: green;
 }
 
 #items_header {
-    width: $sidebarright_element_innerwidth;
+    width: 100%;
     height: 25px;
     background-color: $darkgrey;
     color: $lightgrey
@@ -42,8 +44,8 @@ Please see the LICENSE file that should have been included as part of this packa
 }
 
 #items_body {
-    width: $sidebarright_element_innerwidth;
-    height: calc(#{$sidebarright_element_innerheight} - 25px );
+    width: 100%;
+    height: calc(100% - 25px);
     background-color: $grey;
     color: $lightgrey;
     overflow-y: scroll;
@@ -53,9 +55,52 @@ Please see the LICENSE file that should have been included as part of this packa
 .items_elem {
     position: relative;
     $padding: 5px;
-    width: calc(#{$sidebarright_element_innerwidth} - 2 * #{$padding});
+    width: 100%;
     height: 40px;
     font-size: 11px;
+}
+
+.item_source_button {
+    position: absolute;
+    top: 0;
+    width: calc(50% - 5px);
+    height: calc(100% - 5px);
+    background-color: $darkgrey;;
+    border: solid $lightgrey 1px;
+    margin: 2px;
+    z-index: 99999999;
+    opacity: 0.9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.item_source_button:hover {
+    filter: brightness(1.5);
+}
+
+.item_reference_button {
+    position: absolute;
+    top: 0;
+    left: calc(50% - 2px);
+    width: calc(50% - 5px);
+    height: calc(100% - 5px);
+    background-color: $darkgrey;;
+    border: solid $lightgrey 1px;
+    margin: 2px;
+    z-index: 99999999;
+    opacity: 0.9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.item_reference_button:hover {
+    filter: brightness(1.5);
 }
 
 .items_elem:hover {
@@ -86,5 +131,23 @@ Please see the LICENSE file that should have been included as part of this packa
 }
 
 .items_preview_icon {
+    height: 100%;
+}
+
+#items_return_button {
+    position: absolute;
+    width: 15px;
+    padding: 5px;
+    height: 15px;
+    z-index: 9999;
+    right: 40px;
+    display: none;
+}
+
+#items_return_button:hover {
+    filter: brightness(1.5);
+}
+
+#items_return_icon {
     height: 100%;
 }

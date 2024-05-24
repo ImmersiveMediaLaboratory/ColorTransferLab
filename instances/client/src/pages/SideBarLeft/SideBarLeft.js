@@ -8,7 +8,7 @@ Please see the LICENSE file that should have been included as part of this packa
 */
 
 import React from 'react';
-
+import {useState, useEffect} from "react";
 import Algorithms from './Algorithms'
 import Server from './Server'
 
@@ -25,11 +25,22 @@ import './SideBarLeft.scss';
 -------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------*/
 function SideBarLeft(props) {
+    const [mobileMaxWidth, setMobileMaxWidth] = useState(null);
+
+    useEffect(() => {
+        const styles = getComputedStyle(document.documentElement);
+        setMobileMaxWidth(String(styles.getPropertyValue('--mobile-max-width')).trim());
+    }, []);
+
+    let sidebarleftStyle = {};
+    if (window.innerWidth < mobileMaxWidth) {
+        sidebarleftStyle = {width: "calc(100%)", height: "calc(100% - 300px)"};
+    }
     /*-------------------------------------------------------------------------------------------------------------
     --
     -------------------------------------------------------------------------------------------------------------*/
     return (
-        <div id="SideBarLeft_sidebarleft">  
+        <div id="SideBarLeft_sidebarleft" style={sidebarleftStyle}>  
             <Algorithms/> 
             <Server/>
         </div>

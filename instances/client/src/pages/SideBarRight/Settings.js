@@ -8,6 +8,7 @@ Please see the LICENSE file that should have been included as part of this packa
 */
 
 import React from "react";
+import {useState, useEffect} from "react";
 import './Settings.scss';
 
 
@@ -20,17 +21,38 @@ function Settings(props) {
     const icon_settings = "assets/icons/icon_settings_grey.png";
     const sidebar_settings = "SETTINGS"
 
+    const [mobileMaxWidth, setMobileMaxWidth] = useState(null);
+
+    /*-------------------------------------------------------------------------------------------------------------
+    ---------------------------------------------------------------------------------------------------------------
+    -- HOOKS
+    ---------------------------------------------------------------------------------------------------------------
+    -------------------------------------------------------------------------------------------------------------*/
+
+    /*-------------------------------------------------------------------------------------------------------------
+    -- ...
+    -------------------------------------------------------------------------------------------------------------*/
+    useEffect(() => {
+        const styles = getComputedStyle(document.documentElement);
+        setMobileMaxWidth(String(styles.getPropertyValue('--mobile-max-width')).trim());
+    }, []);
+
+    let componentStyle = {};
+    if (window.innerWidth < mobileMaxWidth) {
+        componentStyle = { display: "none", width: "calc(100% - 6px)", top: "0px", height: "calc(100% - 6px)"};
+    }
+
     return (
-    <div id="settings_main">
+    <div id="settings_main" style={componentStyle}>
         <div id="settings_header">
-        <img id='settings_header_logo' src={icon_settings}/>
+        <img id='settings_header_logo' src={icon_settings} alt=""/>
         <div id='settings_header_name'>{sidebar_settings}</div>
         </div>
         <div id="settings_body">
-        <table>
+        <table style={{width:"100%"}}>
             <tbody>
             <tr>
-                <td>Grid</td>
+                <td className="settings_table_cell">Grid</td>
                 <td><input id="settings_grid" type="checkbox" defaultChecked/></td>
             </tr>
             <tr>

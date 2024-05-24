@@ -15,22 +15,37 @@ Please see the LICENSE file that should have been included as part of this packa
     z-index: 9999;
     margin: $box_margin;
     border: solid $darkgrey $box_border;
-    width: $body_preview_width;
-    height: $body_preview_height;
-    visibility: hidden;
+    width: calc(100% - 6px);
+    height: calc(100% - 6px);
+    display: none;
+    flex-wrap: wrap;
+    justify-content: space-around;
     // visibility: visible;
     overflow-y: scroll;
 }
 
 .preview_card {
     position: relative;
-    float: left;
     margin: 10px;
     background-color: $darkgrey;
     color: $darkgrey;
-    width: 200px;
+    width: 150px;
     height: 150px;
-    text-align: center;
+    //text-align: center;
+    word-wrap: break-word;
+}
+
+.preview_body {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: calc(100% - 30px);
+}
+
+.preview_card:hover {
+    filter: brightness(1.5);
 }
 
 .preview_name {
@@ -44,8 +59,52 @@ Please see the LICENSE file that should have been included as part of this packa
 }
 
 .preview_img {
-    max-width:200px;
-    max-height:120px;
-    width: auto;
-    height: auto;
+    max-width:100%;
+    max-height:100%;
+    object-fit: contain;
+}
+
+.preview_item_source_button {
+    position: absolute;
+    top: 0;
+    width: calc(50% - 5px);
+    height: calc(100% - 5px);
+    background-color: $darkgrey;;
+    border: solid $lightgrey 1px;
+    margin: 2px;
+    z-index: 99999999;
+    opacity: 0.9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 12px;
+    color: $lightgrey;
+}
+
+.preview_item_source_button:hover {
+    filter: brightness(1.5);
+}
+
+.preview_item_reference_button {
+    position: absolute;
+    top: 0;
+    left: calc(50% - 2px);
+    width: calc(50% - 5px);
+    height: calc(100% - 5px);
+    background-color: $darkgrey;;
+    border: solid $lightgrey 1px;
+    margin: 2px;
+    z-index: 99999999;
+    opacity: 0.9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 12px;
+    color: $lightgrey;
+}
+
+.preview_item_reference_button:hover {
+    filter: brightness(1.5);
 }

@@ -14,7 +14,7 @@ Please see the LICENSE file that should have been included as part of this packa
     position: absolute;
     background-color: black;
     height: calc(159px - 30px);
-    width: calc((#{$console_innerwidth} - 2 * 5px - #{$scrolloffset}) / 3 - 8px);
+    width: calc((100% - 2 * 5px - #{$scrolloffset}) / 3 - 8px);
     margin: 4px;
     padding: 0px;
 }
@@ -29,7 +29,7 @@ Please see the LICENSE file that should have been included as part of this packa
     $scrolloffset: 20px;
     position: absolute;
     background-color: $darkgrey;
-    width: calc((#{$console_innerwidth} - 2 * 5px - #{$scrolloffset}) / 3 - 8px);
+    width: 100%;
     padding: 0px;
     height: 20px;
     top: calc(159px - 30px)
@@ -39,11 +39,11 @@ Please see the LICENSE file that should have been included as part of this packa
 #histogram_ref {
     position: absolute;
     $scrolloffset: 20px;
-    left: calc((#{$console_innerwidth} - 2 * 5px - #{$scrolloffset}) / 3 + 8px);
+    left: calc((100% - 2 * 5px - #{$scrolloffset}) / 3 + 8px);
 }
 
 #histogram_out {
     position: absolute;
     $scrolloffset: 20px;
-    left: calc(((#{$console_innerwidth} - 2 * 5px - #{$scrolloffset}) / 3 + 6px) * 2);
+    left: calc(((100% - 2 * 5px - #{$scrolloffset}) / 3 + 6px) * 2);
 }

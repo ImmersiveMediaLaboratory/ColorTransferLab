@@ -26,8 +26,13 @@ $blue: #1C6C90;
 $window_height: 100vh;
 $window_width: 100vw;
 
+$mobile_max_width: 1000;
+
 $box_margin: 2px;
 $box_border: 1px;
+$box_padding: 3px;
+
+$tab_span: 25px;
 
 $header_height: 50px;
 $footer_height: 50px;
@@ -88,6 +93,9 @@ $body_preview_width: calc(#{$window_width} - #{$sidebarleft_width} - #{$sidebarr
     --backgroundcolor: #2B2C34;
     --headercolor: #1F2124;
     --fontcolor: #B4B4B8;
+    // --backgroundcolor: green;
+    // --headercolor: blue;
+    // --fontcolor: red;
 
     font-size: 13px;
     // color: $lightgrey;
@@ -99,6 +107,9 @@ $body_preview_width: calc(#{$window_width} - #{$sidebarleft_width} - #{$sidebarr
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+
+    --mobile-max-width: #{$mobile_max_width};
+    --window-width: #{$window_width};
 }
 
 img { 

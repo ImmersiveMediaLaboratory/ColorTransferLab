@@ -40,7 +40,10 @@ export const consolePrint = (type, output) => {
     //document.getElementById("Console_tab_console_ta").innerHTML += output
 
     var objDiv = document.getElementById("Console_tab_console_ta")
-    objDiv.innerHTML += output
+    objDiv.innerHTML += output 
+    
+    // Scroll to the bottom
+    objDiv.scrollTop = objDiv.scrollHeight;
 }
 
 /*-----------------------------------------------------------------------------------------------------------------

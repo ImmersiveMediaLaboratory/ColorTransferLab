@@ -75,9 +75,14 @@ export const server_post_request = (address, path, data, method, parameters) => 
                     var stat = stat.replaceAll("True", "true");
                     var stat = stat.replaceAll("False", "false");
                     var stat = stat.replaceAll("None", "null");
-                    var stat_obj = JSON.parse(stat);
-                    console.log(stat_obj)
-                    method(stat_obj, parameters)
+                    console.log(stat)
+                    try {
+                        var stat_obj = JSON.parse(stat);
+                        console.log(stat_obj)
+                        method(stat_obj, parameters)
+                    } catch (e) {
+                        console.error("JSON parsing error: ", e);
+                    }
                 } else {
                     console.error(xmlHttp.statusText);
                 }

@@ -21,19 +21,85 @@ Please see the LICENSE file that should have been included as part of this packa
 
 #algorithms_main {
     position: absolute;
-    top: $header_height;
     margin: $box_margin;
     height: calc(#{$sidebarleft_innerheight} - 200px);
     width: $sidebarleft_innerwidth;
     background-color: $grey;
     border: solid $darkgrey $box_border;
+    z-index: 99999;
+    pointer-events: auto;
 }
 
 #algorithms_header {
-    width: $sidebarleft_innerwidth;
+    width: 100%;
     height: 25px;
     background-color: $darkgrey;
     color: $lightgrey;
+}
+
+#algorithms_menu {
+    position: absolute;
+    width: 25px;
+    height: calc(100% - 25px);
+    background-color: $darkgrey;
+    color: $lightgrey;
+    cursor: pointer;
+}
+
+.algorithms_menu_item{
+    width: 23px;
+    height: calc((100% - 10px)  / 5);
+    background-color: $darkgrey;
+    display: flex;
+    float: left;
+    border: 1px solid $grey;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    //transform: rotate(-90deg);
+    color: $lightgrey;
+    cursor: pointer;
+}
+
+.algorithms_menu_item_text {
+    writing-mode: tb-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    font-family: "Arial", Helvetica, sans-serif;
+    color: $lightgrey;
+}
+
+.algorithms_list{
+    position: absolute;
+    left: 25px;
+    width: calc(100% - 25px);
+    height: calc(100% - 25px);
+    overflow: auto;
+    //overflow-y: scroll;
+}
+
+#algorithms_content_classification {
+    display: none;
+}
+
+#algorithms_content_segmentation {
+    display: none;
+}
+
+#algorithms_content_reconstruction {
+    display: none;
+}
+
+#algorithms_content_registration {
+    display: none;
+}
+
+
+
+
+.algorithms_icons {
+    position: absolute;
+    width: 20px;
 }
 
 #algorithms_header_logo {
@@ -63,19 +129,12 @@ Please see the LICENSE file that should have been included as part of this packa
     box-shadow:0px 0px 5px 0px cyan;
 }
 
-.algorithms_list {
-    position: absolute;
-    width: $sidebarleft_algorithms_width;
-    height: calc(#{$sidebarleft_algorithms_height} - 25px + 50px);
-    color: $lightgrey;
-    overflow-y: scroll;
-}
-
 .algorithms_item_icon {
     position: absolute;
     height: 10px;
-    top: 6px;
-    left: 110px;
+    top: 7px;
+    right: 5px;
+    //left: 70px;
 }
 
 .algorithms_item_text {
@@ -126,4 +185,17 @@ Please see the LICENSE file that should have been included as part of this packa
     height: calc((#{$sidebarleft_innerheight} - 25px));
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
+}
+
+.temp_algos {
+    position: absolute;
+    padding: 10px;
+    width: calc(100% - 20px);
+    height: calc(100% - 20px);
+    color: $lightgrey;
+    font-size: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }

@@ -9,7 +9,15 @@ Please see the LICENSE file that should have been included as part of this packa
 
 @import 'settings/Global.scss';
 
-
+#SideBarLeft_sidebarleft {
+    position: absolute;
+    top: $header_height;
+    //background-color: green;
+    height: $sidebarleft_height;
+    width: $sidebarleft_width;
+    z-index: 999999;
+    pointer-events: none;
+}
 // #sidebarleft_main {
 //     position: absolute;
 //     top: $header_height;

@@ -7,11 +7,9 @@ This file is released under the "MIT License Agreement".
 Please see the LICENSE file that should have been included as part of this package.
 */
 
-import React, { useState, useEffect, useRef } from "react";
+import React, {useState, useEffect} from "react";
 import $ from 'jquery';
 
-import Algorithms from "./Algorithms";
-import Database from "pages/SideBarRight/Database";
 import {consolePrint} from 'pages/Console/Terminal'
 import {request_available_metrics} from 'pages/Console/Evaluation'
 import {request_available_methods} from 'pages/SideBarLeft/Algorithms'
@@ -21,7 +19,8 @@ import {server_request} from 'utils/Utils'
 import './Server.scss';
 
 export let active_server = ""
-export let SE1_server = "https://potechius.com:8002";
+//export let SE1_server = "https://potechius.com:8002";
+export let SE1_server = "http://192.168.178.180:8002";
 
 /*-----------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------------
@@ -29,7 +28,9 @@ export let SE1_server = "https://potechius.com:8002";
 -------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------*/
 function Server(props) {
-    const icon_availability_no = "assets/icons/icon_availability_no.png";
+    const [mobileMaxWidth, setMobileMaxWidth] = useState(null);
+
+    //const icon_availability_no = "assets/icons/icon_availability_no.png";
     const icon_availability_yes = "assets/icons/icon_availability_yes.png";
     const icon_server = "assets/icons/icon_server_grey.png";
 
@@ -37,6 +38,24 @@ function Server(props) {
 
     const sidebar_server = "SERVER"
 
+        /*-------------------------------------------------------------------------------------------------------------
+    ---------------------------------------------------------------------------------------------------------------
+    -- HOOKS
+    ---------------------------------------------------------------------------------------------------------------
+    -------------------------------------------------------------------------------------------------------------*/
+
+    /*-------------------------------------------------------------------------------------------------------------
+    -- ...
+    -------------------------------------------------------------------------------------------------------------*/
+    useEffect(() => {
+        const styles = getComputedStyle(document.documentElement);
+        setMobileMaxWidth(String(styles.getPropertyValue('--mobile-max-width')).trim());
+    }, []);
+
+    let componentStyle = {};
+    if (window.innerWidth < mobileMaxWidth) {
+        componentStyle = { display: "none", width: "calc(100% - 6px)", top: "0px", height: "calc(100% - 6px)"};
+    }
     
     /*-------------------------------------------------------------------------------------------------------------
     ---------------------------------------------------------------------------------------------------------------
@@ -92,7 +111,7 @@ function Server(props) {
             $(d).addClass("tooltip server_item").attr("title", elem["address"] + ":" + elem["port"]).appendTo($("#server_body"))
 
             var d_icon = document.createElement('img');
-            if(elem["visibility"] == "public") 
+            if(elem["visibility"] === "public") 
                 $(d_icon).addClass("server_item_icon").attr("src", icon_availability_yes).appendTo($(d))
             else
                 $(d_icon).addClass("server_item_icon").attr("src", icon_availability_yes).appendTo($(d))
@@ -115,24 +134,6 @@ function Server(props) {
     -- STATES
     ---------------------------------------------------------------------------------------------------------------
     -------------------------------------------------------------------------------------------------------------*/
-    // const [time, setTime] = useState(Date.now())
-    const didMount = useRef(false)
-
-    /*-------------------------------------------------------------------------------------------------------------
-    -- ...
-    -------------------------------------------------------------------------------------------------------------*/
-    // useEffect(() => {
-    //     let interval = setInterval(() => setTime(Date.now()), 1000);
-    //     didMount.current = true
-
-    //     return () => {
-    //         clearInterval(interval);
-    //     };
-    // }, []);
-
-
-    // if(didMount.current == true)
-    //     request_available_servers()
 
     /*---------------------------------------------------------------------------------------------------------------
     -- ...
@@ -142,16 +143,16 @@ function Server(props) {
     }
 
     return (
-    <div id="server_main">
+    <div id="server_main" style={componentStyle}>
         <div id="server_header">
-            <img id='server_header_logo' src={icon_server}/>
+            <img id='server_header_logo' src={icon_server} alt=""/>
             <div id='server_header_name'>{sidebar_server}</div>
         </div>
         <div id="server_body">
             <div className="database_elem"/>
         </div>
         <div id="server_request_button">
-            <img id="server_request_button_logo" onClick={handleRequestServers} src={icon_server_request_button} title={"Checks for new available servers."}/>
+            <img id="server_request_button_logo" onClick={handleRequestServers} src={icon_server_request_button} alt="" title={"Checks for new available servers."}/>
         </div>
     </div>
     );

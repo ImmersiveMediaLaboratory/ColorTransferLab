@@ -8,9 +8,8 @@ Please see the LICENSE file that should have been included as part of this packa
 */
 
 import React from 'react';
+import {useState, useEffect} from "react";
 import './Database.scss';
-import SysConf from 'settings/SystemConfiguration';
-import Terminal from 'pages/Console/Terminal';
 import $ from 'jquery';
 import {consolePrint} from 'pages/Console/Terminal'
 import {server_request} from 'utils/Utils'
@@ -33,6 +32,9 @@ const icon_database = "assets/icons/icon_database_grey.png";
 const icon_database_elem = "assets/icons/icon_database2.png";
 const icon_items_elem = "assets/icons/icon_cloud.png";
 const icon_items_elem2 = "assets/icons/icon_frames2.png";
+const icon_items_video = "assets/icons/icon_video.png";
+const icon_items_unknown = "assets/icons/icon_unknown.png";
+const icon_items_voluvideo = "assets/icons/icon_voluvideo.png";
 const icon_items_mesh = "assets/icons/icon_mesh.png";
 const sidebar_database = "DATABASE"
 
@@ -89,7 +91,7 @@ export const create_folder_button = (folder, count, folder_path) => {
 
     // changes background color of button depending on hierarchy level
     // all folders with count > 0 are subfolders and should be hidden
-    if(count != 0) {
+    if(count !== 0) {
         let colNum = 50 + count * 50
         database_elem.css("background-color", "RGB(" + 50 + "," + colNum + "," + colNum + ")")
         database_elem.on("mouseover", function() {database_elem.css("background-color",  "#1C6C90");}); 
@@ -107,7 +109,7 @@ export const create_folder_button = (folder, count, folder_path) => {
     let num_meshes = 0
     for (const subfolder of folder["folders"]){
         // folder with the start string "$mesh$" contains meshes, i.e, one obj, mtl and png file
-        if(subfolder["name"].includes("$mesh$")) {
+        if(subfolder["name"].includes("$mesh$") || subfolder["name"].includes("$volumetric$")) {
             num_meshes += 1
             // console.log("TTTTTTTT")
             // let obj_path = pathjoin(folder["name"], subfolder["name"].replace('$mesh$',''), subfolder["name"].replace('$mesh$','') + ".obj")
@@ -138,7 +140,7 @@ export const create_folder_button = (folder, count, folder_path) => {
 export const show_subfolders = (fold) => {
     console.log(fold)
     $("#items_body").html("")
-    if(fold[0].css("display") == "none")
+    if(fold[0].css("display") === "none")
         fold[0].css("display", 'block');
     else {
         fold[0].css("display", 'none');
@@ -151,13 +153,42 @@ export const show_subfolders = (fold) => {
 -- 
 -------------------------------------------------------------------------------------------------------------*/
 export const show_files = (fold, file_path) => {
-    console.log("Hello FRED")
     console.log(fold)
     console.log(file_path)
     var items_body = $("#items_body").html("")
 
     // empty preview board
     $("#body_preview").html("")
+
+    function showSrcRefButtons(data, elem){
+        // Create a new div element
+        let srcDiv = $("<div></div>");
+        // You can set the content of the div like this
+        srcDiv.addClass("item_source_button").text("Source");
+        // Append the new div to items_elem
+        $(elem).append(srcDiv);
+
+        // Create a new div element
+        let refDiv = $("<div></div>");
+        // You can set the content of the div like this
+        refDiv.addClass("item_reference_button").text("Reference");
+        // Append the new div to items_elem
+        $(elem).append(refDiv);
+
+        $(srcDiv).on("click", function(e){
+            $("#renderer_src").trigger("itemClicked", [data]); // Trigger a custom event
+            console.log(data)
+        });
+
+        $(refDiv).on("click", function(e){
+            $("#renderer_ref").trigger("itemClicked", [data]); // Trigger a custom event
+        });
+
+        $(elem).on("mouseleave", function(e){
+            srcDiv.remove();
+            refDiv.remove();
+        });
+    }
 
     // check if folder has a $mesh$ identifier -> the folder will be displayed as item
     let iterate_fold_obj = fold["folders"];
@@ -166,11 +197,18 @@ export const show_files = (fold, file_path) => {
             let file_name = element["name"].replace("$mesh$", "")
             let items_elem = $("<div/>").attr("title", file_name).attr("draggable", "true").addClass("items_elem");
             let items_elem_icon = $("<img/>").addClass("items_elem_icon").attr("src", icon_items_mesh)
-            var items_elem_text = $("<div/>").html(file_name).addClass("items_elem_text")
+            let items_elem_text = $("<div/>").html(file_name).addClass("items_elem_text")
 
             $(items_elem).on("dragstart", function(e){
                 let data = file_path + "/" + element["name"] + ":" + file_name + ".obj";
                 e.originalEvent.dataTransfer.setData('text', data);
+            });
+
+            // WARNING: Boilerplate code
+            // if the items is clicked the user has to decide if it should be loaded as reference or source
+            $(items_elem).on("click", function(e){
+                let data = file_path + "/" + element["name"] + ":" + file_name + ".obj";
+                showSrcRefButtons(data, this)
             });
 
             items_elem.append(items_elem_icon)
@@ -179,7 +217,36 @@ export const show_files = (fold, file_path) => {
 
 
             // objects which are created and uploaded have no preview
-            if(file_path != "Output" && file_path != "Uploads")
+            if(file_path !== "Output" && file_path !== "Uploads")
+                createPreviewCard(pathjoin(active_server, "previews", file_path), file_name)
+        }
+        else if(element["name"].includes("$volumetric$")){
+            let file_name = element["name"].replace("$volumetric$", "")
+            let items_elem = $("<div/>").attr("title", file_name).attr("draggable", "true").addClass("items_elem");
+            let items_elem_icon = $("<img/>").addClass("items_elem_icon").attr("src", icon_items_voluvideo)
+            let items_elem_text = $("<div/>").html(file_name).addClass("items_elem_text")
+
+            $(items_elem).on("dragstart", function(e){
+                // use custom file extension for volumetric videos so that the renderer knows how to handle the file
+                let data = file_path + "/" + element["name"] + ":" + file_name + ".volu";
+                e.originalEvent.dataTransfer.setData('text', data);
+            });
+
+            // WARNING: Boilerplate code
+            // if the items is clicked the user has to decide if it should be loaded as reference or source
+            $(items_elem).on("click", function(e){
+                // use custom file extension for volumetric videos so that the renderer knows how to handle the file
+                let data = file_path + "/" + element["name"] + ":" + file_name + ".volu";
+                showSrcRefButtons(data, this)
+            });
+
+            items_elem.append(items_elem_icon)
+            items_elem.append(items_elem_text)
+            items_body.append(items_elem)  
+
+
+            // objects which are created and uploaded have no preview
+            if(file_path !== "Output" && file_path !== "Uploads")
                 createPreviewCard(pathjoin(active_server, "previews", file_path), file_name)
         }
     }
@@ -195,26 +262,40 @@ export const show_files = (fold, file_path) => {
             e.originalEvent.dataTransfer.setData('text', data);
         });
 
+        // if the items is clicked the user has to decide if it should be loaded as reference or source
+        $(items_elem).on("click", function(e){
+            let data = file_path + ":" + file_name;
+            showSrcRefButtons(data, this)
+        });
+
         // choose item image depending on object type
         let items_elem_icon = $("<img/>").addClass("items_elem_icon")
         
-
-        var file_extension = element.split(".")[1]
+        let file_extension = element.split(".")[1]
         // get file extension to choose correct image in "ITEMS"
-        if (file_extension == "ply" || file_extension == "obj")
+        if (file_extension === "ply" || file_extension === "obj")
             $(items_elem_icon).attr("src", icon_items_elem)
-        else if(file_extension == "png" || file_extension == "jpg")
+        else if(file_extension === "png" || file_extension === "jpg")
             $(items_elem_icon).attr("src", icon_items_elem2)
+        else if(file_extension === "mp4")
+            $(items_elem_icon).attr("src", icon_items_video)
+        else
+            $(items_elem_icon).attr("src", icon_items_unknown)
             
-        var items_elem_text = $("<div/>").html(file_name).addClass("items_elem_text")
+        let items_elem_text = $("<div/>").html(file_name).addClass("items_elem_text")
         
         items_elem.append(items_elem_icon)
         items_elem.append(items_elem_text)
         items_body.append(items_elem)  
 
         // objects which are created and uploaded have no preview
-        if(file_path != "Output" && file_path != "Uploads")
+        if(file_path !== "Output" && file_path !== "Uploads")
             createPreviewCard(pathjoin(active_server, "previews", file_path), file_name)
+    }
+
+    if (window.innerWidth < 1000) {
+        $("#database_main").css("display", "none")
+        $("#items_main").css("display", "block")
     }
 }
 
@@ -225,6 +306,17 @@ export const show_files = (fold, file_path) => {
 -------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------*/
 function Database(props) {
+    const [mobileMaxWidth, setMobileMaxWidth] = useState(null);
+
+    useEffect(() => {
+        const styles = getComputedStyle(document.documentElement);
+        setMobileMaxWidth(String(styles.getPropertyValue('--mobile-max-width')).trim());
+    }, []);
+
+    let componentStyle = {};
+    if (window.innerWidth < mobileMaxWidth) {
+        componentStyle = {display: "none", width: "calc(100% - 6px)", top: "0px", height: "calc(100% - 6px)"};
+    }
     /*-------------------------------------------------------------------------------------------------------------
     ---------------------------------------------------------------------------------------------------------------
     -- Public methods
@@ -259,14 +351,14 @@ function Database(props) {
     -- 
     -------------------------------------------------------------------------------------------------------------*/
     return (
-        <div id="database_main">
+        <div id="database_main" style={componentStyle}>
             <div id="database_header">
-                <img id='database_header_logo' src={icon_database}/>
+                <img id='database_header_logo' src={icon_database} alt=""/>
                 <div id='database_header_name'>{sidebar_database}</div>
             </div>
             <div id="database_body">
                 <div className="database_elem">
-                    <img className="database_elem_icon" src={icon_database_elem} />
+                    <img className="database_elem_icon" src={icon_database_elem} alt=""/>
                     <div className="database_elem_text">PLACEHOLDER</div>
                 </div>
             </div>

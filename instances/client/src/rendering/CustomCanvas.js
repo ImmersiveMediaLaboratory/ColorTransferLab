@@ -7,43 +7,37 @@ This file is released under the "MIT License Agreement".
 Please see the LICENSE file that should have been included as part of this package.
 */
 
-import React, { useState, useEffect, Suspense, useRef} from 'react';
-import $ from 'jquery';
-import { VRButton, VRCanvas, ARButton, XR, Hands, DefaultXRControllers, XRButton} from '@react-three/xr'
-import { Canvas} from "@react-three/fiber";
-import { OrbitControls, PerspectiveCamera, OrthographicCamera } from "@react-three/drei";
-import MovementController from 'rendering/MovementController';
+import React, {Suspense, useState, useEffect, useRef} from 'react';
+import {Canvas} from "@react-three/fiber";
 
-function CustomCanvas(props) {
-    let canvas;
-    // if(props.view == "Output") {
-    if(props.view == "FUFUF") {
-        canvas = <VRCanvas id={props.id}>
+function CustomCanvas(props) {    
+    const [currentIndex, setCurrentIndex] = useState(0);
+    //const meshLength = useRef( props.rendering.length)
+
+
+    //meshLength.current = props.rendering.length
+
+    useEffect(() => {
+        if (Array.isArray(props.rendering)) {
+            const interval = setInterval(() => {
+                const nu = props.rendering.length
+                // check if the rendering array is empty to prevent currentIndex to be nan
+                if (nu === 0)
+                    setCurrentIndex(0);
+                else 
+                    setCurrentIndex((prevIndex) => (prevIndex + 1) % nu);
+            }, 1000);
+            return () => clearInterval(interval);
+        }
+    }, []);
+
+    return (
+        <Canvas id={props.id}>
             {props.children}
             <Suspense fallback={null}>
-                    {<group>{props.rendering}</group>}
-                    {/* {<group>{SysConf.data_config[TITLE]["mesh"] = <PointCloud key={Math.random()} file_path="assets/objects/lamp.ply" id={TITLE}/>}</group>} */}
-                    <MovementController
-                        hand="left"
-                        applyRotation={false}
-                        applyHorizontal={true}
-                        />
-                        <DefaultXRControllers />
-                        <Hands 
-                    />
-            </Suspense>
-        </VRCanvas>
-    } else {
-        canvas = <Canvas id={props.id}>
-            {props.children}
-            <Suspense fallback={null}>
-                    {<group>{props.rendering}</group>}
-                    {/* {<group>{SysConf.data_config[TITLE]["mesh"] = <PointCloud key={Math.random()} file_path="assets/objects/lamp.ply" id={TITLE}/>}</group>} */}
+                {<group>{props.rendering[currentIndex]}</group>}
             </Suspense>
         </Canvas>
-    }
-    return (
-        canvas
     )
 }
 

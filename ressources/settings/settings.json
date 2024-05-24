@@ -1,15 +1,15 @@
 {
   "SI1": {
-    "protocol": "https",
-    "lan": "192.168.178.182",
-    "wan": "potechius.com",
+    "protocol": "http",
+    "lan": "192.168.178.180",
+    "wan": "192.168.178.180",
     "port": 8002
   },
   "SI2": {
-    "name": "ttt",
-    "protocol": "https",
-    "lan": "192.168.178.182",
-    "wan": "potechius.com",
+    "name": "Local Server",
+    "protocol": "http",
+    "lan": "192.168.178.180",
+    "wan": "192.168.178.180",
     "port": 9001,
     "visibility": "private"
   }

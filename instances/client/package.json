@@ -11,6 +11,7 @@
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
+    "@babel/plugin-proposal-private-property-in-object":"7.21.0",
     "file-system": "^2.2.2",
     "history": "^5.2.0",
     "install": "^0.13.0",

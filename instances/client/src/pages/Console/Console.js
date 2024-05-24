@@ -8,11 +8,9 @@ Please see the LICENSE file that should have been included as part of this packa
 */
 
 import React from 'react';
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import $ from 'jquery';
 
-import Tabs from "./../Tabs/Tabs";
-import SysConf from "settings/SystemConfiguration"
 import ColorHistogram from './ColorHistogram';
 import Evaluation from './Evaluation';
 import Terminal from './Terminal';
@@ -20,12 +18,10 @@ import Configuration from './Configuration';
 import Information from './Information';
 import {consolePrint} from './Terminal'
 import {evalPrint, exportMetrics} from 'pages/Console/Evaluation'
-import {server_request} from 'utils/Utils'
 import {execution_approach} from 'pages/SideBarLeft/Algorithms'
-import {pathjoin, request_file_existence, server_post_request2, getRandomID} from 'utils/Utils';
+import {pathjoin, server_post_request2, getRandomID} from 'utils/Utils';
 import {active_server} from 'pages/SideBarLeft/Server'
 import {showView} from 'pages/Body/Renderer'
-import {updateHistogram} from 'pages/Console/ColorHistogram'
 import {active_reference} from "pages/Body/Body"
 import {color_palette} from "pages/Body/ColorTheme"
 import {request_database_content} from "pages/SideBarRight/Database"
@@ -53,18 +49,17 @@ const apply_color_transfer = (data, parameters) => {
     var isTrueSet = (stat_obj["enabled"] === 'true');
 
     if(!isTrueSet) {
-        showView("renderer_image" + "renderer_out", "renderer_canvas" + "renderer_out", "3D")
+        showView("renderer_imagerenderer_out", "renderer_canvasrenderer_out", "3D")
         consolePrint("ERROR", stat_obj["data"]["message"])
     }
     else {
         var output_extension = stat_obj["data"]["extension"]
         let renderer_image_inner = $("#renderer_image_innerrenderer_out")
-        if(output_extension == "ply" || output_extension == "png" )
+        if(output_extension === "ply" || output_extension === "png" )
             renderer_image_inner.attr("data-src", pathjoin(active_server,"data", "Output", rankey + "." + output_extension))
-        else if(output_extension == "obj")
+        else if(output_extension === "obj")
             renderer_image_inner.attr("data-src", pathjoin(active_server,"data", "Output", "$mesh$" + rankey , rankey + "." + output_extension))
         renderer_image_inner.attr("data-update", getRandomID())
-            //SysConf.colorHistogramStateChange["Output"](Math.random())
     }
 }
 
@@ -78,7 +73,16 @@ function Console(props) {
     const icon_play_button = "assets/icons/icon_play.png";
     const icon_upload_button = "assets/icons/icon_upload.png";
     const icon_eval_button = "assets/icons/icon_eval.png";
+    const icon_camera_button = "assets/icons/icon_camera.png";
     const icon_export_metric_button = "assets/icons/icon_export_metric.png";
+
+    const icon_terminal_button = "assets/icons/icon_terminal.png";
+    const icon_evaluation_button = "assets/icons/icon_evaluation.png";
+    const icon_configuration_button = "assets/icons/icon_configuration.png";
+    const icon_colorstats_button = "assets/icons/icon_colorstats.png";
+    const icon_information_button = "assets/icons/icon_information.png";
+
+    const [mobileMaxWidth, setMobileMaxWidth] = useState(null);
 
     /*-------------------------------------------------------------------------------------------------------------
     ---------------------------------------------------------------------------------------------------------------
@@ -90,11 +94,14 @@ function Console(props) {
     -- ...
     -------------------------------------------------------------------------------------------------------------*/
     useEffect(() => {
+        const styles = getComputedStyle(document.documentElement);
+        setMobileMaxWidth(String(styles.getPropertyValue('--mobile-max-width')).trim());
+        
         $("#console_play_button").on("click", function(){handleClickPlay()})
 
         // automatically scrolls the terminal content to the bottom
         let interval = setInterval(() => {
-            $("#Console_tab_console_ta").scrollTop($("#Console_tab_console_ta")[0].scrollHeight);
+            // $("#Console_tab_console_ta").scrollTop($("#Console_tab_console_ta")[0].scrollHeight);
         }, 200);
 
         return () => {
@@ -102,6 +109,12 @@ function Console(props) {
         };
 
     }, []);
+
+    let componentStyle = {};
+    if (window.innerWidth < mobileMaxWidth) {
+        componentStyle = { left: "0px", width: "calc(100% - 6px)"};
+    }
+
 
     /*---------------------------------------------------------------------------------------------------------------
     -- Allows the upload of local images and point clouds.
@@ -115,7 +128,6 @@ function Console(props) {
         // input.multiple = true
         input.onchange = _this => {
                 let files =   Array.from(input.files);
-                console.log(files[0]);
 
                 try {
                     const xmlHttp = new XMLHttpRequest();
@@ -147,19 +159,19 @@ function Console(props) {
     function handleClickPlay() {
         // check if a Single Input Reference or a Color Theme Reference is selected
         let ref_val
-        if(active_reference == "Single Input")
+        if(active_reference === "Single Input")
             ref_val = execution_params_objects["ref"]
-        else if(active_reference == "Color Theme")
+        else if(active_reference === "Color Theme")
             ref_val = color_palette
 
         // check if source object, reference object and approach are selected
         console.log(execution_params_objects)
-        if(execution_params_objects["src"] != "" && ref_val != "" && execution_approach["method"] != "") {
+        if(execution_params_objects["src"] !== "" && ref_val !== "" && execution_approach["method"] !== "") {
             consolePrint("INFO", "Apply " + execution_approach["method"])
 
             // shows a loading screen while executing the selected algorithm
-            var renderer_image_inner = document.getElementById("renderer_image_inner" + "renderer_out")
-            showView("renderer_image" + "renderer_out", "renderer_canvas" + "renderer_out", "2D")
+            var renderer_image_inner = document.getElementById("renderer_image_innerrenderer_out")
+            showView("renderer_imagerenderer_out", "renderer_canvasrenderer_out", "2D")
             renderer_image_inner.src = gif_loading
 
             // output file has to be saved with a random name, otherwise the browser loads the cached object
@@ -176,7 +188,6 @@ function Console(props) {
                 "approach": execution_approach["method"],
                 "options": execution_approach["options"]
             }
-            console.log(out_dat)
             server_post_request2(active_server, "color_transfer", out_dat, apply_color_transfer, rankey)
             //apply_color_transfer()
         } else {
@@ -184,44 +195,75 @@ function Console(props) {
         }
     }
 
+    function showMenus(active_menus, event) {
+        console.log("MM")
+        const menu_list = ["#Console_tab_console_ta", "#Console_tab_console_evaluation", "#Console_tab_console_configuration", "#Console_tab_console_test4", "#Console_tab_console_test5"]
 
+        for(let i = 0; i < menu_list.length; i++)
+            $(menu_list[i]).css("display", "none")
+        for(let i = 0; i < active_menus.length; i++)
+            $(active_menus[i]).css("display", "block")
+
+        
+        $(".console_header_element").css("background-color", getComputedStyle(document.documentElement).getPropertyValue('--headercolor'))
+        $(event.currentTarget).css("background-color", getComputedStyle(document.documentElement).getPropertyValue('--backgroundcolor'));
+    }
+
+    
     /*---------------------------------------------------------------------------------------------------------------
     --
     ---------------------------------------------------------------------------------------------------------------*/
     return (
-        <div id='console_main'>
-            <Tabs id="console">
-                <div id="Console_tab_console" label="Terminal" >
-                    <Terminal id="Console_tab_console_ta"/>
+        <div id='console_main' style={componentStyle}>
+            <div id="console_header">
+                <div className="console_header_element" onClick={(event) => showMenus(["#Console_tab_console_ta"], event)} style={{backgroundColor:getComputedStyle(document.documentElement).getPropertyValue('--backgroundcolor')}}>
+                    {window.innerWidth < mobileMaxWidth ? <img className="console_icons" alt="" src={icon_terminal_button}/> : "Terminal"}
                 </div>
-                <div label="Evaluation">
-                    <Evaluation id="Console_tab_console_evaluation"/>
+                <div className="console_header_element" onClick={(event) => showMenus(["#Console_tab_console_evaluation"], event)}>
+                    {window.innerWidth < mobileMaxWidth ? <img className="console_icons" alt="" src={icon_evaluation_button}/> : "Evaluation"}
                 </div>
-                <div label="Configuration">
-                    <Configuration id="Console_tab_console_configuration"/>
+                <div className="console_header_element" onClick={(event) => showMenus(["#Console_tab_console_configuration"], event)}>
+                    {window.innerWidth < mobileMaxWidth ? <img className="console_icons" alt="" src={icon_configuration_button}/> : "Configuration"}
                 </div>
-                <div label="Color Statistics">
-                    <div id="Console_tab_console_test4">
-                        <ColorHistogram id="histogram_src" rendererID="renderer_src" TITLE="Source"/>
-                        <ColorHistogram id="histogram_ref" rendererID="renderer_ref" TITLE="Reference"/>
-                        <ColorHistogram id="histogram_out" rendererID="renderer_out" TITLE="Output"/>
-                    </div>
+                <div className="console_header_element" onClick={(event) => showMenus(["#Console_tab_console_test4"], event)}>
+                    {window.innerWidth < mobileMaxWidth ? <img className="console_icons" alt="" src={icon_colorstats_button}/> : "Color Stats"}
                 </div>
-                <div label="Information">
-                    <Information id="Console_tab_console_test5"/>
+                <div className="console_header_element" onClick={(event) => showMenus(["#Console_tab_console_test5"], event)}>
+                    {window.innerWidth < mobileMaxWidth ? <img className="console_icons" alt="" src={icon_information_button}/> : "Information"}
                 </div>
-            </Tabs>
+            </div>
+
+
+
+            <div id="console_body">
+                <Terminal id="Console_tab_console_ta"/>
+                <Evaluation id="Console_tab_console_evaluation"/>
+                <Configuration id="Console_tab_console_configuration"/>
+                <div id="Console_tab_console_test4">
+                    <ColorHistogram id="histogram_src" rendererID="renderer_src" TITLE="Source"/>
+                    <ColorHistogram id="histogram_ref" rendererID="renderer_ref" TITLE="Reference"/>
+                    <ColorHistogram id="histogram_out" rendererID="renderer_out" TITLE="Output"/>
+                </div>
+                <Information id="Console_tab_console_test5"/>
+            </div>
+
+
+
+
             <div id="console_play_button">
-                <img id="console_play_button_logo" src={icon_play_button} title={"Apply the selected algorithm."}/>
+                <img id="console_play_button_logo" src={icon_play_button} alt="" title={"Apply the selected algorithm."}/>
             </div>
             <div id="console_upload_button">
-                <img id="console_upload_button_logo" onClick={chooseFile} src={icon_upload_button} title={"Upload a local file to the chosen Server."}/>
+                <img id="console_upload_button_logo" onClick={chooseFile} src={icon_upload_button} alt="" title={"Upload a local file to the chosen Server."}/>
             </div>
             <div id="console_eval_button">
-                <img id="console_eval_button_logo" onClick={evalPrint} src={icon_eval_button} title={"Apply multiple evaluaiton metrics on source, reference and output."}/>
+                <img id="console_eval_button_logo" onClick={evalPrint} src={icon_eval_button} alt="" title={"Apply multiple evaluaiton metrics on source, reference and output."}/>
             </div>
             <div id="console_export_metric_button">
-                <img id="console_export_metric_button_logo" onClick={exportMetrics} src={icon_export_metric_button} title={"Export the evaluation results."}/>
+                <img id="console_export_metric_button_logo" onClick={exportMetrics} src={icon_export_metric_button} alt="" title={"Export the evaluation results."}/>
+            </div>
+            <div id="console_camera_button">
+                <img id="console_camera_button_logo" src={icon_camera_button} alt="" title={"Open camera to capture either a source or reference image."}/>
             </div>
         </div>
     );

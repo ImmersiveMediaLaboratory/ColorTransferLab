@@ -15,10 +15,12 @@ Please see the LICENSE file that should have been included as part of this packa
     margin: $box_margin;
     border: solid $darkgrey $box_border;
     height: $sidebarright_element_innerheight;
+    //z-index: 999999999;
+    pointer-events: auto;
 }
 
 #database_header {
-    width: $sidebarright_element_innerwidth;
+    width: 100%;
     height: 25px;
     background-color: $darkgrey;
     color: $lightgrey
@@ -38,8 +40,8 @@ Please see the LICENSE file that should have been included as part of this packa
 }
 
 #database_body {
-    width: $sidebarright_element_innerwidth;
-    height: calc(#{$sidebarright_element_innerheight} - 25px);
+    width: 100%;
+    height: calc(100% - 25px);
     background-color: $grey;
     color: $lightgrey;
     overflow-y: scroll;
@@ -48,7 +50,7 @@ Please see the LICENSE file that should have been included as part of this packa
 .database_elem {
     position: relative;
     $padding: 5px;
-    width: calc(#{$sidebarright_element_innerwidth} - 2 * #{$padding});
+    width: 100%;
     height: 40px;
     font-size: 11px;
 }
@@ -78,4 +80,5 @@ Please see the LICENSE file that should have been included as part of this packa
 .file_button:hover {
     box-shadow:0px 0px 5px 0px cyan;
 }
+
 

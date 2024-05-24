@@ -75,11 +75,7 @@ In order to run the tool via HTTPS, SSL certificates are necessary. Three files 
 ![BlueLine](https://github.com/ImmersiveMediaLaboratory/ColorTransferLab/assets/15614886/0e61929f-c0d1-41ab-9eaa-44e21fc6dfbe)
 
 ### **Server Instance 1**:
-<<<<<<< HEAD
 This step is only necessary when you want to host the whole system by yourself. Run the following commands within the folder `<project_root>/instances/client`.
-=======
-This step is only necessary when you want to host the whole system by yourself. Run the following commands within the folder `<project_root>/instances/client`.<br>
->>>>>>> adb628a934e6f83724ca7082f464fc41dda05813
 $\textcolor{orange}{\textrm{\textbf{1. Install NodeJS Packages}}}$
 ```
 npm install
@@ -114,12 +110,8 @@ unzip Models.zip
 rm Models.zip
 ```
 
-<<<<<<< HEAD
 $\textcolor{orange}{\textrm{\textbf{2. Download testdata and previews}}}$<br>
 Currently not all previews for the test data are available.
-=======
-$\textcolor{orange}{\textrm{\textbf{2. Download testdata and previews}}}$
->>>>>>> adb628a934e6f83724ca7082f464fc41dda05813
 ```
 wget https://potechius.com/Downloads/Testdata.zip
 unzip Testdata.zip
@@ -186,11 +178,7 @@ The **SI1** entries have to be additionally set in `<project_root>/instances/cli
 ![BlueLine](https://github.com/ImmersiveMediaLaboratory/ColorTransferLab/assets/15614886/0e61929f-c0d1-41ab-9eaa-44e21fc6dfbe)
 
 ### **Server Instance 1**:
-<<<<<<< HEAD
 This step is only necessary when you want to host the whole system by yourself. Run the following commands within the folder `<project_root>/instances/client`.
-=======
-This step is only necessary when you want to host the whole system by yourself. Run the following commands within the folder `<project_root>/instances/client`.<br>
->>>>>>> adb628a934e6f83724ca7082f464fc41dda05813
 $\textcolor{orange}{\textrm{\textbf{1. Install NodeJS Packages}}}$
 ```
 npm install
@@ -231,11 +219,7 @@ rm Models.zip
 ```
 
 $\textcolor{orange}{\textrm{\textbf{2. Download testdata and previews}}}$<br>
-<<<<<<< HEAD
 Currently not all previews for the test data are available.
-=======
-
->>>>>>> adb628a934e6f83724ca7082f464fc41dda05813
 ```
 wget https://potechius.com/Downloads/Testdata.zip
 unzip Testdata.zip
@@ -310,12 +294,8 @@ unzip Models.zip
 rm Models.zip
 ```
 
-<<<<<<< HEAD
 $\textcolor{orange}{\textrm{\textbf{2. Download testdata and previews}}}$<br>
 Currently not all previews for the test data are available.
-=======
-$\textcolor{orange}{\textrm{\textbf{2. Download testdata and previews}}}$
->>>>>>> adb628a934e6f83724ca7082f464fc41dda05813
 ```
 wget https://potechius.com/Downloads/Testdata.zip
 unzip Testdata.zip

@@ -13,6 +13,8 @@ import './settings/Global.scss';
 import Main from './pages/Main/Main'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
+import { useEffect, useState } from "react";
+
 
 function App() {
   return (

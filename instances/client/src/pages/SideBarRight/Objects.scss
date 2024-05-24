@@ -18,6 +18,8 @@ Please see the LICENSE file that should have been included as part of this packa
     margin: $box_margin;
     border: solid $darkgrey $box_border;
     height: $sidebarright_element_innerheight;
+    z-index: 999999999;
+    pointer-events: auto;
 }
 
 #objects_header {

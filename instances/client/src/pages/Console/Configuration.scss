@@ -9,7 +9,7 @@ Please see the LICENSE file that should have been included as part of this packa
 @import 'settings/Global.scss';
 
 .cell_config {
-    width:  calc(#{$console_innerwidth} * 0.25);
+    width:  calc(100vw * 0.25);
     word-wrap: break-word;
     overflow-wrap: break-word;
 }

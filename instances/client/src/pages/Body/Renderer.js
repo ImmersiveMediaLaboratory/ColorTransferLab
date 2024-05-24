@@ -32,6 +32,7 @@ import './Renderer.scss';
 import { AmbientLight } from 'three';
 
 
+let canv = null;
 
 export const active_reference = "Single Input"
 
@@ -54,13 +55,23 @@ for(let renderer_obj of ["Source", "Reference", "Output"]) {
 /* ------------------------------------------------------------------------------------------------------------
 -- Shows either the 2D or 3D renderer
 -------------------------------------------------------------------------------------------------------------*/
-export const showView = (imageID, renderCanvasID, view) => {
-    if(view == "3D") {
+export const showView = (imageID, videoID, renderCanvasID, view) => {
+    if(view === "3D") {
         $("#" + imageID).css("visibility", "hidden")
+        $("#" + videoID).css("visibility", "hidden")
         $("#" + renderCanvasID).css("visibility", "visible")
+        // stop the video if it is still running
+        $("#" + videoID).children("video").get(0).pause();
+    } else if(view === "video") {
+        $("#" + imageID).css("visibility", "hidden")
+        $("#" + videoID).css("visibility", "visible")
+        $("#" + renderCanvasID).css("visibility", "hidden")
     } else {
         $("#" + imageID).css("visibility", "visible")
+        $("#" + videoID).css("visibility", "hidden")
         $("#" + renderCanvasID).css("visibility", "hidden")
+        // stop the video if it is still running
+        $("#" + videoID).children("video").get(0).pause();
     }
 }
 
@@ -77,6 +88,10 @@ function Renderer(props) {
     const [grid, changeGrid] = useState(<gridHelper args={[20,20, 0x222222, 0x222222]}/>)
     const [axis, changeAxis] = useState(<Axis />)
     const [perspectiveView, setPerspectiveView] = useState(true)
+
+
+    const [init, setInit] = useState(false)
+    const [view, setView] = useState(null)
 
     /* ------------------------------------------------------------------------------------------------------------
     -- REFERENCED VARIABLES
@@ -114,13 +129,15 @@ function Renderer(props) {
     const TITLE = props.title
 
     const imageID = "renderer_image" + ID
+    const videoID = "renderer_video" + ID
     const innerImageID = "renderer_image_inner" + ID
+    const innerVideoID = "renderer_video_inner" + ID
     const renderCanvasID = "renderer_canvas" + ID
     const infoboxID = "renderer_info" + ID
  
 
     const initPath = "data"
-    
+
     /* ------------------------------------------------------------------------------------------------------------
     -- 
     -------------------------------------------------------------------------------------------------------------*/
@@ -132,16 +149,19 @@ function Renderer(props) {
         var [file_path, file_name_with_ext] = data.split(":")
         var [file_name, file_ext] = file_name_with_ext.split(".")
 
-        console.log("DROP")
-        console.log(file_path)
-        console.log(file_name)
-        console.log(file_name_with_ext)
-        console.log(file_ext)
+        updateRenderer(file_path, file_name, file_name_with_ext, file_ext)
+    }
+    function click_method(data) {
+        // E.g. data = /Meshes/GameBoy_medium:GameBoy_medium.obj
+        // I.e. <path_to_file>:<file>
+        var [file_path, file_name_with_ext] = data.split(":")
+        var [file_name, file_ext] = file_name_with_ext.split(".")
 
         updateRenderer(file_path, file_name, file_name_with_ext, file_ext)
     }
 
- 
+
+
 
     /* ------------------------------------------------------------------------------------------------------------
     -- 
@@ -149,26 +169,32 @@ function Renderer(props) {
     function updateRenderer(file_path, file_name, file_name_with_ext, file_ext) {
         // inserts a loading screen before updating the image, because loading large images can take some time
         $("#" + innerImageID).attr("src", gif_loading)
-
+        
         // check for object type
         // Images have the extensions "png" and "jpg"
         // Pointclouds have the extensions "obj" and "ply"
         // Meshes have the extension "obj" and a corresponding png texture has to exist
-        if(file_ext == "png" || file_ext == "jpg") {
-            console.log(file_path)
-            console.log(file_name)
-
+        if(file_ext === "png" || file_ext === "jpg") {
             mode.current = "Image"
             // change the visibility of the image canvas only if the RGB color space button is not checked
             if(!$("#settings_rgbcolorspace").checked)
-                showView(imageID, renderCanvasID, "2D")
+                showView(imageID, videoID, renderCanvasID, "2D")
 
             // show the dropped image
             var image_path = pathjoin(active_server, initPath, file_path, file_name_with_ext)
-            console.log(image_path)
             $("#" + innerImageID).attr("src", image_path)
 
             obj_path.current = pathjoin(file_path, file_name_with_ext)
+
+        } else if(file_ext === "mp4") {
+            mode.current = "Video"
+            // change the visibility of the image canvas only if the RGB color space button is not checked
+            if(!$("#settings_rgbcolorspace").checked)
+                showView(imageID, videoID, renderCanvasID, "video")
+
+            var video_path = pathjoin(active_server, initPath, file_path, file_name_with_ext)
+            console.log(video_path)
+            $("#" + innerVideoID).attr("src", video_path)
 
         } else if(file_ext == "obj" || file_ext == "ply") {
             // check if texture for mesh exists -> if not, it is a pointcloud
@@ -181,7 +207,7 @@ function Renderer(props) {
                 obj_path.current = pathjoin(file_path, file_name_with_ext)
                 object3D.current = <TriangleMesh key={Math.random()} file_name={filepath}></TriangleMesh>
                 changeRendering(object3D.current)
-                showView(imageID, renderCanvasID, "3D")
+                showView(imageID, videoID, renderCanvasID, "3D")
 
             } else {
                 mode.current = "PointCloud"
@@ -189,15 +215,35 @@ function Renderer(props) {
                 obj_path.current = pathjoin(file_path, file_name_with_ext)
                 object3D.current = <PointCloud key={Math.random()} file_path={filepath} id={TITLE} center={ref_pc_center} scale={ref_pc_scale}/>
                 changeRendering(object3D.current)
-                // changeEnableupdate(Math.random())
+                //changeEnableupdate(Math.random())
+                showView(imageID, videoID, renderCanvasID, "3D")
+            }
+        } else if(file_ext == "volu") {
+            console.log("GEGE")
+            console.log(pathjoin(active_server, initPath, file_path, file_name))
+            let texture_path = pathjoin(active_server, initPath, file_path, file_name + "_00000.jpg")
+            let file_exist = request_file_existence("HEAD", texture_path)
 
-                showView(imageID, renderCanvasID, "3D")
+
+            let texture_path2 = pathjoin(active_server, initPath, file_path, file_name + "_00001.jpg")
+            let file_exist2 = request_file_existence("HEAD", texture_path)
+            if(file_exist && file_exist2) {
+                mode.current = "VolumetricVideo"
+                var filepath = pathjoin(active_server, initPath, file_path, file_name + "_00000")
+                var filepath2 = pathjoin(active_server, initPath, file_path, file_name + "_00001")
+                //obj_path.current = pathjoin(file_path, file_name_with_ext)
+                //obj_path.current = pathjoin(file_path2, file_name_with_ext)
+                var obj3D = <TriangleMesh key={Math.random()} file_name={filepath}></TriangleMesh>
+                var obj3D2 = <TriangleMesh key={Math.random()} file_name={filepath2}></TriangleMesh>
+                changeRendering2([obj3D, obj3D2])
+                showView(imageID, videoID, renderCanvasID, "3D")
+
             }
         }
 
-        server_post_request(active_server, "color_distribution", pathjoin(initPath, file_path, file_name_with_ext), updateColorDistribution, window)
-        server_post_request(active_server, "color_histogram", pathjoin(initPath, file_path, file_name_with_ext), updateHistogram, window)
-        server_post_request(active_server, "object_info", pathjoin(initPath, file_path, file_name_with_ext), updateObjectInfo, null)
+        //server_post_request(active_server, "color_distribution", pathjoin(initPath, file_path, file_name_with_ext), updateColorDistribution, window)
+        //server_post_request(active_server, "color_histogram", pathjoin(initPath, file_path, file_name_with_ext), updateHistogram, window)
+        //server_post_request(active_server, "object_info", pathjoin(initPath, file_path, file_name_with_ext), updateObjectInfo, null)
  
         // if the infobox is visible, disable and rerender it if a new object is loaded
         if(infoBoxEnabled.current) {
@@ -213,7 +259,6 @@ function Renderer(props) {
     -------------------------------------------------------------------------------------------------------------*/
     const updateColorDistribution = (data, parameters) => {
         var dist_vals = data["data"]["distribution"]
-        console.log("DISTRIBUTION")
         let scaled_dist_vals = (dist_vals.flat()).map(function(x) { return x / 255.0; })
         colorDistribution3D.current = <ColorDistribution2 key={Math.random()} file_path={pathjoin(active_server, initPath, "PointClouds/template.ply")} dist_vals={scaled_dist_vals} id={TITLE}/>
     }
@@ -228,9 +273,6 @@ function Renderer(props) {
         // set 3D color histogram
         var eval_values = data["data"]["histogram"]
         histogram3D.current = <ColorHistogram key={Math.random()} histogram={eval_values} />
-
-        console.log("HISTOOOOOOOOOOO")
-        console.log(histogram3D.current)
 
         // set 3D voxel grid
         var voxelgrid_centers = data["data"]["voxelgrid_centers"]
@@ -260,10 +302,10 @@ function Renderer(props) {
                 // disable all the other checkboxes
                 disableCheckbox("settings_3dcolorhistogram", show3DColorHistogram)
                 disableCheckbox("settings_voxelgrid", showVoxelGrid)
-                showView(imageID, renderCanvasID, "3D")
+                showView(imageID, videoID, renderCanvasID, "3D")
                 changeRendering(colorDistribution3D.current)
             } else {
-                showView(imageID, renderCanvasID, "2D")
+                showView(imageID, videoID, renderCanvasID, "2D")
             }
         } else {
             if(button_enabled) {
@@ -293,10 +335,10 @@ function Renderer(props) {
                 // disable all the other checkboxes
                 disableCheckbox("settings_rgbcolorspace", show3DColorDistribution)
                 disableCheckbox("settings_voxelgrid", showVoxelGrid)
-                showView(imageID, renderCanvasID, "3D")
+                showView(imageID, videoID, renderCanvasID, "3D")
                 changeRendering(histogram3D.current)
             } else {
-                showView(imageID, renderCanvasID, "2D")
+                showView(imageID, videoID, renderCanvasID, "2D")
             }
         }
 
@@ -342,16 +384,30 @@ function Renderer(props) {
     -------------------------------------------------------------------------------------------------------------*/
 
     /* ------------------------------------------------------------------------------------------------------------
-    -- Enables a given outputn type. Supported types are:
+    -- Enables a given output type. Supported types are:
     -- (1) mesh
     -- (2) voxel_grid
     -- (3) 3D_color_distribution
     -- (4) 3D_color_histogram
     -------------------------------------------------------------------------------------------------------------*/
+    // TODO: Reduce to one method
     function changeRendering(obj) {
-        mesh.current.pop()
+        //mesh.current.pop()
+        mesh.current.length = 0;
         mesh.current.push(obj)
         changeEnableupdate(Math.random())
+        console.log(mesh.current[0])
+    }
+
+    function changeRendering2(objs) {
+        //mesh.current.pop()
+        mesh.current.length = 0;
+        objs.forEach((obj) => {
+            mesh.current.push(obj);
+        });
+        //mesh.current.push(obj)
+        changeEnableupdate(Math.random())
+        //console.log(mesh.current[0])
     }
 
 
@@ -374,29 +430,12 @@ function Renderer(props) {
         let [file_name, file_ext] = file_name_with_ext.split(".")
         var file_path = "Output"
 
-
-        // if(file_ext == "png" || file_ext == "png")
-        //     out_renderer.attr("src", pat)
-
         // check if the string in data-src contains the identifier $mesh$
         if(pat.includes("$mesh$"))
             file_path = "Output/$mesh$" + file_name
 
-
-        //renderer_image_inner.attr("src", pathjoin(active_server,"data", "Output", rankey + ".png"))
         updateRenderer(file_path, file_name, file_name_with_ext, file_ext)
 
-        // console.log("DHUUU")
-        // let out_renderer_id = "renderer_image_inner" + "renderer_out"
-        // let out_renderer = document.getElementById(out_renderer_id)
-
-        // let file_name_with_ext = out_renderer.src.split("/").pop()
-        // let [file_name, file_ext] = file_name_with_ext.split(".")
-        // var file_path = "Output"
-
-
-        // //renderer_image_inner.attr("src", pathjoin(active_server,"data", "Output", rankey + ".png"))
-        // updateRenderer(file_path, file_name, file_name_with_ext, file_ext)
     }
     /* ------------------------------------------------------------------------------------------------------------
     -- Registration of EventListener
@@ -405,6 +444,7 @@ function Renderer(props) {
         if(DROPPABLE) {
             $("#" + ID).on("dragover", function(e) {e.preventDefault();})
             $("#" + ID).on("drop", (e) => {drop_method(e.originalEvent)})
+            $("#" + ID).on("itemClicked", function(e, data){click_method(data)});
         } else {
             let out_renderer_id = "renderer_image_inner" + "renderer_out"
             let out_renderer = document.getElementById(out_renderer_id)
@@ -420,8 +460,11 @@ function Renderer(props) {
         $("#settings_3dcolorhistogram").on("change", show3DColorHistogram)
         $("#settings_voxelgrid").on("change", showVoxelGrid)
         $("#settings_grid").on("change", function(e){
-            if(e.target.checked) {changeGrid(<gridHelper args={[20,20, 0x222222, 0x222222]}/>)}
-            else {changeGrid(null)}
+            if(e.target.checked) {
+                changeGrid(<gridHelper args={[20,20, 0x222222, 0x222222]}/>)
+            } else {
+                changeGrid(null)
+            }
         })
         $("#settings_axis").on("change", function(e){
             if(e.target.checked) {changeAxis(<Axis />)}
@@ -510,8 +553,20 @@ function Renderer(props) {
         cameraview = <OrthographicCamera position={[10, 10, 10]} zoom={40} makeDefault />
 
 
+    
+    if(!init) {
+        canv = <CustomCanvas id={renderCanvasID} view={TITLE} rendering={mesh.current}>
+                <ambientLight/>
+                <OrbitControls />
+                {cameraview}
+                {grid}
+                {axis}
+            </CustomCanvas>
+        setInit(true)
+    }
+
     return(
-        <div id={ID}>
+        <div id={ID} style={props.style}>
             <div className="renderer_title">{TITLE}</div>
             <div className='renderer_mesh_texture_button' onClick={showMeshTexture}>
                 <img className="renderer_mesh_texture_icon" src={icon_mesh_texture_button}/>
@@ -522,9 +577,19 @@ function Renderer(props) {
             <div id={infoboxID} className='renderer_info_box'>
                 fasefs
             </div>
+
             <div id={imageID} className="renderer_image">
                 <img id={innerImageID} className="renderer_image_inner" data-update={0}  data-src={""}/>
             </div>
+
+
+            <div id={videoID} className="renderer_video">
+                <video id={innerVideoID} className="renderer_video_inner" width="320" height="240" controls>
+                    <source src={""} type="video/mp4"/>
+                </video>
+            </div>
+
+            {/* {canv} */}
             <CustomCanvas id={renderCanvasID} view={TITLE} rendering={mesh.current}>
                 <ambientLight/>
                 <OrbitControls />

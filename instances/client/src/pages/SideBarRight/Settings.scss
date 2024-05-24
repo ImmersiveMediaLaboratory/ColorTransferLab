@@ -17,10 +17,12 @@ Please see the LICENSE file that should have been included as part of this packa
     margin: $box_margin;
     border: solid $darkgrey $box_border;
     height: $sidebarright_settings_innerheight;
+    z-index: 999999999;
+    pointer-events: auto;
 }
 
 #settings_header {
-    width: $sidebarright_element_innerwidth;
+    width: 100%;
     height: 25px;
     background-color: $darkgrey;
     color: $lightgrey
@@ -41,10 +43,15 @@ Please see the LICENSE file that should have been included as part of this packa
 }
 
 #settings_body {
-    width: $sidebarright_element_innerwidth;
-    height: calc(#{$sidebarright_settings_innerheight} - 25px);
+    width: 100%;
+    //height: calc(#{$sidebarright_settings_innerheight} - 25px);
+    height: calc(100% - 25px);
     font-family: "Arial", Helvetica, sans-serif;
     background-color: $grey;
     color: $lightgrey;
     overflow-y: scroll;
+}
+
+.settings_table_cell{
+    width: 50%;
 }

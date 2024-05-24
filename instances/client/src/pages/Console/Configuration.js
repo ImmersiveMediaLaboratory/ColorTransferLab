@@ -54,9 +54,9 @@ export const setConfiguration = (param) => {
             let cellcontent = null
 
             function set_option(event, num, type) {
-                if(type == "int" || type == "float")
+                if(type === "int" || type === "float")
                     execution_approach["options"][num]["default"] = Number(event.currentTarget.value)
-                else if(type == "bool")
+                else if(type === "bool")
                     execution_approach["options"][num]["default"] = (event.currentTarget.value === "true")
                 else
                     execution_approach["options"][num]["default"] = event.currentTarget.value
@@ -68,7 +68,7 @@ export const setConfiguration = (param) => {
                 //     execution_params_options[num]["default"] = event.currentTarget.value
             }
 
-            if (optionsVal[j] == "default") {
+            if (optionsVal[j] === "default") {
                 // create select node if a finit number of options are available for a parameter
                 if( param["options"][i]["values"].length > 0 ) {
                     cellcontent = document.createElement("select");
@@ -78,14 +78,14 @@ export const setConfiguration = (param) => {
                         let va = param["options"][i]["values"][x]
                         const cellVal = document.createElement("option");
                         cellVal.setAttribute("value", va);
-                        if(va == param["options"][i]["default"])
+                        if(va === param["options"][i]["default"])
                             cellVal.selected = true
             
                         cellVal.innerHTML = va
                         cellcontent.appendChild(cellVal);
                     }
                 }
-                else if( param["options"][i]["type"] == "int" ) {
+                else if( param["options"][i]["type"] === "int" ) {
                     let va = param["options"][i]["default"]
                     cellcontent = document.createElement("input");
                     cellcontent.addEventListener("change", event => {set_option(event, i, param["options"][i]["type"])})
@@ -94,7 +94,7 @@ export const setConfiguration = (param) => {
                     cellcontent.min = "-99999"
                     cellcontent.max = "99999"
                 }
-                else if( param["options"][i]["type"] == "float" ) {
+                else if( param["options"][i]["type"] === "float" ) {
                     let va = param["options"][i]["default"]
                     cellcontent = document.createElement("input");
                     cellcontent.addEventListener("change", event => {set_option(event, i, param["options"][i]["type"])})
@@ -110,11 +110,11 @@ export const setConfiguration = (param) => {
                     cellcontent.classList.add("cell_config");
                 }
             } 
-            else if (optionsVal[j] == "name") {
+            else if (optionsVal[j] === "name") {
                 cellcontent = document.createTextNode(param["options"][i][optionsVal[j]]);
                 cell.title = param["options"][i]["tooltip"]
             }
-            else if (optionsVal[j] == "values") {
+            else if (optionsVal[j] === "values") {
                 let out_str = ""
                 for(let val of param["options"][i][optionsVal[j]])
                     out_str += val + ",\n"

@@ -12,15 +12,17 @@ Please see the LICENSE file that should have been included as part of this packa
 
 #server_main {
     position: absolute;
-    top: calc(#{$window_height} - #{$footer_height} - #{$header_height} - #{$sidebarleft_server_height} + 50px);
+    //top: calc(#{$window_height} - #{$footer_height} - #{$header_height} - #{$sidebarleft_server_height} + 50px);
+    top: calc(#{$window_height} - #{$footer_height} - 2* #{$header_height} - #{$sidebarleft_server_height} + 50px);
     width: $sidebarright_element_innerwidth;
     margin: $box_margin;
     border: solid $darkgrey $box_border;
     height: $sidebarleft_server_innerheight;
+    pointer-events: auto;
 }
 
 #server_header {
-    width: $sidebarright_element_innerwidth;
+    width: 100%;
     height: 25px;
     background-color: $darkgrey;
     color: $lightgrey
@@ -41,8 +43,9 @@ Please see the LICENSE file that should have been included as part of this packa
 }
 
 #server_body {
-    width: $sidebarright_element_innerwidth;
+    width: 100%;
     height: calc(#{$sidebarright_settings_innerheight} - 25px);
+    height: calc(100% - 25px);
     font-family: "Arial", Helvetica, sans-serif;
     background-color: $grey;
     color: $lightgrey;
@@ -56,7 +59,7 @@ Please see the LICENSE file that should have been included as part of this packa
     padding: 5px;
     border: solid $darkgrey 1px;
     border-radius: 3px;
-    width: 150px;
+    width: calc(100% - 32px);
 }
 
 .server_item:hover {
