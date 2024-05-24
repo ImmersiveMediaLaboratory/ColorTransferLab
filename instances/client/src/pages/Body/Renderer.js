@@ -61,7 +61,11 @@ export const showView = (imageID, videoID, renderCanvasID, view) => {
         $("#" + videoID).css("visibility", "hidden")
         $("#" + renderCanvasID).css("visibility", "visible")
         // stop the video if it is still running
-        $("#" + videoID).children("video").get(0).pause();
+        try {
+            $("#" + videoID).children("video").get(0).pause();
+        }
+        catch (error) {
+        }
     } else if(view === "video") {
         $("#" + imageID).css("visibility", "hidden")
         $("#" + videoID).css("visibility", "visible")
@@ -71,7 +75,11 @@ export const showView = (imageID, videoID, renderCanvasID, view) => {
         $("#" + videoID).css("visibility", "hidden")
         $("#" + renderCanvasID).css("visibility", "hidden")
         // stop the video if it is still running
-        $("#" + videoID).children("video").get(0).pause();
+        try {
+            $("#" + videoID).children("video").get(0).pause();
+        }
+        catch (error) {
+        }
     }
 }
 
@@ -160,9 +168,6 @@ function Renderer(props) {
         updateRenderer(file_path, file_name, file_name_with_ext, file_ext)
     }
 
-
-
-
     /* ------------------------------------------------------------------------------------------------------------
     -- 
     -------------------------------------------------------------------------------------------------------------*/
@@ -193,8 +198,12 @@ function Renderer(props) {
                 showView(imageID, videoID, renderCanvasID, "video")
 
             var video_path = pathjoin(active_server, initPath, file_path, file_name_with_ext)
+
             console.log(video_path)
+
             $("#" + innerVideoID).attr("src", video_path)
+
+            obj_path.current = pathjoin(file_path, file_name_with_ext)
 
         } else if(file_ext == "obj" || file_ext == "ply") {
             // check if texture for mesh exists -> if not, it is a pointcloud

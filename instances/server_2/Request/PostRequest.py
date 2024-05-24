@@ -22,6 +22,7 @@ import multiprocessing
 from ColorTransferLib.ColorTransfer import ColorTransfer, ColorTransferEvaluation
 from ColorTransferLib.MeshProcessing.Mesh import Mesh
 from ColorTransferLib.ImageProcessing.Image import Image
+from ColorTransferLib.ImageProcessing.Video import Video
 
 import subprocess
 
@@ -87,6 +88,14 @@ class PostRequest():
         file_src = obj["source"]
         file_ref = obj["reference"]
         file_out = obj["output"]
+
+        print("--------------------------------")
+        print(file_src)
+        print(file_ref)
+        print(file_out)
+        print("--------------------------------")
+
+
         approach = obj["approach"]
         _, extension_src = file_src.split(".")
 
@@ -106,6 +115,10 @@ class PostRequest():
             src = Image(file_path=src_path)
             extension_out = "png"
             export_type = "Image"
+        elif extension_src == "mp4":
+            src = Video(file_path=src_path)
+            extension_out = "mp4"
+            export_type = "Video"
         
 
         if extension_ref == "png" or extension_ref == "jpg":
@@ -202,6 +215,11 @@ class PostRequest():
                 #output["object"].write(init_path + "/" + file_out + ".png")
                 output["object"].write(init_path + "/" + file_out)
                 response["data"]["extension"] = "png"
+            elif export_type == "Video":
+                print("Write File:")
+                print(init_path + "/" + file_out + ".mp4")
+                output["object"].write(init_path + "/" + file_out)
+                response["data"]["extension"] = "mp4"
         except func_timeout.FunctionTimedOut:
             response["enabled"] = "false"
             response["data"]["message"] = "Algorithms takes longer than 4 minute. Change the Configuration parameters to reduce execution time."

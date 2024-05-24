@@ -55,7 +55,7 @@ const apply_color_transfer = (data, parameters) => {
     else {
         var output_extension = stat_obj["data"]["extension"]
         let renderer_image_inner = $("#renderer_image_innerrenderer_out")
-        if(output_extension === "ply" || output_extension === "png" )
+        if(output_extension === "ply" || output_extension === "png" || output_extension === "mp4")
             renderer_image_inner.attr("data-src", pathjoin(active_server,"data", "Output", rankey + "." + output_extension))
         else if(output_extension === "obj")
             renderer_image_inner.attr("data-src", pathjoin(active_server,"data", "Output", "$mesh$" + rankey , rankey + "." + output_extension))

@@ -124,7 +124,8 @@ function Body(props) {
         //$("#body_menu").css("display", "none")
     }
 
-    function showMenusRef(active_menus, event) {
+    function showMenusRef(active_menus, tab, event) {
+        setReferenceWindow(tab)
         const menu_list = ["#renderer_ref", "#colortheme"]
 
         for(let i = 0; i < menu_list.length; i++)
@@ -146,8 +147,8 @@ function Body(props) {
 
                 <div id='rendererref_main' style={referenceMainStyle}>
                     <div id="renderer_ref_header">
-                        <div className="renderer_ref_header_elem" id="renderer_ref_header_singleinput" onClick={(event) => showMenusRef(["#renderer_ref"], event)} style={{backgroundColor:getComputedStyle(document.documentElement).getPropertyValue('--backgroundcolor')}}>Single Input</div>
-                        <div className="renderer_ref_header_elem" id="renderer_ref_header_colortheme" onClick={(event) => showMenusRef(["#colortheme"], event)}>Color Theme</div>
+                        <div className="renderer_ref_header_elem" id="renderer_ref_header_singleinput" onClick={(event) => showMenusRef(["#renderer_ref"], "Single Input", event)} style={{backgroundColor:getComputedStyle(document.documentElement).getPropertyValue('--backgroundcolor')}}>Single Input</div>
+                        <div className="renderer_ref_header_elem" id="renderer_ref_header_colortheme" onClick={(event) => showMenusRef(["#colortheme"], "Color Theme" , event)}>Color Theme</div>
                     </div>
                     <div id="renderer_ref_body">
                         <Renderer id="renderer_ref" title="Reference" window="ref" objInfo={{}} style={referenceStyle}/>
