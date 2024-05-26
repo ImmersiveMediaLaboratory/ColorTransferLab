@@ -59,6 +59,10 @@ const apply_color_transfer = (data, parameters) => {
             renderer_image_inner.attr("data-src", pathjoin(active_server,"data", "Output", rankey + "." + output_extension))
         else if(output_extension === "obj")
             renderer_image_inner.attr("data-src", pathjoin(active_server,"data", "Output", "$mesh$" + rankey , rankey + "." + output_extension))
+        else if(output_extension === "volu")
+            renderer_image_inner.attr("data-src", pathjoin(active_server,"data", "Output", "$volumetric$" + rankey , rankey + "." + output_extension))
+        
+
         renderer_image_inner.attr("data-update", getRandomID())
     }
 }

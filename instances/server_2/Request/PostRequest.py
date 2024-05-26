@@ -21,6 +21,7 @@ import multiprocessing
 
 from ColorTransferLib.ColorTransfer import ColorTransfer, ColorTransferEvaluation
 from ColorTransferLib.MeshProcessing.Mesh import Mesh
+from ColorTransferLib.MeshProcessing.VolumetricVideo import VolumetricVideo
 from ColorTransferLib.ImageProcessing.Image import Image
 from ColorTransferLib.ImageProcessing.Video import Video
 
@@ -155,6 +156,14 @@ class PostRequest():
                 src = Mesh(file_path=file_path, datatype="PointCloud")
                 extension_out = "ply"
                 export_type = "PointCloud"
+        elif extension_src == "volu":
+            f_name = file_src_path_no_ext.split("/")[-1]
+            fold_path = os.path.dirname(file_src_path_no_ext)
+            src = VolumetricVideo(folder_path=fold_path, file_name=f_name)
+            extension_out = "volu"
+            export_type = "VolumetricVideo"
+            print("Volume: " + src_path)
+            print("Volume: " + file_src_path_no_ext)
 
         # differentiate between pointclouds and triangle meshes
         # meshes also have a mtl and a png file with the same name in the same folder
@@ -169,7 +178,8 @@ class PostRequest():
             else:
                 ref = Mesh(file_path=file_path, datatype="PointCloud")
 
-
+        print("Source: " + src_path)
+        print(len(src.get_meshes()))
         ct = ColorTransfer(src, ref, approach)
         ct.set_options(obj["options"])
 
@@ -177,53 +187,64 @@ class PostRequest():
 
         response["service"] = "color_transfer"
 
-        try:
-            response["enabled"] = "true"
+        #try:
+        response["enabled"] = "true"
 
-            output = func_timeout.func_timeout(240, ct.apply, args=(), kwargs=None)
+        output = func_timeout.func_timeout(240, ct.apply, args=(), kwargs=None)
 
-            if output["status_code"] == -1:
-                response["enabled"] = "false"
-                response["data"]["message"] = output["response"]
-                return_dict[0] = response
-                return
-
-
-            print(extension_out)
-            if export_type == "PointCloud":
-                print("Write PointCloud:")
-                print(init_path + "/" + file_out + ".ply")
-                # out_loader = PLYLoader(mesh=output["object"])
-                out_loader = output["object"]
-                #out_loader.write(init_path + "/" + file_out + ".ply")
-                out_loader.write(init_path + "/" + file_out)
-                response["data"]["extension"] = "ply"
-            elif export_type == "Mesh":
-                print("Write File:")
-                output_folder, out_filename = file_out.split("/")
-                print(init_path + "/" + file_out + ".obj")
-                path = init_path + "/" + output_folder + "/" "$mesh$" + out_filename
-                os.mkdir(path)
-                # out_loader = PLYLoader(mesh=output["object"])
-                out_loader = output["object"]
-                #out_loader.write(path + "/" + out_filename + ".obj")
-                out_loader.write(path + "/" + out_filename)
-                response["data"]["extension"] = "obj"
-            elif export_type == "Image":
-                print("Write File:")
-                print(init_path + "/" + file_out + ".png")
-                #output["object"].write(init_path + "/" + file_out + ".png")
-                output["object"].write(init_path + "/" + file_out)
-                response["data"]["extension"] = "png"
-            elif export_type == "Video":
-                print("Write File:")
-                print(init_path + "/" + file_out + ".mp4")
-                output["object"].write(init_path + "/" + file_out)
-                response["data"]["extension"] = "mp4"
-        except func_timeout.FunctionTimedOut:
+        if output["status_code"] == -1:
             response["enabled"] = "false"
-            response["data"]["message"] = "Algorithms takes longer than 4 minute. Change the Configuration parameters to reduce execution time."
-            print("\033[92m" + "Request fulfilled" + "\033[0m")
+            response["data"]["message"] = output["response"]
+            return_dict[0] = response
+            return
+
+
+        print(extension_out)
+        if export_type == "PointCloud":
+            print("Write PointCloud:")
+            print(init_path + "/" + file_out + ".ply")
+            # out_loader = PLYLoader(mesh=output["object"])
+            out_loader = output["object"]
+            #out_loader.write(init_path + "/" + file_out + ".ply")
+            out_loader.write(init_path + "/" + file_out)
+            response["data"]["extension"] = "ply"
+        elif export_type == "Mesh":
+            print("Write File:")
+            output_folder, out_filename = file_out.split("/")
+            print(init_path + "/" + file_out + ".obj")
+            path = init_path + "/" + output_folder + "/" "$mesh$" + out_filename
+            os.mkdir(path)
+            # out_loader = PLYLoader(mesh=output["object"])
+            out_loader = output["object"]
+            #out_loader.write(path + "/" + out_filename + ".obj")
+            out_loader.write(path + "/" + out_filename)
+            response["data"]["extension"] = "obj"
+        elif export_type == "VolumetricVideo":
+            print("Write File:")
+            output_folder, out_filename = file_out.split("/")
+            #print(init_path + "/" + file_out + ".obj")
+            path = init_path + "/" + output_folder + "/" "$volumetric$" + out_filename
+            print(path)
+            print(len(output["object"].get_meshes()))
+            os.mkdir(path)
+            out_loader = output["object"]
+            out_loader.write(path)
+            response["data"]["extension"] = "volu"
+        elif export_type == "Image":
+            print("Write File:")
+            print(init_path + "/" + file_out + ".png")
+            #output["object"].write(init_path + "/" + file_out + ".png")
+            output["object"].write(init_path + "/" + file_out)
+            response["data"]["extension"] = "png"
+        elif export_type == "Video":
+            print("Write File:")
+            print(init_path + "/" + file_out + ".mp4")
+            output["object"].write(init_path + "/" + file_out)
+            response["data"]["extension"] = "mp4"
+        # except func_timeout.FunctionTimedOut:
+        #     response["enabled"] = "false"
+        #     response["data"]["message"] = "Algorithms takes longer than 4 minute. Change the Configuration parameters to reduce execution time."
+        #     print("\033[92m" + "Request fulfilled" + "\033[0m")
 
         return_dict[0] = response
         #return response

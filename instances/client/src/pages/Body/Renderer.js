@@ -172,6 +172,12 @@ function Renderer(props) {
     -- 
     -------------------------------------------------------------------------------------------------------------*/
     function updateRenderer(file_path, file_name, file_name_with_ext, file_ext) {
+
+        console.log("INFO", "Loading object: " + file_path)
+        console.log("INFO", "Loading object: " + file_name)
+        console.log("INFO", "Loading object: " + file_name_with_ext)
+        console.log("INFO", "Loading object: " + file_ext)
+
         // inserts a loading screen before updating the image, because loading large images can take some time
         $("#" + innerImageID).attr("src", gif_loading)
         
@@ -210,6 +216,12 @@ function Renderer(props) {
             console.log(pathjoin(active_server, initPath, file_path, file_name + ".png"))
             let texture_path = pathjoin(active_server, initPath, file_path, file_name + ".png")
             let file_exist = request_file_existence("HEAD", texture_path)
+            // check ig png texture exists otherwise try jpg
+            if(!file_exist){
+                texture_path = pathjoin(active_server, initPath, file_path, file_name + ".jpg")
+                file_exist = request_file_existence("HEAD", texture_path)
+            } 
+
             if(file_exist) {
                 mode.current = "Mesh"
                 var filepath = pathjoin(active_server, initPath, file_path, file_name)
@@ -228,26 +240,53 @@ function Renderer(props) {
                 showView(imageID, videoID, renderCanvasID, "3D")
             }
         } else if(file_ext == "volu") {
-            console.log("GEGE")
-            console.log(pathjoin(active_server, initPath, file_path, file_name))
-            let texture_path = pathjoin(active_server, initPath, file_path, file_name + "_00000.jpg")
-            let file_exist = request_file_existence("HEAD", texture_path)
 
+            mode.current = "VolumetricVideo"
+            let objArray = []
 
-            let texture_path2 = pathjoin(active_server, initPath, file_path, file_name + "_00001.jpg")
-            let file_exist2 = request_file_existence("HEAD", texture_path)
-            if(file_exist && file_exist2) {
-                mode.current = "VolumetricVideo"
-                var filepath = pathjoin(active_server, initPath, file_path, file_name + "_00000")
-                var filepath2 = pathjoin(active_server, initPath, file_path, file_name + "_00001")
-                //obj_path.current = pathjoin(file_path, file_name_with_ext)
-                //obj_path.current = pathjoin(file_path2, file_name_with_ext)
-                var obj3D = <TriangleMesh key={Math.random()} file_name={filepath}></TriangleMesh>
-                var obj3D2 = <TriangleMesh key={Math.random()} file_name={filepath2}></TriangleMesh>
-                changeRendering2([obj3D, obj3D2])
-                showView(imageID, videoID, renderCanvasID, "3D")
-
+            for (let i = 0; i <= 1800; i++) {
+                let paddedNumber = String(i).padStart(5, '0');
+                let texture_path = pathjoin(active_server, initPath, file_path, file_name + "_" + paddedNumber + ".jpg");
+                let file_exist = request_file_existence("HEAD", texture_path);
+                // check if png texture exists otherwise try jpg
+                if(!file_exist){
+                    texture_path = pathjoin(active_server, initPath, file_path, file_name + "_" + paddedNumber + ".png");
+                    file_exist = request_file_existence("HEAD", texture_path)
+                } 
+    
+            
+                if (file_exist) {
+                    var filepath = pathjoin(active_server, initPath, file_path, file_name + "_" + paddedNumber)
+                    var obj3D = <TriangleMesh key={Math.random()} file_name={filepath}></TriangleMesh>
+                    objArray.push(obj3D)
+                } else {
+                    break
+                }
             }
+
+            obj_path.current = pathjoin(file_path, file_name_with_ext)
+            changeRendering2(objArray)
+            showView(imageID, videoID, renderCanvasID, "3D")
+
+            // let texture_path = pathjoin(active_server, initPath, file_path, file_name + "_00000.jpg")
+            // let file_exist = request_file_existence("HEAD", texture_path)
+
+
+            // let texture_path2 = pathjoin(active_server, initPath, file_path, file_name + "_00001.jpg")
+            // let file_exist2 = request_file_existence("HEAD", texture_path)
+
+            // if(file_exist && file_exist2) {
+            //     mode.current = "VolumetricVideo"
+            //     var filepath = pathjoin(active_server, initPath, file_path, file_name + "_00000")
+            //     var filepath2 = pathjoin(active_server, initPath, file_path, file_name + "_00001")
+            //     //obj_path.current = pathjoin(file_path, file_name_with_ext)
+            //     //obj_path.current = pathjoin(file_path2, file_name_with_ext)
+            //     var obj3D = <TriangleMesh key={Math.random()} file_name={filepath}></TriangleMesh>
+            //     var obj3D2 = <TriangleMesh key={Math.random()} file_name={filepath2}></TriangleMesh>
+            //     changeRendering2([obj3D, obj3D2])
+            //     showView(imageID, videoID, renderCanvasID, "3D")
+
+            // }
         }
 
         //server_post_request(active_server, "color_distribution", pathjoin(initPath, file_path, file_name_with_ext), updateColorDistribution, window)
@@ -435,6 +474,7 @@ function Renderer(props) {
     function observer_updateOutputRenderer(mutations) {
         let out_renderer = $("#renderer_image_innerrenderer_out")
         let pat = out_renderer.attr("data-src")
+        console.log("HEHEH: " + pat)
         let file_name_with_ext = pat.split("/").pop()
         let [file_name, file_ext] = file_name_with_ext.split(".")
         var file_path = "Output"
@@ -442,6 +482,9 @@ function Renderer(props) {
         // check if the string in data-src contains the identifier $mesh$
         if(pat.includes("$mesh$"))
             file_path = "Output/$mesh$" + file_name
+        // check if the string in data-src contains the identifier $mesh$
+        if(pat.includes("$volumetric$"))
+            file_path = "Output/$volumetric$" + file_name
 
         updateRenderer(file_path, file_name, file_name_with_ext, file_ext)
 
