@@ -31,6 +31,12 @@ export const server_request = (method, path, address, data) => {
         var stat = stat.replaceAll("True", "true");
         var stat = stat.replaceAll("False", "false");
         var stat = stat.replaceAll("None", "null");
+
+        // necessary for the server to return a string without html tags
+        var parser = new DOMParser();
+        var doc = parser.parseFromString(stat, "text/html");
+        var stat = doc.body.textContent || "";
+
         var stat_obj = JSON.parse(stat);
         stat_obj["enabled"] = (stat_obj["enabled"] === "true")
         return(stat_obj);
