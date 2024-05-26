@@ -179,7 +179,6 @@ class PostRequest():
                 ref = Mesh(file_path=file_path, datatype="PointCloud")
 
         print("Source: " + src_path)
-        print(len(src.get_meshes()))
         ct = ColorTransfer(src, ref, approach)
         ct.set_options(obj["options"])
 

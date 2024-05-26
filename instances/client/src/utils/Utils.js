@@ -35,7 +35,7 @@ export const server_request = (method, path, address, data) => {
         // necessary for the server to return a string without html tags
         var parser = new DOMParser();
         var doc = parser.parseFromString(stat, "text/html");
-        var stat = doc.body.textContent || "";
+        stat = doc.body.textContent || "";
 
         var stat_obj = JSON.parse(stat);
         stat_obj["enabled"] = (stat_obj["enabled"] === "true")
@@ -81,6 +81,12 @@ export const server_post_request = (address, path, data, method, parameters) => 
                     var stat = stat.replaceAll("True", "true");
                     var stat = stat.replaceAll("False", "false");
                     var stat = stat.replaceAll("None", "null");
+
+                    // necessary for the server to return a string without html tags
+                    var parser = new DOMParser();
+                    var doc = parser.parseFromString(stat, "text/html");
+                    stat = doc.body.textContent || "";
+
                     console.log(stat)
                     try {
                         var stat_obj = JSON.parse(stat);
@@ -122,6 +128,12 @@ export const server_post_request2 = (address, path, data, method, parameters) =>
                     var stat = stat.replaceAll("True", "true");
                     var stat = stat.replaceAll("False", "false");
                     var stat = stat.replaceAll("None", "null");
+
+                    // necessary for the server to return a string without html tags
+                    var parser = new DOMParser();
+                    var doc = parser.parseFromString(stat, "text/html");
+                    var stat = doc.body.textContent || "";
+
                     var stat_obj = JSON.parse(stat);
                     method(stat_obj, parameters)
                 } else {
