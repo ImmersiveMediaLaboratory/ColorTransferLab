@@ -1,6 +1,8 @@
 instances/client/build/
 instances/client/node_modules/
 instances/client/package-lock.json
+instances/client/public/data/
+instances/client/public/previews/
 
 instances/server_2/data/
 instances/server_2/previews/

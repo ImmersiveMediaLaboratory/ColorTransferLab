@@ -39,7 +39,7 @@ function SideBarRight(props) {
             <Database/> 
             <Items/> 
             <Objects/> 
-            <Settings/>
+            <Settings setSingleView={props.setSingleView}/>
         </div>
     );
   }

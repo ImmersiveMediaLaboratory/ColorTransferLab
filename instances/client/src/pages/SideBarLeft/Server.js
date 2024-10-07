@@ -19,8 +19,8 @@ import {server_request} from 'utils/Utils'
 import './Server.scss';
 
 export let active_server = ""
-export let SE1_server = "https://proxy.potechius.com";
-//export let SE1_server = "http://192.168.178.182:8002";
+//export let SE1_server = "https://proxy.potechius.com";
+export let SE1_server = "http://192.168.178.191:8002";
 
 /*-----------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------------
@@ -33,7 +33,6 @@ function Server(props) {
     //const icon_availability_no = "assets/icons/icon_availability_no.png";
     const icon_availability_yes = "assets/icons/icon_availability_yes.png";
     const icon_server = "assets/icons/icon_server_grey.png";
-
     const icon_server_request_button = "assets/icons/icon_export_metric.png";
 
     const sidebar_server = "SERVER"

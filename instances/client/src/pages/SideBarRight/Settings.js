@@ -52,21 +52,19 @@ function Settings(props) {
         <table style={{width:"100%"}}>
             <tbody>
             <tr>
-                <td className="settings_table_cell">Grid</td>
-                <td><input id="settings_grid" type="checkbox" defaultChecked/></td>
-            </tr>
-            <tr>
-                <td>Point size</td>
-                <td><input id="settings_pointsize" type="range" min="1" max="10" defaultValue="1" style={{width: "75px"}}/></td>
-            </tr>
-            <tr>
-                <td>Vertex normal color</td>
-                <td><input id="settings_colornormal" type="checkbox"/></td>
-            </tr>
-            <tr>
-                <td>Axes</td>
-                <td><input id="settings_axis" type="checkbox" defaultChecked/></td>
-            </tr>
+                <td className="settings_table_cell">Single View</td>
+                <td>
+                    <input 
+                        id="settings_singleview" 
+                        type="checkbox"
+                        onChange={(e) => {
+                            props.setSingleView(e.target.checked);
+                            console.log("Single View: " + e.target.checked);
+                            //window.dispatchEvent(new Event('resize'));
+                        }}
+                    />
+                </td>
+            </tr> 
             <tr>
                 <td>RGB Color Space</td>
                 <td><input id="settings_rgbcolorspace" type="checkbox" /></td>

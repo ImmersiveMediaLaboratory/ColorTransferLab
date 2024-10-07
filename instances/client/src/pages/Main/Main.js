@@ -18,6 +18,8 @@ import Console from '../Console/Console';
 import Body from '../Body/Body';
 import {consolePrint} from 'pages/Console/Terminal'
 import './Main.scss';
+import * as GaussianSplats3D from '@mkkellogg/gaussian-splats-3d';
+import * as THREE from 'three';
 
 /*-----------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------------
@@ -33,6 +35,8 @@ function Main(props) {
     const [width, setWidth] = useState(window.innerWidth);
     const [darkmode, setDarkmode] = useState(true);
     const [mobileLandscape, setMobileLandscape] = useState(false);
+
+    const [singleView, setSingleView] = useState(false)
     //const didMount = useRef(false)
 
 
@@ -106,6 +110,54 @@ function Main(props) {
         doc.style.setProperty('--app-height', `${window.innerHeight}px`)
     }
 
+
+
+    // useEffect(() => {
+    //     const renderWidth = 800;
+    //     const renderHeight = 600;
+        
+    //     const rootElement = document.createElement('div');
+    //     rootElement.style.width = renderWidth + 'px';
+    //     rootElement.style.height = renderHeight + 'px';
+    //     document.body.appendChild(rootElement);
+        
+    //     const renderer = new THREE.WebGLRenderer({
+    //         antialias: false
+    //     });
+    //     renderer.setSize(renderWidth, renderHeight);
+    //     rootElement.appendChild(renderer.domElement);
+        
+    //     const camera = new THREE.PerspectiveCamera(65, renderWidth / renderHeight, 0.1, 500);
+    //     camera.position.copy(new THREE.Vector3().fromArray([-3.15634, -0.16946, -0.51552]));
+    //     camera.up = new THREE.Vector3().fromArray([0, -1, -0.54]).normalize();
+    //     camera.lookAt(new THREE.Vector3().fromArray([1.52976, 2.27776, 1.65898]));
+        
+    //         const viewer = new GaussianSplats3D.Viewer({
+    //             'renderer': renderer,
+    //             "camera": camera,
+    //             'sphericalHarmonicsDegree': 2,
+    //             'sharedMemoryForWorkers': false,
+    //         });
+    //         //viewer.addSplatScene('data/GaussianSplatting/$gaussiansplat$Tree/Tree.ply')
+    //         viewer.addSplatScene('data/GaussianSplatting/$gaussiansplat$Garden/Garden.ksplat', {
+    //             'progressiveLoad': false
+    //           })
+    //         .then(() => {
+    //             requestAnimationFrame(update);
+    //         })
+    //         .catch(err => {
+    //             console.error('Error loading splat scene:', err);
+    //         });  
+        
+        
+    //         function update() {
+    //             requestAnimationFrame(update);
+    //             viewer.update();
+    //             viewer.render();
+    //         }
+    // }, []);
+
+
     /*-------------------------------------------------------------------------------------------------------------
     ---------------------------------------------------------------------------------------------------------------
     -- RENDERING
@@ -115,9 +167,9 @@ function Main(props) {
         <div id="mainbody">
             <Header darkmode={darkmode} toggleDarkmode={setDarkmode}/>
             <Console/>
-            <Body width={width}/>
+            <Body width={width} singleView={singleView}/>
             <SideBarLeft/>
-            <SideBarRight/>
+            <SideBarRight setSingleView={setSingleView}/>
 
             {mobileLandscape ? <div id="landscapeOverlay">Landscape mode is not supported!</div> : <></>}
 

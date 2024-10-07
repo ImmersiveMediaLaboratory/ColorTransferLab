@@ -9,6 +9,28 @@ Please see the LICENSE file that should have been included as part of this packa
 
 @import 'settings/Global.scss';
 
+.renderer_container{
+    position: relative;
+}
+
+.emptyRenderer{
+    position: absolute;
+    top: 25px;
+    height: calc((100% - 227px));
+    width: calc(100% - 200px);
+    display: flex;
+    justify-content: center;
+    align-items: center;    
+    word-wrap: break-word;
+    flex-direction: column;
+    text-align: center; 
+    padding: 50px;
+    margin: 50px;
+    background-color: $grey;
+
+    border: 1px dashed $lightgrey;
+    border-radius: 15px;
+}
 
 .renderer_title{
     // $padding: 3px;
@@ -20,45 +42,14 @@ Please see the LICENSE file that should have been included as part of this packa
     background-color: $darkgrey;
     color: $lightgrey;
     font-size: 10pt;
-    z-index: 999;
+    z-index: 998;
     opacity: 0.9;
 }
 
-.renderer_image{
-    position: absolute;
-    visibility: hidden;
-    background-color: black;
-    width: 100%;
-    top: 25px;
-    height: calc(#{100%} - 25px);
-    z-index: 998;
-}
 
-.renderer_image_inner {
-    width: 100%;
-    height: 100%; 
-    object-fit: contain;
-}
-
-.renderer_video{
-    position: absolute;
-    visibility: hidden;
-    background-color: black;
-    width: 100%;
-    top: 25px;
-    height: calc(#{100%} - 25px);
-    z-index: 998;
-}
-
-.renderer_video_inner {
-    width: 100%;
-    height: 100%; 
-    object-fit: contain;
-}
 
 #renderer_src {
     background-color: $grey;
-    //position: absolute;
 }
 
 #renderer_ref {
@@ -121,43 +112,4 @@ Please see the LICENSE file that should have been included as part of this packa
     bottom: 0px;
     width: calc(100% - 10px);
     pointer-events: none;
-}
-
-.tab-list_rendererref { 
-    margin: 0px;
-    padding: 0px;
-  }
-
-.tabs_rendererref {
-    position: absolute;
-    height: 100%;
-    width: 100%;
-}
-  
-.tab-list-item_rendererref {
-    display: inline-block;
-    list-style: none;
-    background-color: $darkgrey;
-    width: 80px;//calc(#{$renderer_innerwidth} / 4);
-    height: 16px;
-    text-align: center;
-    padding-top: 4px;
-    margin: 0px;
-    font-size: 11px;
-    color: $lightgrey;
-    // white-space: nowrap;
-    // overflow: hidden;
-    // text-overflow: ellipsis;
-}
-
-.tab-list-active_rendererref {
-    background-color: $grey;
-}
-
-.tab-content_rendererref {
-    // width: $renderer_innerwidth;
-    // height: calc(#{$renderer_innerheight} - 25px);
-    position: absolute;
-    width: 100%;
-    height: 100%;
 }

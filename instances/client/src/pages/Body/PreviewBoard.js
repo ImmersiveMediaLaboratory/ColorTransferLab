@@ -13,7 +13,7 @@ import $ from 'jquery';
 import './PreviewBoard.scss';
 
 
-export const createPreviewCard = (file_path, file_name) => {
+export const createPreviewCard = (file_path, file_name, full_path) => {
     let preview_board = $("#body_preview")
     let preview_card = $("<div/>").addClass('preview_card');
     let preview_body = $("<div/>").addClass('preview_body');
@@ -55,8 +55,10 @@ export const createPreviewCard = (file_path, file_name) => {
     } 
 
     $(preview_card).on("click", function() {
-        let data = file_path.split("/").pop() + ":" + file_name;
-        showSrcRefButtons(data, this)
+        // let data = file_path.split("/").pop() + ":" + file_name;
+        // console.log(file_path)
+        // console.log(file_name)
+        showSrcRefButtons(full_path, this)
     });
 
     $(preview_board).append($(preview_card))

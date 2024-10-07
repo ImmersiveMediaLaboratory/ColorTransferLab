@@ -35,6 +35,8 @@ const icon_items_elem2 = "assets/icons/icon_frames2.png";
 const icon_items_video = "assets/icons/icon_video.png";
 const icon_items_unknown = "assets/icons/icon_unknown.png";
 const icon_items_voluvideo = "assets/icons/icon_voluvideo.png";
+const icon_items_lightfields = "assets/icons/icon_lightfield.png"
+const icon_items_gaussiansplat = "assets/icons/icon_gaussiansplatting.png"
 const icon_items_mesh = "assets/icons/icon_mesh.png";
 const sidebar_database = "DATABASE"
 
@@ -55,6 +57,7 @@ const sidebar_database = "DATABASE"
 -------------------------------------------------------------------------------------------------------------*/
 export const request_database_content = (server_address) => {
     let database_obj = server_request("GET", "database", server_address, null)
+    console.log(database_obj)
     if (database_obj["enabled"]) {
         consolePrint("INFO", "Database loaded")
         createDBButtons(database_obj)
@@ -109,7 +112,11 @@ export const create_folder_button = (folder, count, folder_path) => {
     let num_meshes = 0
     for (const subfolder of folder["folders"]){
         // folder with the start string "$mesh$" contains meshes, i.e, one obj, mtl and png file
-        if(subfolder["name"].includes("$mesh$") || subfolder["name"].includes("$volumetric$")) {
+        if(subfolder["name"].includes("$mesh$") || 
+            subfolder["name"].includes("$volumetric$") || 
+            subfolder["name"].includes("$lightfield$") || 
+            subfolder["name"].includes("$gaussiansplat$")) 
+        {
             num_meshes += 1
             // console.log("TTTTTTTT")
             // let obj_path = pathjoin(folder["name"], subfolder["name"].replace('$mesh$',''), subfolder["name"].replace('$mesh$','') + ".obj")
@@ -138,7 +145,6 @@ export const create_folder_button = (folder, count, folder_path) => {
 -- 
 -------------------------------------------------------------------------------------------------------------*/
 export const show_subfolders = (fold) => {
-    console.log(fold)
     $("#items_body").html("")
     if(fold[0].css("display") === "none")
         fold[0].css("display", 'block');
@@ -153,8 +159,6 @@ export const show_subfolders = (fold) => {
 -- 
 -------------------------------------------------------------------------------------------------------------*/
 export const show_files = (fold, file_path) => {
-    console.log(fold)
-    console.log(file_path)
     var items_body = $("#items_body").html("")
 
     // empty preview board
@@ -192,7 +196,9 @@ export const show_files = (fold, file_path) => {
 
     // check if folder has a $mesh$ identifier -> the folder will be displayed as item
     let iterate_fold_obj = fold["folders"];
+    console.log(iterate_fold_obj)
     for (const element of iterate_fold_obj) {
+        console.log(element["name"])
         if(element["name"].includes("$mesh$")){
             let file_name = element["name"].replace("$mesh$", "")
             let items_elem = $("<div/>").attr("title", file_name).attr("draggable", "true").addClass("items_elem");
@@ -200,14 +206,14 @@ export const show_files = (fold, file_path) => {
             let items_elem_text = $("<div/>").html(file_name).addClass("items_elem_text")
 
             $(items_elem).on("dragstart", function(e){
-                let data = file_path + "/" + element["name"] + ":" + file_name + ".obj";
+                let data = file_path + "/" + element["name"] + ":" + file_name + ".mesh";
                 e.originalEvent.dataTransfer.setData('text', data);
             });
 
             // WARNING: Boilerplate code
             // if the items is clicked the user has to decide if it should be loaded as reference or source
             $(items_elem).on("click", function(e){
-                let data = file_path + "/" + element["name"] + ":" + file_name + ".obj";
+                let data = file_path + "/" + element["name"] + ":" + file_name + ".mesh";
                 showSrcRefButtons(data, this)
             });
 
@@ -215,12 +221,14 @@ export const show_files = (fold, file_path) => {
             items_elem.append(items_elem_text)
             items_body.append(items_elem)  
 
-
+            let full_path = file_path + "/" + element["name"] + ":" + file_name + ".mesh"
+            //console.log(full_path)
             // objects which are created and uploaded have no preview
             if(file_path !== "Output" && file_path !== "Uploads")
-                createPreviewCard(pathjoin(active_server, "previews", file_path), file_name)
+                createPreviewCard(pathjoin(active_server, "previews", file_path), file_name, full_path)
         }
         else if(element["name"].includes("$volumetric$")){
+            console.log("VV")
             let file_name = element["name"].replace("$volumetric$", "")
             let items_elem = $("<div/>").attr("title", file_name).attr("draggable", "true").addClass("items_elem");
             let items_elem_icon = $("<img/>").addClass("items_elem_icon").attr("src", icon_items_voluvideo)
@@ -245,9 +253,70 @@ export const show_files = (fold, file_path) => {
             items_body.append(items_elem)  
 
 
+            let full_path = file_path + "/" + element["name"] + ":" + file_name + ".volu"
             // objects which are created and uploaded have no preview
             if(file_path !== "Output" && file_path !== "Uploads")
-                createPreviewCard(pathjoin(active_server, "previews", file_path), file_name)
+                createPreviewCard(pathjoin(active_server, "previews", file_path), file_name, full_path)
+        }
+        else if(element["name"].includes("$gaussiansplat$")){
+            console.log("GS")
+            let file_name = element["name"].replace("$gaussiansplat$", "")
+            let items_elem = $("<div/>").attr("title", file_name).attr("draggable", "true").addClass("items_elem");
+            let items_elem_icon = $("<img/>").addClass("items_elem_icon").attr("src", icon_items_gaussiansplat)
+            let items_elem_text = $("<div/>").html(file_name).addClass("items_elem_text")
+
+            $(items_elem).on("dragstart", function(e){
+                // use custom file extension for volumetric videos so that the renderer knows how to handle the file
+                let data = file_path + "/" + element["name"] + ":" + file_name + ".gsp";
+                e.originalEvent.dataTransfer.setData('text', data);
+            });
+
+            // WARNING: Boilerplate code
+            // if the items is clicked the user has to decide if it should be loaded as reference or source
+            $(items_elem).on("click", function(e){
+                // use custom file extension for volumetric videos so that the renderer knows how to handle the file
+                let data = file_path + "/" + element["name"] + ":" + file_name + ".gsp";
+                showSrcRefButtons(data, this)
+            });
+
+            items_elem.append(items_elem_icon)
+            items_elem.append(items_elem_text)
+            items_body.append(items_elem)  
+
+            let full_path = file_path + "/" + element["name"] + ":" + file_name + ".gsp"
+            // objects which are created and uploaded have no preview
+            if(file_path !== "Output" && file_path !== "Uploads")
+                createPreviewCard(pathjoin(active_server, "previews", file_path), file_name, full_path)
+        }
+        else if(element["name"].includes("$lightfield$")){
+            let file_name = element["name"].replace("$lightfield$", "")
+            let items_elem = $("<div/>").attr("title", file_name).attr("draggable", "true").addClass("items_elem");
+            let items_elem_icon = $("<img/>").addClass("items_elem_icon").attr("src", icon_items_lightfields)
+            let items_elem_text = $("<div/>").html(file_name).addClass("items_elem_text")
+
+            $(items_elem).on("dragstart", function(e){
+                // use custom file extension for lightfields so that the renderer knows how to handle the file
+                let data = file_path + "/" + element["name"] + ":" + file_name + ".lf";
+                e.originalEvent.dataTransfer.setData('text', data);
+            });
+
+            // WARNING: Boilerplate code
+            // if the items is clicked the user has to decide if it should be loaded as reference or source
+            $(items_elem).on("click", function(e){
+                // use custom file extension for lightfields so that the renderer knows how to handle the file
+                let data = file_path + "/" + element["name"] + ":" + file_name + ".lf";
+                showSrcRefButtons(data, this)
+            });
+
+            items_elem.append(items_elem_icon)
+            items_elem.append(items_elem_text)
+            items_body.append(items_elem)  
+
+
+            let full_path = file_path + "/" + element["name"] + ":" + file_name + ".lf"
+            // objects which are created and uploaded have no preview
+            if(file_path !== "Output" && file_path !== "Uploads")
+                createPreviewCard(pathjoin(active_server, "previews", file_path), file_name, full_path)
         }
     }
 
@@ -288,9 +357,11 @@ export const show_files = (fold, file_path) => {
         items_elem.append(items_elem_text)
         items_body.append(items_elem)  
 
+        let full_path = file_path + ":" + file_name
+
         // objects which are created and uploaded have no preview
         if(file_path !== "Output" && file_path !== "Uploads")
-            createPreviewCard(pathjoin(active_server, "previews", file_path), file_name)
+            createPreviewCard(pathjoin(active_server, "previews", file_path), file_name, full_path)
     }
 
     if (window.innerWidth < 1000) {
@@ -311,6 +382,19 @@ function Database(props) {
     useEffect(() => {
         const styles = getComputedStyle(document.documentElement);
         setMobileMaxWidth(String(styles.getPropertyValue('--mobile-max-width')).trim());
+
+        // set database content without server
+        const fetchData = async () => {
+            try {
+                const response = await fetch('database.json');
+                const jsonData = await response.json();
+                createDBButtons(jsonData)
+            } catch (error) {
+                console.error('Error fetching JSON data:', error);
+            }
+        };
+    
+        fetchData();
     }, []);
 
     let componentStyle = {};

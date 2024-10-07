@@ -200,7 +200,6 @@ function Console(props) {
     }
 
     function showMenus(active_menus, event) {
-        console.log("MM")
         const menu_list = ["#Console_tab_console_ta", "#Console_tab_console_evaluation", "#Console_tab_console_configuration", "#Console_tab_console_test4", "#Console_tab_console_test5"]
 
         for(let i = 0; i < menu_list.length; i++)
@@ -232,7 +231,10 @@ function Console(props) {
                 <div className="console_header_element" onClick={(event) => showMenus(["#Console_tab_console_test4"], event)}>
                     {window.innerWidth < mobileMaxWidth ? <img className="console_icons" alt="" src={icon_colorstats_button}/> : "Color Stats"}
                 </div>
-                <div className="console_header_element" onClick={(event) => showMenus(["#Console_tab_console_test5"], event)}>
+                <div 
+                    className="console_header_element" 
+                    onClick={(event) => showMenus(["#Console_tab_console_test5"], event)}
+                    title='Display details about the selected algorithm, such as the year of publication, abstract, and more.'>
                     {window.innerWidth < mobileMaxWidth ? <img className="console_icons" alt="" src={icon_information_button}/> : "Information"}
                 </div>
             </div>

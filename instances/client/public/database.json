@@ -1,0 +1,284 @@
+{
+    "service": "database",
+    "enabled": true,
+    "data": [
+        {
+            "name": "root",
+            "folders": [
+                {
+                    "name": "PointClouds",
+                    "folders": [],
+                    "files": [
+                        "Orange.ply",
+                        "Statue_Athena.ply",
+                        "Pillow.ply",
+                        "Achat.ply",
+                        "Violin.ply",
+                        "Statue_Lion.ply",
+                        "Azurit.ply",
+                        "template.ply",
+                        "PlushToyPikachu.ply"
+                    ]
+                },
+                {
+                    "name": "GaussianSplatting",
+                    "folders": [
+                        {
+                            "name": "$gaussiansplat$Tree",
+                            "folders": [],
+                            "files": [
+                                "Tree.ply"
+                            ]
+                        },
+                        {
+                            "name": "$gaussiansplat$Garden",
+                            "folders": [],
+                            "files": [
+                                "Garden.ksplat"
+                            ]
+                        },
+                        {
+                            "name": "$gaussiansplat$Truck",
+                            "folders": [],
+                            "files": [
+                                "Truck.ksplat"
+                            ]
+                        }
+                    ],
+                    "files": []
+                },
+                {
+                    "name": "Videos",
+                    "folders": [],
+                    "files": [
+                        "earth.mp4"
+                    ]
+                },
+                {
+                    "name": "LightFields",
+                    "folders": [
+                        {
+                            "name": "$lightfield$lego",
+                            "folders": [],
+                            "files": [
+                                "lego.mp4"
+                            ]
+                        },
+                        {
+                            "name": "$lightfield$legolow",
+                            "folders": [],
+                            "files": [
+                                "legolow.mp4"
+                            ]
+                        },
+                        {
+                            "name": "$lightfield$chess",
+                            "folders": [],
+                            "files": [
+                                "chess.mp4"
+                            ]
+                        },
+                        {
+                            "name": "$lightfield$chessmedium",
+                            "folders": [],
+                            "files": [
+                                "chessmedium.mp4"
+                            ]
+                        },
+                        {
+                            "name": "$lightfield$chesslow",
+                            "folders": [],
+                            "files": [
+                                "chesslow.mp4"
+                            ]
+                        },
+                        {
+                            "name": "$lightfield$amethyst",
+                            "folders": [],
+                            "files": [
+                                "amethyst.mp4"
+                            ]
+                        },
+                        {
+                            "name": "$lightfield$amethystmedium",
+                            "folders": [],
+                            "files": [
+                                "amethystmedium.mp4"
+                            ]
+                        },
+                        {
+                            "name": "$lightfield$crystalball",
+                            "folders": [],
+                            "files": [
+                                "crytsalball.mp4"
+                            ]
+                        },
+                        {
+                            "name": "$lightfield$crystalballmedium",
+                            "folders": [],
+                            "files": [
+                                "crytsalballmedium.mp4"
+                            ]
+                        },
+                        {
+                            "name": "$lightfield$jellybeans",
+                            "folders": [],
+                            "files": [
+                                "jellybeans.mp4"
+                            ]
+                        },
+                        {
+                            "name": "$lightfield$jellybeansmedium",
+                            "folders": [],
+                            "files": [
+                                "jellybeansmedium.mp4"
+                            ]
+                        }
+                    ],
+                    "files": []
+                },
+                {
+                    "name": "Output",
+                    "folders": [],
+                    "files": []
+                },
+                {
+                    "name": "Images",
+                    "folders": [],
+                    "files": [
+                        "Mona_Lisa.png",
+                        "The_Scream.png",
+                        "Impression_Sunrise.png",
+                        "The_Starry_Night.png",
+                        "The_Night_Watch.png",
+                        "Girl_with_a_Pearl_Earring.png",
+                        "The_Kiss.png",
+                        "Las_Meninas.png",
+                        "Wanderer_above_the_Sea_of_Fog.png",
+                        "The_Storm_on_the_Sea_of_Galilee.png"
+                    ]
+                },
+                {
+                    "name": "Meshes",
+                    "folders": [
+                        {
+                            "name": "$mesh$Fluorit",
+                            "folders": [],
+                            "files": [
+                                "Fluorit.mtl",
+                                "Fluorit.obj",
+                                "Fluorit.png"
+                            ]
+                        },
+                        {
+                            "name": "$mesh$Amethyst",
+                            "folders": [],
+                            "files": [
+                                "Amethyst.mtl",
+                                "Amethyst.obj",
+                                "Amethyst.png"
+                            ]
+                        },
+                        {
+                            "name": "$mesh$Palette",
+                            "folders": [],
+                            "files": [
+                                "Palette.obj",
+                                "Palette.png",
+                                "Palette.mtl"
+                            ]
+                        },
+                        {
+                            "name": "$mesh$IbanezGuitar",
+                            "folders": [],
+                            "files": [
+                                "IbanezGuitar.png",
+                                "IbanezGuitar.mtl",
+                                "IbanezGuitar.obj"
+                            ]
+                        },
+                        {
+                            "name": "$mesh$GameBoy_medium",
+                            "folders": [],
+                            "files": [
+                                "GameBoy_medium.mtl",
+                                "GameBoy_medium.png",
+                                "GameBoy_medium.obj"
+                            ]
+                        },
+                        {
+                            "name": "$mesh$Bin",
+                            "folders": [],
+                            "files": [
+                                "Bin.obj",
+                                "Bin.mtl",
+                                "Bin.png"
+                            ]
+                        },
+                        {
+                            "name": "$mesh$Shoe",
+                            "folders": [],
+                            "files": [
+                                "Shoe.png",
+                                "Shoe.obj",
+                                "Shoe.mtl"
+                            ]
+                        },
+                        {
+                            "name": "$mesh$Easle",
+                            "folders": [],
+                            "files": [
+                                "Easle.obj",
+                                "Easle.mtl",
+                                "Easle.png"
+                            ]
+                        },
+                        {
+                            "name": "$mesh$Apple",
+                            "folders": [],
+                            "files": [
+                                "Apple.obj",
+                                "Apple.mtl",
+                                "Apple.png"
+                            ]
+                        },
+                        {
+                            "name": "$mesh$Chair",
+                            "folders": [],
+                            "files": [
+                                "Chair.obj",
+                                "Chair.mtl",
+                                "Chair.png"
+                            ]
+                        }
+                    ],
+                    "files": []
+                },
+                {
+                    "name": "Uploads",
+                    "folders": [],
+                    "files": []
+                },
+                {
+                    "name": "VolumetricVideos",
+                    "folders": [
+                        {
+                            "name": "$volumetric$human",
+                            "folders": [],
+                            "files": [
+                                "human_00000.obj",
+                                "human_00001.mtl",
+                                "human_00001.obj",
+                                "human_00000.jpg",
+                                "human_00001.jpg",
+                                "human_00000.mtl"
+                            ]
+                        }
+                    ],
+                    "files": []
+                }
+            ],
+            "files": []
+        }
+    ]
+}

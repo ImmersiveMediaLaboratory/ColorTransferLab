@@ -12,11 +12,10 @@ Please see the LICENSE file that should have been included as part of this packa
 #body_preview {
     position: absolute;
     background-color: $grey;
-    z-index: 9999;
-    margin: $box_margin;
+    z-index: 999999999;
     border: solid $darkgrey $box_border;
-    width: calc(100% - 6px);
-    height: calc(100% - 6px);
+    width: calc(100%);
+    height: calc(100%);
     display: none;
     flex-wrap: wrap;
     justify-content: space-around;

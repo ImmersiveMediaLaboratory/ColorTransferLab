@@ -13,13 +13,12 @@ import { PLYLoader } from 'three/examples/jsm/loaders/PLYLoader'
 import * as THREE from 'three'
 import PointShader from "shader/PointShader"
 import { isPowerOfTwo } from 'three/src/math/MathUtils';
-const vertexShader = PointShader.vertexShader
-const fragmentShader = PointShader.fragmentShader
-
 
 /*************************************************************************************************************
 * - creates three colored axes for visualizing the coordinatesystem's axes
 * - the axes are shifted a little in y direction to prevent overlapping with the grid
+* - props.histogram needs to have the following structure:
+* TODO
 *************************************************************************************************************/
 
 function ColorHistogram(props) {

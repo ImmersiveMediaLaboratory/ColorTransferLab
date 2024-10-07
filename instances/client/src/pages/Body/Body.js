@@ -85,6 +85,16 @@ function Body(props) {
     }
     else{
         $("#body_menu").css("display", "none");
+        
+        if(props.singleView) {
+            renderSelectionStyle = { display: "block"};
+            bodyStyle = { left: "0px", width: "calc(100% - 406px)", left:"200px", height: "calc(100% - 306px)", margin: "2px"}
+            bodyMainStyle = { margin: "0px", width: "calc(100%)", height: "calc(100%)"};
+            sourceStyle = {width:"calc(100%)", height:"calc(100%)", display: "block"};
+            referenceMainStyle = {top:"0px", width:"calc(100%)", height:"calc(100%)", display: "none"};
+            referenceStyle = {width:"calc(100%)", height:"calc(100%)"};
+            outputStyle = {left: "0px", width:"calc(100%)", height:"calc(100%)", display: "none"};
+        }
     }
 
     function showSource() {
@@ -143,7 +153,7 @@ function Body(props) {
             <PreviewBoard id={"body_preview"}/>
             <div id="body_main" style={bodyMainStyle}>
 
-                <Renderer id="renderer_src" title="Source" window="src" objInfo={{}} style={sourceStyle}/>
+                <Renderer id="renderer_src" title="Source" window="src" droppable={true} objInfo={{}} style={sourceStyle}/>
 
                 <div id='rendererref_main' style={referenceMainStyle}>
                     <div id="renderer_ref_header">
@@ -151,7 +161,7 @@ function Body(props) {
                         <div className="renderer_ref_header_elem" id="renderer_ref_header_colortheme" onClick={(event) => showMenusRef(["#colortheme"], "Color Theme" , event)}>Color Theme</div>
                     </div>
                     <div id="renderer_ref_body">
-                        <Renderer id="renderer_ref" title="Reference" window="ref" objInfo={{}} style={referenceStyle}/>
+                        <Renderer id="renderer_ref" title="Reference" window="ref"  droppable={true} objInfo={{}} style={referenceStyle}/>
                         <ColorTheme id="colortheme"/>
                     </div>
                 </div> 

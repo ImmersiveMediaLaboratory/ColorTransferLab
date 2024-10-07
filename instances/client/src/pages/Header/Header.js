@@ -100,9 +100,9 @@ function Header(props) {
             <a href="https://github.com/ImmersiveMediaLaboratory/ColorTransferLab" target="_blank" rel="noreferrer">
                 <img id="Header_github" src={icon_github_button} alt=""/>
             </a>
-            <a href="https://www.linkedin.com/in/herbert-p-2154a1216/" target="_blank" rel="noreferrer">
+            {/* <a href="https://www.linkedin.com/in/herbert-p-2154a1216/" target="_blank" rel="noreferrer">
                 <img id="Header_linkedin" src={icon_linkedin_button} alt=""/>
-            </a>
+            </a> */}
             <img id="Header_menu" onClick={toogleMenu} src={icon_menu_button} alt="" style={componentStyle}/>
         </header>
     );

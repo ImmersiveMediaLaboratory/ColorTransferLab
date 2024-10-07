@@ -9,31 +9,34 @@ Please see the LICENSE file that should have been included as part of this packa
 
 import React, { useState, useEffect, Suspense, useRef} from 'react';
 import $ from 'jquery';
-import { VRButton, VRCanvas, ARButton, XR, Hands, DefaultXRControllers, XRButton} from '@react-three/xr'
-import { Canvas} from "@react-three/fiber";
-import { OrbitControls, PerspectiveCamera, OrthographicCamera } from "@react-three/drei";
-
-import SysConf from "settings/SystemConfiguration"
-import Axis from "rendering/Axis"
 import PointCloud from "rendering/PointCloud"
 import ColorDistribution from "rendering/ColorDistribution"
 import ColorDistribution2 from "rendering/ColorDistribution2"
 import VoxelGrid from "rendering/VoxelGrid"
 import ColorHistogram from "rendering/ColorHistogram"
 import TriangleMesh from "rendering/TriangleMesh"
-import CustomCanvas from 'rendering/CustomCanvas';
 import Terminal, { consolePrint } from 'pages/Console/Terminal';
 import {active_server} from 'pages/SideBarLeft/Server'
 import {updateHistogram} from 'pages/Console/ColorHistogram'
-import {pathjoin, request_file_existence, server_request, server_post_request} from 'utils/Utils';
+import {pathjoin, request_file_existence} from 'utils/Utils';
 import {execution_params_objects} from 'pages/Console/Console'
 
+import ImageRenderer from 'pages/Body/ImageRenderer'
+import VideoRenderer from 'pages/Body/VideoRenderer'
+import MeshRenderer from 'pages/Body/MeshRenderer'
+import LightFieldRenderer from 'pages/Body/LightFieldRenderer'
+import RenderBar from './RenderBar';
+import LoadingView from './LoadingView';
+import GaussianSplatRenderer from './GaussianSplatRenderer';
+import PointCloudVoxelGrid from 'rendering/PointCloud';
+
+import * as THREE from 'three';
+
 import './Renderer.scss';
-import { AmbientLight } from 'three';
+import { useRouteError } from 'react-router-dom';
 
 
 let canv = null;
-
 export const active_reference = "Single Input"
 
 // Description of the <data_config> object
@@ -55,25 +58,31 @@ for(let renderer_obj of ["Source", "Reference", "Output"]) {
 /* ------------------------------------------------------------------------------------------------------------
 -- Shows either the 2D or 3D renderer
 -------------------------------------------------------------------------------------------------------------*/
-export const showView = (imageID, videoID, renderCanvasID, view) => {
+export const showView = (imageID, videoID, renderCanvasID, view_lightfieldID, view_emptyID, view) => {
+    $("#" + view_emptyID).css("display", "none")
     if(view === "3D") {
         $("#" + imageID).css("visibility", "hidden")
         $("#" + videoID).css("visibility", "hidden")
-        $("#" + renderCanvasID).css("visibility", "visible")
+        $("#" + renderCanvasID).css("display", "block")
+        $("#" + view_lightfieldID).css("display", "none")
         // stop the video if it is still running
-        try {
-            $("#" + videoID).children("video").get(0).pause();
-        }
-        catch (error) {
-        }
+        try { $("#" + videoID).children("video").get(0).pause(); }
+        catch (error) {}
     } else if(view === "video") {
         $("#" + imageID).css("visibility", "hidden")
         $("#" + videoID).css("visibility", "visible")
-        $("#" + renderCanvasID).css("visibility", "hidden")
+        $("#" + renderCanvasID).css("display", "none")
+        $("#" + view_lightfieldID).css("display", "none")
+    } else if(view === "lightfield") {
+        $("#" + imageID).css("visibility", "hidden")
+        $("#" + videoID).css("visibility", "hidden")
+        $("#" + renderCanvasID).css("display", "none")
+        $("#" + view_lightfieldID).css("display", "block")
     } else {
         $("#" + imageID).css("visibility", "visible")
         $("#" + videoID).css("visibility", "hidden")
-        $("#" + renderCanvasID).css("visibility", "hidden")
+        $("#" + renderCanvasID).css("display", "none")
+        $("#" + view_lightfieldID).css("display", "none")
         // stop the video if it is still running
         try {
             $("#" + videoID).children("video").get(0).pause();
@@ -88,18 +97,17 @@ export const showView = (imageID, videoID, renderCanvasID, view) => {
 -- Renderer windows for (1) Source, (2) Reference, (3) Output and (4) Comparison
 -------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------*/
-function Renderer(props) {
+const Renderer = (props) =>  {
     /* ------------------------------------------------------------------------------------------------------------
     -- STATE VARIABLES
     -------------------------------------------------------------------------------------------------------------*/
     const [enableUpdate, changeEnableupdate] = useState(0)
-    const [grid, changeGrid] = useState(<gridHelper args={[20,20, 0x222222, 0x222222]}/>)
-    const [axis, changeAxis] = useState(<Axis />)
-    const [perspectiveView, setPerspectiveView] = useState(true)
-
-
+    const [fieldTexture, setFieldTexture] = useState(null);
     const [init, setInit] = useState(false)
     const [view, setView] = useState(null)
+
+    // stores if the object is completely loaded
+    const [complete, setComplete] = useState(false)
 
     /* ------------------------------------------------------------------------------------------------------------
     -- REFERENCED VARIABLES
@@ -121,14 +129,13 @@ function Renderer(props) {
     const ref_pc_center = useRef(null)
     const ref_pc_scale = useRef(null)
 
+    const objArray = useRef([])
 
+    // stores the current lightfield
+    const lightfield = useRef([])
 
     const obj_path = useRef("xxx")
     const infoBoxEnabled = useRef(false)
-
-    const icon_mesh_texture_button = "assets/icons/icon_mesh_texture.png";
-    const icon_info_button = "assets/icons/icon_info2.png";
-    const gif_loading = "assets/gifs/loading3.gif"
 
     const ID = props.id;
     const window = props.window;
@@ -141,30 +148,59 @@ function Renderer(props) {
     const innerImageID = "renderer_image_inner" + ID
     const innerVideoID = "renderer_video_inner" + ID
     const renderCanvasID = "renderer_canvas" + ID
+    const view_lightfieldID = "view_lightfield_" + ID
+    const view_gaussianSplat_ID = "view_gaussiansplat_" + ID
     const infoboxID = "renderer_info" + ID
+    const renderBarID = "renderer_bar" + ID
+    const view_emptyID = "view_empty_" + ID
+    const view_loadingID = "view_loading_" + ID
  
-
     const initPath = "data"
 
+    // store an identifier for the MeshRenderer which object type is currently displayed
+    // Values: (1) Mesh (2) PointCloud (3) VolumetricVideo
+    let meshRendererMode = useRef("Mesh")
+
+    let [filePath_LightField, setFilePath_LightField] = useState(null)
+    let [filePath_GaussianSplat, setFilePath_GaussianSplat] = useState(null)
+    let [filePath_Image, setFilePath_Image] = useState(null)
+    let [filePath_Video, setFilePath_Video] = useState(null)
+    let [filePath_Mesh, setFilePath_Mesh] = useState(null)
+
     /* ------------------------------------------------------------------------------------------------------------
-    -- 
+    -- Remove the loading screen after the object is loaded.
+    -------------------------------------------------------------------------------------------------------------*/
+    useEffect(() => {
+        let loadingRenderer = $("#" + view_loadingID)
+        loadingRenderer.css("display", "none")
+    }, [complete])
+
+    /* ------------------------------------------------------------------------------------------------------------
+    -- This method is called when the user drops a file from the Items-Menu on the renderer.
+    -- Note:
+    --   Content of data:
+    --   E.g. data = /Meshes/GameBoy_medium:GameBoy_medium.obj
+    --   I.e. <path_to_file>:<file>
     -------------------------------------------------------------------------------------------------------------*/
     function drop_method(event) {
         event.preventDefault();
-        // E.g. data = /Meshes/GameBoy_medium:GameBoy_medium.obj
-        // I.e. <path_to_file>:<file>
         var data = event.dataTransfer.getData('text');
         var [file_path, file_name_with_ext] = data.split(":")
         var [file_name, file_ext] = file_name_with_ext.split(".")
-
         updateRenderer(file_path, file_name, file_name_with_ext, file_ext)
     }
+
+    /* ------------------------------------------------------------------------------------------------------------
+    -- This method is called when the user selects the Source- or the Reference-Button on the Items-Menu.
+    -- Note:
+    --   Content of data:
+    --   E.g. data = /Meshes/GameBoy_medium:GameBoy_medium.obj
+    --   I.e. <path_to_file>:<file>
+    -------------------------------------------------------------------------------------------------------------*/
     function click_method(data) {
-        // E.g. data = /Meshes/GameBoy_medium:GameBoy_medium.obj
-        // I.e. <path_to_file>:<file>
         var [file_path, file_name_with_ext] = data.split(":")
         var [file_name, file_ext] = file_name_with_ext.split(".")
-
+        console.log("DATA: ", data)
         updateRenderer(file_path, file_name, file_name_with_ext, file_ext)
     }
 
@@ -172,15 +208,11 @@ function Renderer(props) {
     -- 
     -------------------------------------------------------------------------------------------------------------*/
     function updateRenderer(file_path, file_name, file_name_with_ext, file_ext) {
-
         console.log("INFO", "Loading object: " + file_path)
         console.log("INFO", "Loading object: " + file_name)
         console.log("INFO", "Loading object: " + file_name_with_ext)
         console.log("INFO", "Loading object: " + file_ext)
 
-        // inserts a loading screen before updating the image, because loading large images can take some time
-        $("#" + innerImageID).attr("src", gif_loading)
-        
         // check for object type
         // Images have the extensions "png" and "jpg"
         // Pointclouds have the extensions "obj" and "ply"
@@ -189,11 +221,11 @@ function Renderer(props) {
             mode.current = "Image"
             // change the visibility of the image canvas only if the RGB color space button is not checked
             if(!$("#settings_rgbcolorspace").checked)
-                showView(imageID, videoID, renderCanvasID, "2D")
+                switchView("Image")
 
             // show the dropped image
             var image_path = pathjoin(active_server, initPath, file_path, file_name_with_ext)
-            $("#" + innerImageID).attr("src", image_path)
+            setFilePath_Image(image_path)
 
             obj_path.current = pathjoin(file_path, file_name_with_ext)
 
@@ -201,92 +233,47 @@ function Renderer(props) {
             mode.current = "Video"
             // change the visibility of the image canvas only if the RGB color space button is not checked
             if(!$("#settings_rgbcolorspace").checked)
-                showView(imageID, videoID, renderCanvasID, "video")
+                switchView("Video")
 
             var video_path = pathjoin(active_server, initPath, file_path, file_name_with_ext)
-
-            console.log(video_path)
-
-            $("#" + innerVideoID).attr("src", video_path)
-
+            setFilePath_Video(video_path)
+ 
             obj_path.current = pathjoin(file_path, file_name_with_ext)
 
         } else if(file_ext == "obj" || file_ext == "ply") {
-            // check if texture for mesh exists -> if not, it is a pointcloud
-            console.log(pathjoin(active_server, initPath, file_path, file_name + ".png"))
-            let texture_path = pathjoin(active_server, initPath, file_path, file_name + ".png")
-            let file_exist = request_file_existence("HEAD", texture_path)
-            // check ig png texture exists otherwise try jpg
-            if(!file_exist){
-                texture_path = pathjoin(active_server, initPath, file_path, file_name + ".jpg")
-                file_exist = request_file_existence("HEAD", texture_path)
-            } 
-
-            if(file_exist) {
-                mode.current = "Mesh"
-                var filepath = pathjoin(active_server, initPath, file_path, file_name)
-                obj_path.current = pathjoin(file_path, file_name_with_ext)
-                object3D.current = <TriangleMesh key={Math.random()} file_name={filepath}></TriangleMesh>
-                changeRendering(object3D.current)
-                showView(imageID, videoID, renderCanvasID, "3D")
-
-            } else {
-                mode.current = "PointCloud"
-                var filepath = pathjoin(active_server, initPath, file_path, file_name_with_ext)
-                obj_path.current = pathjoin(file_path, file_name_with_ext)
-                object3D.current = <PointCloud key={Math.random()} file_path={filepath} id={TITLE} center={ref_pc_center} scale={ref_pc_scale}/>
-                changeRendering(object3D.current)
-                //changeEnableupdate(Math.random())
-                showView(imageID, videoID, renderCanvasID, "3D")
-            }
+            mode.current = "PointCloud"
+            var filepath = pathjoin(active_server, initPath, file_path, file_name_with_ext)
+            setFilePath_Mesh(filepath)
+            obj_path.current = pathjoin(file_path, file_name_with_ext)
+            switchView("Mesh")
+        } else if(file_ext == "mesh") {
+            console.log("INFO", "Loading mesh: " + file_path)
+            mode.current = "Mesh"
+            var filepath = pathjoin(active_server, initPath, file_path, file_name)
+            setFilePath_Mesh(filepath)
+            meshRendererMode.current = "Mesh"
+            changeRendering(object3D.current)
+            switchView("Mesh")
+        } else if(file_ext == "gsp") {
+            console.log("INFO", "Loading gaussian splatting: " + file_path)
+            const gaussiansplat_path = pathjoin(active_server, initPath, file_path, file_name_with_ext)
+            setFilePath_GaussianSplat(gaussiansplat_path)
+            switchView("GaussianSplat")
         } else if(file_ext == "volu") {
-
+            console.log("INFO", "Loading volumetric video: " + file_path)
+            let volumetricvideo_path = pathjoin(active_server, initPath, file_path, file_name)
             mode.current = "VolumetricVideo"
-            let objArray = []
-
-            for (let i = 0; i <= 1800; i++) {
-                let paddedNumber = String(i).padStart(5, '0');
-                let texture_path = pathjoin(active_server, initPath, file_path, file_name + "_" + paddedNumber + ".jpg");
-                let file_exist = request_file_existence("HEAD", texture_path);
-                // check if png texture exists otherwise try jpg
-                if(!file_exist){
-                    texture_path = pathjoin(active_server, initPath, file_path, file_name + "_" + paddedNumber + ".png");
-                    file_exist = request_file_existence("HEAD", texture_path)
-                } 
-    
-            
-                if (file_exist) {
-                    var filepath = pathjoin(active_server, initPath, file_path, file_name + "_" + paddedNumber)
-                    var obj3D = <TriangleMesh key={Math.random()} file_name={filepath}></TriangleMesh>
-                    objArray.push(obj3D)
-                } else {
-                    break
-                }
-            }
+            setFilePath_Mesh(volumetricvideo_path)
 
             obj_path.current = pathjoin(file_path, file_name_with_ext)
-            changeRendering2(objArray)
-            showView(imageID, videoID, renderCanvasID, "3D")
-
-            // let texture_path = pathjoin(active_server, initPath, file_path, file_name + "_00000.jpg")
-            // let file_exist = request_file_existence("HEAD", texture_path)
-
-
-            // let texture_path2 = pathjoin(active_server, initPath, file_path, file_name + "_00001.jpg")
-            // let file_exist2 = request_file_existence("HEAD", texture_path)
-
-            // if(file_exist && file_exist2) {
-            //     mode.current = "VolumetricVideo"
-            //     var filepath = pathjoin(active_server, initPath, file_path, file_name + "_00000")
-            //     var filepath2 = pathjoin(active_server, initPath, file_path, file_name + "_00001")
-            //     //obj_path.current = pathjoin(file_path, file_name_with_ext)
-            //     //obj_path.current = pathjoin(file_path2, file_name_with_ext)
-            //     var obj3D = <TriangleMesh key={Math.random()} file_name={filepath}></TriangleMesh>
-            //     var obj3D2 = <TriangleMesh key={Math.random()} file_name={filepath2}></TriangleMesh>
-            //     changeRendering2([obj3D, obj3D2])
-            //     showView(imageID, videoID, renderCanvasID, "3D")
-
-            // }
+            //changeRendering2(objArray.current)
+            switchView("Mesh")
+        } else if(file_ext == "lf") {
+            console.log("INFO", "Loading lightfield: " + file_path)
+            mode.current = "LightField"
+            let lightfield_path = pathjoin(active_server, initPath, file_path, file_name + ".mp4");
+            setFilePath_LightField(lightfield_path)
+            switchView("LightField")
         }
 
         //server_post_request(active_server, "color_distribution", pathjoin(initPath, file_path, file_name_with_ext), updateColorDistribution, window)
@@ -305,13 +292,41 @@ function Renderer(props) {
     /* ------------------------------------------------------------------------------------------------------------
     -- 
     -------------------------------------------------------------------------------------------------------------*/
+    const switchView = (view) => {
+        let loadingRenderer = $("#" + view_loadingID)
+        let emptyRenderer = $("#" + view_emptyID)
+        let imageRenderer = $("#" + imageID)
+        let videoRenderer = $("#" + videoID)
+        let lightFieldRenderer = $("#" + view_lightfieldID)
+        let meshRenderer = $("#" + renderCanvasID)
+        let gaussianSplatRenderer = $("#" + view_gaussianSplat_ID)
+
+        loadingRenderer.css("display", "block")
+        emptyRenderer.css("display", "none")
+        imageRenderer.css("visibility", "hidden")
+        videoRenderer.css("visibility", "hidden")
+        lightFieldRenderer.css("display", "none")
+        meshRenderer.css("display", "none")
+        gaussianSplatRenderer.css("display", "none")
+
+        // stop the video if it is still running
+        try {  videoRenderer.children("video").get(0).pause(); }
+        catch (error) {}
+
+        if(view == "Image") {imageRenderer.css("visibility", "visible")}
+        else if(view == "Video") {videoRenderer.css("visibility", "visible")}
+        else if(view == "LightField") {lightFieldRenderer.css("display", "block")}
+        else if(view == "Mesh") {meshRenderer.css("display", "block")}
+        else if(view == "GaussianSplat") {gaussianSplatRenderer.css("display", "block")}
+    }
+    /* ------------------------------------------------------------------------------------------------------------
+    -- 
+    -------------------------------------------------------------------------------------------------------------*/
     const updateColorDistribution = (data, parameters) => {
         var dist_vals = data["data"]["distribution"]
         let scaled_dist_vals = (dist_vals.flat()).map(function(x) { return x / 255.0; })
         colorDistribution3D.current = <ColorDistribution2 key={Math.random()} file_path={pathjoin(active_server, initPath, "PointClouds/template.ply")} dist_vals={scaled_dist_vals} id={TITLE}/>
     }
-
-
     /* ------------------------------------------------------------------------------------------------------------
     -- 
     -------------------------------------------------------------------------------------------------------------*/
@@ -320,6 +335,7 @@ function Renderer(props) {
 
         // set 3D color histogram
         var eval_values = data["data"]["histogram"]
+        var eval_values = {}
         histogram3D.current = <ColorHistogram key={Math.random()} histogram={eval_values} />
 
         // set 3D voxel grid
@@ -350,10 +366,10 @@ function Renderer(props) {
                 // disable all the other checkboxes
                 disableCheckbox("settings_3dcolorhistogram", show3DColorHistogram)
                 disableCheckbox("settings_voxelgrid", showVoxelGrid)
-                showView(imageID, videoID, renderCanvasID, "3D")
+                showView(imageID, videoID, renderCanvasID, view_lightfieldID, view_emptyID, "3D")
                 changeRendering(colorDistribution3D.current)
             } else {
-                showView(imageID, videoID, renderCanvasID, "2D")
+                showView(imageID, videoID, renderCanvasID, view_lightfieldID, view_emptyID, "2D")
             }
         } else {
             if(button_enabled) {
@@ -383,10 +399,10 @@ function Renderer(props) {
                 // disable all the other checkboxes
                 disableCheckbox("settings_rgbcolorspace", show3DColorDistribution)
                 disableCheckbox("settings_voxelgrid", showVoxelGrid)
-                showView(imageID, videoID, renderCanvasID, "3D")
+                showView(imageID, videoID, renderCanvasID, view_lightfieldID, view_emptyID, "3D")
                 changeRendering(histogram3D.current)
             } else {
-                showView(imageID, videoID, renderCanvasID, "2D")
+                showView(imageID, videoID, renderCanvasID, view_lightfieldID, view_emptyID, "2D")
             }
         }
 
@@ -482,7 +498,7 @@ function Renderer(props) {
         // check if the string in data-src contains the identifier $mesh$
         if(pat.includes("$mesh$"))
             file_path = "Output/$mesh$" + file_name
-        // check if the string in data-src contains the identifier $mesh$
+        // check if the string in data-src contains the identifier $volumetric$
         if(pat.includes("$volumetric$"))
             file_path = "Output/$volumetric$" + file_name
 
@@ -508,43 +524,15 @@ function Renderer(props) {
             observer.observe(out_renderer, options);
         }
 
+
+
         $("#settings_rgbcolorspace").on("change", show3DColorDistribution)
         $("#settings_3dcolorhistogram").on("change", show3DColorHistogram)
         $("#settings_voxelgrid").on("change", showVoxelGrid)
-        $("#settings_grid").on("change", function(e){
-            if(e.target.checked) {
-                changeGrid(<gridHelper args={[20,20, 0x222222, 0x222222]}/>)
-            } else {
-                changeGrid(null)
-            }
-        })
-        $("#settings_axis").on("change", function(e){
-            if(e.target.checked) {changeAxis(<Axis />)}
-            else {changeAxis(null)}
-        })
-        $("#settings_orthographicview").on("change", function(e){
-            setPerspectiveView(!e.target.checked)
-        })
+
 
     }, []);
 
-    /* ------------------------------------------------------------------------------------------------------------
-    -- ...
-    -------------------------------------------------------------------------------------------------------------*/
-    function showMeshTexture() {
-        if(mode.current == "Mesh") {
-            // change the visibility of the image canvas only if the RGB color space button is not checked
-            $("#" + innerImageID).attr("src", gif_loading)
-            showView(imageID, renderCanvasID, "2D")
-            $("#" + innerImageID).attr("src", pathjoin(active_server, initPath, obj_path.current.split(".")[0] + ".png"))
-            mode.current = "Texture"
-        } else if(mode.current == "Texture") {
-            showView(imageID, renderCanvasID, "3D")
-            mode.current = "Mesh"
-        } else {
-            consolePrint("WARNING", "No object with texture is available...")
-        }
-    }
 
     /* ------------------------------------------------------------------------------------------------------------
     -- ...
@@ -597,69 +585,69 @@ function Renderer(props) {
     }
 
 
-    // Choose between perspective and orthographic view
-    let cameraview;
-    if(perspectiveView)
-        cameraview = <PerspectiveCamera position={[4, 4, 4]} makeDefault />
-    else
-        cameraview = <OrthographicCamera position={[10, 10, 10]} zoom={40} makeDefault />
-
-
-    
-    if(!init) {
-        canv = <CustomCanvas id={renderCanvasID} view={TITLE} rendering={mesh.current}>
-                <ambientLight/>
-                <OrbitControls />
-                {cameraview}
-                {grid}
-                {axis}
-            </CustomCanvas>
-        setInit(true)
-    }
-
     return(
-        <div id={ID} style={props.style}>
+        <div id={ID} style={props.style} className='renderer_container'>
             <div className="renderer_title">{TITLE}</div>
-            <div className='renderer_mesh_texture_button' onClick={showMeshTexture}>
-                <img className="renderer_mesh_texture_icon" src={icon_mesh_texture_button}/>
-            </div>
-            <div className='renderer_info_button' onClick={showObjectInfo}>
+ {/*        <div className='renderer_info_button' onClick={showObjectInfo}>
                 <img className="renderer_info_icon" src={icon_info_button}/>
-            </div>
+            </div> */}
             <div id={infoboxID} className='renderer_info_box'>
                 fasefs
             </div>
 
-            <div id={imageID} className="renderer_image">
-                <img id={innerImageID} className="renderer_image_inner" data-update={0}  data-src={""}/>
+            <div id={view_emptyID} className='emptyRenderer'>
+                {ID === 'renderer_out' ? 'No output has been calculated yet.' : 'Select a file from the database or drag and drop it here.'}
             </div>
 
+            <ImageRenderer 
+                id={imageID} 
+                filePath={filePath_Image}
+                setComplete={setComplete}
+                innerid={innerImageID}
+            />
+            <VideoRenderer 
+                id={videoID} 
+                filePath={filePath_Video}
+                setComplete={setComplete}
+                innerid={innerVideoID}/>
+            {/* 
+            This renderer is used for the following views:
+            (1) Point Clouds
+            (2) Meshes
+            (3) Volumetric Videos
+            (4) 3D Color Histograms
+            (5) 3D Color Distributions
+            (6) Gaussian Splatting
+            */}
+            <MeshRenderer 
+                id={renderCanvasID} 
+                filePath={filePath_Mesh}
+                setComplete={setComplete}
+                renderBarID={renderBarID}
+                view={TITLE} 
+                //rendering={mesh.current} 
+                //obj_path={obj_path.current} 
+                obj_type={mode.current}
+            />
+            <LightFieldRenderer 
+                id={view_lightfieldID} 
+                filePath={filePath_LightField}
+                renderBarID={renderBarID}
+                setComplete={setComplete}
+            />
 
-            <div id={videoID} className="renderer_video">
-                <video id={innerVideoID} className="renderer_video_inner" width="320" height="240" controls>
-                    <source src={""} type="video/mp4"/>
-                </video>
-            </div>
+            <GaussianSplatRenderer 
+                id={view_gaussianSplat_ID} 
+                filePath={filePath_GaussianSplat}
+                renderBarID={renderBarID}
+                setComplete={setComplete}
+            />
 
-            {/* {canv} */}
-            <CustomCanvas id={renderCanvasID} view={TITLE} rendering={mesh.current}>
-                <ambientLight/>
-                <OrbitControls />
-                {cameraview}
-                {grid}
-                {axis}
-            </CustomCanvas>
+            <LoadingView id={view_loadingID}/>
+            <RenderBar id={renderBarID}/>
+
         </div>
     );
-}
-
-/* ----------------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------------------
--- Allows dropping items on the renderer windows.
--------------------------------------------------------------------------------------------------------------------
------------------------------------------------------------------------------------------------------------------*/
-Renderer.defaultProps = {
-    droppable: true
 }
 
 export default Renderer;

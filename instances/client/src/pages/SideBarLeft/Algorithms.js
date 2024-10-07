@@ -156,9 +156,10 @@ function Algorithms(props) {
         algorithmsStyle = {display: "none", width: "calc(100% - 6px)", top: "0px", height: "calc(100% - 6px)"};
     }
 
-
+    /* ------------------------------------------------------------------------------------------------------------
+    -- 
+    -------------------------------------------------------------------------------------------------------------*/
     function showMenus(active_menus, event) {
-        console.log("MM")
         const menu_list = ["#algorithms_content_colorTransfer", "#algorithms_content_segmentation", "#algorithms_content_classification", "#algorithms_content_reconstruction", "#algorithms_content_registration"]
 
         for(let i = 0; i < menu_list.length; i++)
@@ -185,18 +186,20 @@ function Algorithms(props) {
                 <div className="algorithms_menu_item" id="algorithms_menu_colorTransfer" onClick={(event) => showMenus(["#algorithms_content_colorTransfer"], event)} style={{backgroundColor:getComputedStyle(document.documentElement).getPropertyValue('--backgroundcolor')}}>
                     {window.innerWidth < mobileMaxWidth ? <img className="algorithms_icons" alt="" src={icon_colortransfer_button}/> : <div className="algorithms_menu_item_text">Color Transfer</div>}
                 </div>
+
                 <div className="algorithms_menu_item" id="algorithms_menu_segmentation" onClick={(event) => showMenus(["#algorithms_content_segmentation"], event)}>
-                {window.innerWidth < mobileMaxWidth ? <img className="algorithms_icons" alt="" src={icon_segmentation_button}/> : <div className="algorithms_menu_item_text">Segmentation</div>}
+                {window.innerWidth < mobileMaxWidth ? <img className="algorithms_icons" alt="" src={icon_segmentation_button}/> : <div className="algorithms_menu_item_text">Style Transfer</div>}
                 </div>
+
                 <div className="algorithms_menu_item" id="algorithms_menu_classification" onClick={(event) => showMenus(["#algorithms_content_classification"], event)}>
-                {window.innerWidth < mobileMaxWidth ? <img className="algorithms_icons" alt="" src={icon_classification_button}/> : <div className="algorithms_menu_item_text">Classification</div>}
+                {window.innerWidth < mobileMaxWidth ? <img className="algorithms_icons" alt="" src={icon_classification_button}/> : <div className="algorithms_menu_item_text">Colorization</div>}
                 </div>
-                <div className="algorithms_menu_item" id="algorithms_menu_reconstruction" onClick={(event) => showMenus(["#algorithms_content_reconstruction"], event)}>
+                {/* <div className="algorithms_menu_item" id="algorithms_menu_reconstruction" onClick={(event) => showMenus(["#algorithms_content_reconstruction"], event)}>
                 {window.innerWidth < mobileMaxWidth ? <img className="algorithms_icons" alt="" src={icon_reconstruction_button}/> : <div className="algorithms_menu_item_text">Reconstruction</div>}
                 </div>
                 <div className="algorithms_menu_item" id="algorithms_menu_registration" onClick={(event) => showMenus(["#algorithms_content_registration"], event)}>
                 {window.innerWidth < mobileMaxWidth ? <img className="algorithms_icons" alt="" src={icon_registration_button}/> : <div className="algorithms_menu_item_text">Registration</div>}
-                </div>
+                </div> */}
             </div>
 
             <div className="algorithms_list" id="algorithms_content_colorTransfer"/>

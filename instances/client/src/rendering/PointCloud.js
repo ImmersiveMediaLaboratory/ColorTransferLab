@@ -7,12 +7,18 @@ This file is released under the "MIT License Agreement".
 Please see the LICENSE file that should have been included as part of this package.
 */
 
+/*
+Reference for point cloud rendering: https://codesandbox.io/p/sandbox/points-ldpyw8?file=%2Fsrc%2Findex.js%3A14%2C12-14%2C56
+*/
+
 import React, {Suspense, useMemo, useRef, useEffect, useState} from 'react';
+import { BufferAttribute } from "three";
 import { useLoader, useFrame } from "@react-three/fiber";
 import { PLYLoader } from 'three/examples/jsm/loaders/PLYLoader'
 import * as THREE from 'three'
 import PointShader from "shader/PointShader"
 import SysConf from "settings/SystemConfiguration"
+import $ from 'jquery';
 const vertexShader = PointShader.vertexShader
 const fragmentShader = PointShader.fragmentShader
 
@@ -22,6 +28,9 @@ const fragmentShader = PointShader.fragmentShader
 * - the axes are shifted a little in y direction to prevent overlapping with the grid
 *************************************************************************************************************/
 function PointCloud(props) {
+
+    const [complete, setComplete] = useState(false)
+
     var setting_pointsize = document.getElementById('settings_pointsize')
     const [pointsize, changePointsize] = useState(setting_pointsize.value)
     const change_pointsize = (event) => {
@@ -42,32 +51,35 @@ function PointCloud(props) {
         setting_colornormal.addEventListener("change", change_colornormal);
 
         return () => {
-            var setting_pointsize = document.getElementById('settings_pointsize')
-            setting_pointsize.removeEventListener("change", change_pointsize);
+            // var setting_pointsize = document.getElementById('settings_pointsize')
+            // setting_pointsize.removeEventListener("change", change_pointsize);
 
-            var setting_colornormal = document.getElementById('settings_colornormal')
-            setting_colornormal.removeEventListener("change", change_colornormal);
+            // var setting_colornormal = document.getElementById('settings_colornormal')
+            // setting_colornormal.removeEventListener("change", change_colornormal);
         }
     }, []);
 
 
     let ref = useRef()
     useFrame(() => {
-        ref.current.material.uniforms.pointsize = {value: pointsize}
-        ref.current.material.uniforms.enableNormalColor = {value: colornormal}
+        if(complete) {
+            ref.current.material.uniforms.pointsize = {value: pointsize}
+            ref.current.material.uniforms.enableNormalColor = {value: colornormal}
+
+        }
     })
 
     let data = useMemo(
         () => ({
-          //uniforms: {
-            // Ka: { value: new THREE.Vector3(1, 1, 1) },
-            // Kd: { value: new THREE.Vector3(1, 1, 1) },
-            // Ks: { value: new THREE.Vector3(1, 1, 1) },
-            // LightIntensity: { value: new THREE.Vector4(0.5, 0.5, 0.5, 1.0) },
-            //LightIntensity: { value: new THREE.Vector4(1.0, 1.0, 1.0, 1.0) },
-            // LightPosition: { value: new THREE.Vector4(0.0, 2000.0, 0.0, 1.0) },
-            // Shininess: { value: 1.0 }
-          //},
+          uniforms: {
+            Ka: { value: new THREE.Vector3(1, 1, 1) },
+            Kd: { value: new THREE.Vector3(1, 1, 1) },
+            Ks: { value: new THREE.Vector3(1, 1, 1) },
+            LightIntensity: { value: new THREE.Vector4(0.5, 0.5, 0.5, 1.0) },
+            LightIntensity: { value: new THREE.Vector4(1.0, 1.0, 1.0, 1.0) },
+            LightPosition: { value: new THREE.Vector4(0.0, 2000.0, 0.0, 1.0) },
+            Shininess: { value: 1.0 }
+          },
           vertexShader,
           fragmentShader
           
@@ -75,45 +87,97 @@ function PointCloud(props) {
         []
     )
 
-    var obj = useLoader(PLYLoader, props.file_path)
-    
-    // calculate scaling factor to fit object into unit cube
-    var boundingBox = new THREE.Box3();
-    obj.computeBoundingBox();
-    boundingBox.copy( obj.boundingBox );
+    let coords = useRef(new Float32Array(0))
 
-    var cen = new THREE.Vector3(boundingBox.min.x + (boundingBox.max.x - boundingBox.min.x ) / 2.0, 
-                                   boundingBox.min.y + (boundingBox.max.y - boundingBox.min.y ) / 2.0, 
-                                   boundingBox.min.z + (boundingBox.max.z - boundingBox.min.z ) / 2.0)
+    let normals = useRef(new Float32Array(0))
+    let colors = useRef(new Float32Array(0))
+    let position = useRef(new THREE.Vector3(0,0,0))
+    let scaling = useRef(1.0)
+    let center = useRef(new THREE.Vector3(0,0,0))
 
-    var radius = (obj.boundingBox.max.y - obj.boundingBox.min.y ) / 2.0
-    var scaling = 1.0 / radius
+    console.log(process.env.PUBLIC_URL + '/' + props.file_path)
+    console.log(process.env.PUBLIC_URL)
+    console.log(props.file_path)
 
-    // SysConf.data_config[props.id]["pc_center"] = center
-    // SysConf.data_config[props.id]["pc_scale"] = scaling
-    props.center.current = cen
-    props.scale.current = scaling
-    
+    useEffect(() => {
+        const loader = new PLYLoader();
+        // load a resource
+        loader.load(
+            // resource URL
+            //process.env.PUBLIC_URL + '/' + props.file_path,
+            props.file_path,
+            // called when resource is loaded
+            function ( obj ) {
+                console.log(obj)
+                // calculate scaling factor to fit object into unit cube
+                var boundingBox = new THREE.Box3();
+                obj.computeBoundingBox();
+                boundingBox.copy( obj.boundingBox );
+            
+                center.current = new THREE.Vector3(boundingBox.min.x + (boundingBox.max.x - boundingBox.min.x ) / 2.0, 
+                                               boundingBox.min.y + (boundingBox.max.y - boundingBox.min.y ) / 2.0, 
+                                               boundingBox.min.z + (boundingBox.max.z - boundingBox.min.z ) / 2.0)
+            
+                var radius = (obj.boundingBox.max.y - obj.boundingBox.min.y ) / 2.0
 
-    var position = new THREE.Vector3(-cen.x*scaling, -cen.y*scaling + 1.0, -cen.z*scaling)
-    var scaling = 1.0 / radius
+                //props.center.current = center.current
+                //props.scale.current = scaling
+                
+                position.current = new THREE.Vector3(-center.current.x*scaling.current, -center.current.y*scaling.current + 1.0, -center.current.z*scaling.current)
+                scaling.current = 1.0 / radius
+
+                let coord_buf = new Float32Array(obj.attributes.position.array)
+                coords.current = new BufferAttribute(coord_buf, 3);
+
+                let normals_buf = new Float32Array(obj.attributes.normal.array)
+                normals.current = new BufferAttribute(normals_buf, 3);
+
+                let colors_buf = new Float32Array(obj.attributes.color.array)
+                colors.current = new BufferAttribute(colors_buf, 3);
 
 
-    let coords = new Float32Array(obj.attributes.position.array)
-    let normals = new Float32Array(obj.attributes.normal.array)
-    let colors = new Float32Array(obj.attributes.color.array)
+                // Resets the progress bar after loading is complete
+                $(`#${props.renderBar}`).css("width", "0%")
+                setComplete(true)
+                props.setGLOComplete(Math.random())
+                
+            },
+            // called when loading is in progresses
+            function ( xhr ) {
+                var progress = ( xhr.loaded / xhr.total * 100 );
+                //setLoaded(progress)calc(100% - 2px)
+                $(`#${props.renderBar}`).css("width", progress.toString() + "%")
+                //$("#rightpanel_statusbar").css("width", "calc(" + progress.toString() + "% - 2px)")
+                console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
 
-    return(
-        <points key={Math.random} ref={ref} position={position} scale={scaling}>
-             <bufferGeometry>
-                 <bufferAttribute attachObject={["attributes", "position"]} count={coords.length / 3} array={coords} itemSize={3} />
-                 <bufferAttribute attachObject={["attributes", "normal"]} count={normals.length / 3} array={normals} itemSize={3} />
-                 <bufferAttribute attachObject={["attributes", "color"]} count={colors.length / 3} array={colors} itemSize={3} />
-             </bufferGeometry>
-             {/* <shaderMaterial attach="material" {...data} /> */}
-             <shaderMaterial fragmentShader={fragmentShader} vertexShader={vertexShader} />
-       </points>
-    );
+            },
+            // called when loading has errors
+            function ( error ) {
+                console.log(error)
+                console.log( 'An error happened' );
+
+            }
+        );
+        console.log("useEffect")
+    }, [])
+
+
+    if(!complete) {
+        return (
+            <group position={[0,0,0]} scale={1}/>
+        )
+    } else {
+        return(
+            <points key={Math.random} ref={ref} position={position.current} scale={scaling.current}>
+                 <bufferGeometry>
+                     <bufferAttribute attach={"attributes-position"} {...coords.current} />
+                     <bufferAttribute attach={"attributes-normal"} {...normals.current} />
+                     <bufferAttribute attach={"attributes-color"} {...colors.current} />
+                 </bufferGeometry>
+                 <shaderMaterial attach="material" {...data} />
+           </points>
+        );
+    }
 }
 
 export default PointCloud;

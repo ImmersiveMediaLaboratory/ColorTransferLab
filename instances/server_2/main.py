@@ -118,7 +118,6 @@ class MyServer(SimpleHTTPRequestHandler):
 
         # apply color transfer if this url is posted by user
         if self.path == "/color_transfer":
-            #response = PostRequest.color_transfer(self.getJson(), init_path, response)
 
             try:
                 manager = multiprocessing.Manager()

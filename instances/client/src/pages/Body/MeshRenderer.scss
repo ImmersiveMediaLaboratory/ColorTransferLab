@@ -1,0 +1,60 @@
+@import 'settings/Global.scss';
+
+.renderer_mesh{
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    display: none;
+}
+
+.field_texture{
+    position: absolute;
+    top: 25px;
+    width: 100%;
+    height: calc(100% - 25px);
+    background-color: black;
+    object-fit: contain;
+}
+
+.button_settings{
+    position: absolute;
+    width: 15px;
+    padding: 5px;
+    height: 15px;
+    z-index: 9998;
+    right: 0px;
+}
+.button_texturemap{
+    position: absolute;
+    width: 15px;
+    padding: 5px;
+    height: 15px;
+    z-index: 9998;
+    right: 20px;
+}
+
+.field_settings{
+    background-color: $darkgrey;
+    opacity: 0.9;
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    //padding: 5px;
+    //height: 100%;
+    z-index: 99999;
+}
+
+.field_settings_table_cell{
+    width: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.106);
+}
+
+.button_settings_texture_icon,
+.button_texturemap_texture_icon{
+    height: 100%;
+}
+
+.button_settings_texture_icon:hover,
+.button_texturemap_texture_icon:hover{
+    filter: brightness(1.5);
+}
