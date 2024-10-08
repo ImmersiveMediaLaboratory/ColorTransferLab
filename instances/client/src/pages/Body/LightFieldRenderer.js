@@ -84,6 +84,7 @@ const LightFieldRenderer = (props) => {
             offset += imgData.data.byteLength;
             count++;
             let progress = Math.round(100 * count / (camsX * camsY));
+
             $(`#${renderBarID}`).css("width", progress.toString() + "%")
         };
       

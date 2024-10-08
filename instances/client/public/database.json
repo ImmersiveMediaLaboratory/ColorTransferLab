@@ -24,13 +24,6 @@
                     "name": "GaussianSplatting",
                     "folders": [
                         {
-                            "name": "$gaussiansplat$Tree",
-                            "folders": [],
-                            "files": [
-                                "Tree.ply"
-                            ]
-                        },
-                        {
                             "name": "$gaussiansplat$Garden",
                             "folders": [],
                             "files": [
@@ -38,10 +31,66 @@
                             ]
                         },
                         {
+                            "name": "$gaussiansplat$GardenHigh",
+                            "folders": [],
+                            "files": [
+                                "GardenHigh.ksplat"
+                            ]
+                        },
+                        {
                             "name": "$gaussiansplat$Truck",
                             "folders": [],
                             "files": [
                                 "Truck.ksplat"
+                            ]
+                        },
+                        {
+                            "name": "$gaussiansplat$TruckHigh",
+                            "folders": [],
+                            "files": [
+                                "TruckHigh.ksplat"
+                            ]
+                        },
+                        {
+                            "name": "$gaussiansplat$Room",
+                            "folders": [],
+                            "files": [
+                                "Room.ply"
+                            ]
+                        },
+                        {
+                            "name": "$gaussiansplat$Bonsai",
+                            "folders": [],
+                            "files": [
+                                "Bonsai.ksplat"
+                            ]
+                        },
+                        {
+                            "name": "$gaussiansplat$BonsaiHigh",
+                            "folders": [],
+                            "files": [
+                                "BonsaiHigh.ksplat"
+                            ]
+                        },
+                        {
+                            "name": "$gaussiansplat$BonsaiTrimmed",
+                            "folders": [],
+                            "files": [
+                                "BonsaiTrimmed.ksplat"
+                            ]
+                        },
+                        {
+                            "name": "$gaussiansplat$Stump",
+                            "folders": [],
+                            "files": [
+                                "Stump.ksplat"
+                            ]
+                        },
+                        {
+                            "name": "$gaussiansplat$StumpHigh",
+                            "folders": [],
+                            "files": [
+                                "StumpHigh.ksplat"
                             ]
                         }
                     ],

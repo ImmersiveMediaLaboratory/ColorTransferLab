@@ -108,7 +108,6 @@ function PointCloud(props) {
             props.file_path,
             // called when resource is loaded
             function ( obj ) {
-                console.log(obj)
                 // calculate scaling factor to fit object into unit cube
                 var boundingBox = new THREE.Box3();
                 obj.computeBoundingBox();
@@ -147,9 +146,6 @@ function PointCloud(props) {
                 var progress = ( xhr.loaded / xhr.total * 100 );
                 //setLoaded(progress)calc(100% - 2px)
                 $(`#${props.renderBar}`).css("width", progress.toString() + "%")
-                //$("#rightpanel_statusbar").css("width", "calc(" + progress.toString() + "% - 2px)")
-                console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
-
             },
             // called when loading has errors
             function ( error ) {

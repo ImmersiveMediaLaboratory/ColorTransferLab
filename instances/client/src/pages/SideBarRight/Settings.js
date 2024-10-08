@@ -81,10 +81,6 @@ function Settings(props) {
                 <td title={"The objects have to be loaded manually again for showing the new voxel level."}>Voxel Level</td>
                 <td><input id="settings_voxellevel" type="range" min="1" max="3" defaultValue="1" style={{width: "75px"}}/></td>
             </tr>
-            <tr>
-                <td>Orthographic View</td>
-                <td><input id="settings_orthographicview" type="checkbox" /></td>
-            </tr>
             </tbody>
         </table>
         </div>

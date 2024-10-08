@@ -1,7 +1,7 @@
 /*
-Copyright 2022 by Herbert Potechius,
-Ernst-Abbe-Hochschule Jena - University of Applied Sciences - Department of Electrical Engineering and Information
-Technology - Immersive Media and AR/VR Research Group.
+Copyright 2024 by Herbert Potechius,
+Technical University of Berlin
+Faculty IV - Electrical Engineering and Computer Science - Institute of Telecommunication Systems - Communication Systems Group
 All rights reserved.
 This file is released under the "MIT License Agreement".
 Please see the LICENSE file that should have been included as part of this package.
@@ -89,6 +89,7 @@ export const create_folder_button = (folder, count, folder_path) => {
     // add button icon
     $("<img/>").attr({class: "database_elem_icon", src: icon_database_elem, title: folder["name"]}).appendTo(database_elem)
 
+
     // add button text
     $("<div/>").html(folder["name"]).attr({class: "database_elem_text"}).appendTo(database_elem)
 
@@ -118,11 +119,6 @@ export const create_folder_button = (folder, count, folder_path) => {
             subfolder["name"].includes("$gaussiansplat$")) 
         {
             num_meshes += 1
-            // console.log("TTTTTTTT")
-            // let obj_path = pathjoin(folder["name"], subfolder["name"].replace('$mesh$',''), subfolder["name"].replace('$mesh$','') + ".obj")
-            // console.log(obj_path)
-            // console.log("TTTTTTTT")
-            // database_elem.on("click", function() {show_mesh_file(obj_path)});
             continue
         }
         // Folder "Meshes" contains only folders containing the meshes, i.e., obj, png and mtl files. No subfolder will be created
@@ -267,7 +263,7 @@ export const show_files = (fold, file_path) => {
 
             $(items_elem).on("dragstart", function(e){
                 // use custom file extension for volumetric videos so that the renderer knows how to handle the file
-                let data = file_path + "/" + element["name"] + ":" + file_name + ".gsp";
+                let data = file_path + "/" + element["name"] + ":" + file_name + "-" + file_extension + ".gsp";
                 e.originalEvent.dataTransfer.setData('text', data);
             });
 
@@ -275,7 +271,7 @@ export const show_files = (fold, file_path) => {
             // if the items is clicked the user has to decide if it should be loaded as reference or source
             $(items_elem).on("click", function(e){
                 // use custom file extension for volumetric videos so that the renderer knows how to handle the file
-                let data = file_path + "/" + element["name"] + ":" + file_name + ".gsp";
+                let data = file_path + "/" + element["name"] + ":" + file_name + "-" + file_extension + ".gsp";
                 showSrcRefButtons(data, this)
             });
 
@@ -283,7 +279,10 @@ export const show_files = (fold, file_path) => {
             items_elem.append(items_elem_text)
             items_body.append(items_elem)  
 
-            let full_path = file_path + "/" + element["name"] + ":" + file_name + ".gsp"
+            // in the $gaussiansplat$... folder there is only one file
+            let file_extension = element["files"][0].split(".")[1]
+
+            let full_path = file_path + "/" + element["name"] + ":" + file_name + "-" + file_extension + ".gsp"
             // objects which are created and uploaded have no preview
             if(file_path !== "Output" && file_path !== "Uploads")
                 createPreviewCard(pathjoin(active_server, "previews", file_path), file_name, full_path)

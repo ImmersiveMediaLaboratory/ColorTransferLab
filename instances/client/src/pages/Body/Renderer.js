@@ -1,7 +1,7 @@
 /*
-Copyright 2022 by Herbert Potechius,
-Ernst-Abbe-Hochschule Jena - University of Applied Sciences - Department of Electrical Engineering and Information
-Technology - Immersive Media and AR/VR Research Group.
+Copyright 2024 by Herbert Potechius,
+Technical University of Berlin
+Faculty IV - Electrical Engineering and Computer Science - Institute of Telecommunication Systems - Communication Systems Group
 All rights reserved.
 This file is released under the "MIT License Agreement".
 Please see the LICENSE file that should have been included as part of this package.
@@ -99,6 +99,12 @@ export const showView = (imageID, videoID, renderCanvasID, view_lightfieldID, vi
 -----------------------------------------------------------------------------------------------------------------*/
 const Renderer = (props) =>  {
     /* ------------------------------------------------------------------------------------------------------------
+    -- IMPORTANT:
+    -- This identifier can be either "src", "ref" or "out" and will be concatenated with ids of other
+    -- components to create a unique identifier for each renderer.
+    -------------------------------------------------------------------------------------------------------------*/
+    const RID = props.window
+    /* ------------------------------------------------------------------------------------------------------------
     -- STATE VARIABLES
     -------------------------------------------------------------------------------------------------------------*/
     const [enableUpdate, changeEnableupdate] = useState(0)
@@ -142,6 +148,8 @@ const Renderer = (props) =>  {
     // Only Source, Reference and Comparison are droppable
     const DROPPABLE = props.droppable;
     const TITLE = props.title
+
+
 
     const imageID = "renderer_image" + ID
     const videoID = "renderer_video" + ID
@@ -524,13 +532,9 @@ const Renderer = (props) =>  {
             observer.observe(out_renderer, options);
         }
 
-
-
         $("#settings_rgbcolorspace").on("change", show3DColorDistribution)
         $("#settings_3dcolorhistogram").on("change", show3DColorHistogram)
         $("#settings_voxelgrid").on("change", showVoxelGrid)
-
-
     }, []);
 
 
@@ -643,7 +647,7 @@ const Renderer = (props) =>  {
                 setComplete={setComplete}
             />
 
-            <LoadingView id={view_loadingID}/>
+            {/* <LoadingView id={view_loadingID}/> */}
             <RenderBar id={renderBarID}/>
 
         </div>

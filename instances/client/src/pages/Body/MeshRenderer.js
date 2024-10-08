@@ -1,6 +1,7 @@
 /*
 Copyright 2024 by Herbert Potechius,
-Tehnical University of Berlin, Faculty IV - Electrical Engineering and Computer Science
+Technical University of Berlin
+Faculty IV - Electrical Engineering and Computer Science - Institute of Telecommunication Systems - Communication Systems Group
 All rights reserved.
 This file is released under the "MIT License Agreement".
 Please see the LICENSE file that should have been included as part of this package.
@@ -16,6 +17,8 @@ import {pathjoin} from 'utils/Utils';
 import {active_server} from 'pages/SideBarLeft/Server'
 import TriangleMesh from "rendering/TriangleMesh"
 import PointCloud from "rendering/PointCloud"
+import VolumetricVideo from 'rendering/VolumetricVideo';
+import ReactDOMServer from 'react-dom/server';
 
 
 const MeshRenderer = (props) => {    
@@ -26,6 +29,8 @@ const MeshRenderer = (props) => {
     const [isFieldSettingVisible, setIsFieldSettingVisible] = useState(true);
     const [isTextureMapVisible, setIsTextureMapVisible] = useState(false);
     const [fps, setFps] = useState(1);
+
+    const currentIndex = useRef(0);
 
     const activeObject = useRef([]);
     const activeTextureMap = useRef([]);
@@ -147,37 +152,19 @@ const MeshRenderer = (props) => {
             activeObject.current.length = 0;
             activeTextureMap.current.length = 0;
 
-            const loadJson = async () => {
-                try {
-                    const response = await fetch(json_path);
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    const data = await response.json();
-                    //console.log(data["num_frames"]);
-                    for (let i = 0; i < data["num_frames"]; i++) {
-                        let paddedNumber = String(i).padStart(5, '0');
 
-                        let texture_path = pathjoin(props.filePath + "_" + paddedNumber + ".jpg");
-                        activeTextureMap.current.push(texture_path)
-     
-                        var filepath = pathjoin(props.filePath + "_" + paddedNumber)
-                        const obj3D = <TriangleMesh 
-                                        key={Math.random()} 
-                                        file_name={filepath} 
-                                        setGLOComplete={props.setComplete}
-                                      />
-                        activeObject.current.push(obj3D)
-                    }
-                } catch (error) {
-                    console.error("Error loading JSON:", error);
-                }
+            const volumetricVideo = new VolumetricVideo();
+            const loadVideo = async () => {
+                const voluReturn = await volumetricVideo.createVolumetricVideo(props.filePath, props.setComplete);
+                activeObject.current.push(...voluReturn[0]);
+                activeTextureMap.current.push(...voluReturn[1]);
+                console.log(activeObject.current);
             };
-            loadJson();
+            loadVideo();
+
         }
 
     }, [props.filePath]);
-
 
     return (
         <div id={props.id} className="renderer_mesh">
@@ -190,12 +177,18 @@ const MeshRenderer = (props) => {
                 <img className="button_texturemap_texture_icon" src={button_texturemap_texture_icon}/>
             </div>
 
+            {/* Framenumber counter */}
+            {props.obj_type === "VolumetricVideo" && (
+                <div className="voluCounter">Frame: {currentIndex.current}</div>
+            )}
+
             <CustomCanvas 
                 view={props.view} 
                 rendering={activeObject.current} 
                 style={{ display: isTextureMapVisible ? 'none' : 'block' }}
                 textureMapID={textureMapID}
                 activeTextureMap={activeTextureMap.current}
+                currentIndex={currentIndex}
                 fps={fps}
             >
                 <ambientLight/>

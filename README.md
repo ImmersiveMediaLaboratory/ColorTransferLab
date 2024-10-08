@@ -577,12 +577,18 @@ DESCRIPTION
 - [A Web App Implementation for Image Colour Transfer](https://www.dustfreesolutions.com/CT/CT.html)
 - [Photo Recoloring](http://b-z.github.io/photo_recoloring/)
 
+---
+
+## Ressources 
+...
+
 --- 
 
 ## Acknowledgements
 - The light field renderer is adapted from [hypothete's lightfield-webgl2 repository](https://github.com/hypothete/lightfield-webgl2).
 - Gaussian Splatting renderer is adapted from [mkkellogg's GaussianSplats3D repository](https://github.com/mkkellogg/GaussianSplats3D)
 
+--- 
 
 ## Citation
 If you utilize this code in your research, kindly provide a citation:

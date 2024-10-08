@@ -1,7 +1,7 @@
 /*
-Copyright 2022 by Herbert Potechius,
-Ernst-Abbe-Hochschule Jena - University of Applied Sciences - Department of Electrical Engineering and Information
-Technology - Immersive Media and AR/VR Research Group.
+Copyright 2024 by Herbert Potechius,
+Technical University of Berlin
+Faculty IV - Electrical Engineering and Computer Science - Institute of Telecommunication Systems - Communication Systems Group
 All rights reserved.
 This file is released under the "MIT License Agreement".
 Please see the LICENSE file that should have been included as part of this package.
@@ -56,6 +56,11 @@ export const request_available_methods = (server_address) => {
     } else {
         consolePrint("WARNING", "No color transfer methods were found")
     }
+}
+
+const stat_obj = {
+    "title": "Reinhard's Color Transfer",
+    "name": "Reinhard",
 }
 
 /*-------------------------------------------------------------------------------------------------------------
@@ -149,6 +154,20 @@ function Algorithms(props) {
     useEffect(() => {
         const styles = getComputedStyle(document.documentElement);
         setMobileMaxWidth(String(styles.getPropertyValue('--mobile-max-width')).trim());
+
+        // Create Button for color transfer algorithms which run on the client side
+        const stat_obj = {
+            "data": [
+                {
+                    "title": "Global Color Transfer",
+                    "name": "GLO",
+                    "types": ["Image", "PointCloud", "Mesh", "Video", "VolumetricVideo"],
+                }
+            ]
+            
+        }
+        createCTButtons(stat_obj)
+
     }, []);
 
     let algorithmsStyle = {};

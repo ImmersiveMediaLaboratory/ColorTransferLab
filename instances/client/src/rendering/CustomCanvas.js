@@ -29,6 +29,9 @@ function CustomCanvas(props) {
                     } else {
                         const newIndex = (prevIndex + 1) % nu;
                         $("#" + props.textureMapID).attr("src", props.activeTextureMap[newIndex]);
+
+                        console.log("CustomCanvas useEffect currentIndex: " + newIndex)
+                        props.currentIndex.current = newIndex;
                         return newIndex;
                     }
                 });

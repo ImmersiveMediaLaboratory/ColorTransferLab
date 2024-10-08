@@ -1,14 +1,35 @@
 import "./GaussianSplatRenderer.scss"
 import * as GaussianSplats3D from '@mkkellogg/gaussian-splats-3d';
 import * as THREE from 'three';
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import $ from 'jquery';
 
 const GaussianSplatRenderer = (props) => {
+    const [isFieldSettingVisible, setIsFieldSettingVisible] = useState(false);
+    const [splatScale, setSplatScale] = useState(100.0);
+    const [degree, setDegree] = useState(0);
+
     const containerRef = useRef(null);
     const renderer = useRef(null);
     const camera = useRef(null);
     const viewer = useRef(null);
+
+    const button_settings_texture_icon = "assets/icons/icon_settings_grey.png";
+
+    const showSettings = () => {
+        console.log("showSettings")
+        setIsFieldSettingVisible(!isFieldSettingVisible);
+    };
+
+    const handleDegreeChange = (e) => {
+        setDegree(e.target.value);
+        console.log(degree)
+    };
+
+    const handleSplatScaleChange = (e) => {
+        setSplatScale(e.target.value);
+        //console.log(splatScale)
+    };
 
     useEffect(() => {
         const container = containerRef.current;
@@ -34,7 +55,7 @@ const GaussianSplatRenderer = (props) => {
         viewer.current = new GaussianSplats3D.Viewer({
             'renderer': renderer.current,
             "camera": camera.current,
-            'sphericalHarmonicsDegree': 2,
+            'sphericalHarmonicsDegree': 3,
             'sharedMemoryForWorkers': false,
         });
 
@@ -48,28 +69,32 @@ const GaussianSplatRenderer = (props) => {
         console.log("Filepath changed")
         console.log(props.filePath)
         if (props.filePath !== null) {
-
-            let filePath = props.filePath.split(".")[0] + ".ksplat";
+            console.log(props.filePath)
+            // file name should be in the format "filename-ksplat.gsp"
+            // gsp has to be removed and the "-" has to be replaced by "."
+            let filePath = props.filePath.split(".")[0].replace("-", ".");
             viewer.current.removeSplatScene(0);
 
             waitForViewerToBeReady(viewer, () => {
                 viewer.current.addSplatScene(filePath, {
                     "showLoadingUI": false,
                     onProgress: (progress) => {
+                        console.log( Math.round(progress));
                         //setLoaded(progress)calc(100% - 2px)
-                        //$(`#${props.renderBar}`).css("width", progress.toString() + "%")
-                        //$(`#${props.renderBar}`).css("width", "100%")
-                        console.log(progress);
+                        $(`#${props.renderBarID}`).css("width", Math.round(progress).toString() + "%")
                     }})
                     .then(() => {
                         requestAnimationFrame(update);
+                        console.log(viewer.current.splatMesh)
+                        //viewer.current.splatMesh.setSplatScale(0.1);
+                        props.setComplete(Math.random())
+                        $(`#${props.renderBarID}`).css("width", "0%")
                     });
             });
 
             function waitForViewerToBeReady(viewer, callback) {
                 if (!viewer.current.isLoadingOrUnloading()) {
                     callback();
-                    props.setComplete(Math.random())
                 } else {
                     setTimeout(() => waitForViewerToBeReady(viewer, callback), 100); // Überprüfe alle 100ms
                 }
@@ -77,6 +102,9 @@ const GaussianSplatRenderer = (props) => {
     
             function update() {
                 requestAnimationFrame(update);
+
+                //console.log(splatScale)
+
                 renderer.current.setSize(containerRef.current.clientWidth, containerRef.current.clientHeight);
                 camera.current.aspect = containerRef.current.clientWidth / containerRef.current.clientHeight;
                 camera.current.updateProjectionMatrix();
@@ -86,8 +114,60 @@ const GaussianSplatRenderer = (props) => {
         }
     }, [props.filePath]);
 
+    useEffect(() => {
+        if (viewer.current !== null && viewer.current.splatMesh != undefined) {
+            console.log(viewer.current.splatMesh)
+            console.log(viewer.current.splatMesh.splatScale)
+            // the initial execution of this function will fail because the splatMesh is not yet created
+            try {
+                viewer.current.splatMesh.setSplatScale(splatScale / 100.0);
+            }
+            catch (e) {}
+        }
+    }, [splatScale]);
+
     return(
-        <div id={props.id} className="gaussianSplatRenderer" ref={containerRef}/>
+        <div id={props.id} className="gaussianSplatRenderer">
+            <div className="gaussiansplat" ref={containerRef}/>
+
+                        {/* Button for showing the settings for the mesh view */}
+            <div className='gs_button_settings' onClick={showSettings}>
+                <img className="gs_button_settings_texture_icon" src={button_settings_texture_icon}/>
+            </div>     
+
+            {/* Settings field */}
+            <div className="gs_field_settings" style={{ display: isFieldSettingVisible ? 'block' : 'none' }}>
+                <table style={{width:"100%"}}>
+                    <tbody>
+                        <tr>
+                            <td className='gs_field_settings_table_cell'>Degree</td>
+                            <td className='gs_field_settings_table_cell'>
+                                <input 
+                                    type="range" 
+                                    min="0" 
+                                    max="3" 
+                                    value={degree}
+                                    onChange={handleDegreeChange} 
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td className='gs_field_settings_table_cell'>Splat Scale</td>
+                            <td className='gs_field_settings_table_cell'>
+                                <input 
+                                    type="range" 
+                                    min="0" 
+                                    max="100" 
+                                    value={splatScale}
+                                    onChange={handleSplatScaleChange} 
+                                />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
     )
 
 };
