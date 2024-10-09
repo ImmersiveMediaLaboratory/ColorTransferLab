@@ -48,7 +48,6 @@ Please see the LICENSE file that should have been included as part of this packa
 
 #console_body {
     position: absolute;
-    // background-color: green;
     top: 25px;
     height: calc(100% - 25px);
     width: 100%;
@@ -104,98 +103,41 @@ Please see the LICENSE file that should have been included as part of this packa
 }
 
 #console_play_button {
-    position: absolute;
-    padding: 2px;
-    margin: 2px;
-    top: 0px;
     right: 20px;
 }
 
-#console_play_button_logo {
-    padding: 0px;
-    margin: 0px;
-    height: 17px;
-    width: 17px;
-}
-
-#console_play_button:hover {
-    filter: brightness(1.5);
-}
-
 #console_upload_button {
-    position: absolute;
-    padding: 2px;
-    margin: 2px;
-    top: 0px;
     right: 50px;
 }
 
-#console_upload_button_logo {
-    padding: 0px;
-    margin: 0px;
-    height: 17px;
-    width: 17px;
-}
-
-#console_upload_button:hover {
-    filter: brightness(1.5);
-}
-
 #console_eval_button {
-    position: absolute;
-    padding: 2px;
-    margin: 2px;
-    top: 0px;
-    right: 80px;
-}
-
-#console_eval_button_logo {
-    padding: 0px;
-    margin: 0px;
-    height: 17px;
-    width: 17px;
-}
-
-#console_eval_button:hover {
-    filter: brightness(1.5);
+    right: 50px;
 }
 
 #console_export_metric_button {
-    position: absolute;
-    padding: 2px;
-    margin: 2px;
-    top: 0px;
-    right: 110px;
-}
-
-#console_export_metric_button_logo {
-    padding: 0px;
-    margin: 0px;
-    height: 17px;
-    width: 17px;
-}
-
-
-#console_export_metric_button:hover {
-    filter: brightness(1.5);
+    right: 80px;
 }
 
 #console_camera_button {
+    right: 110px;
+}
+
+.console_button {
     position: absolute;
     padding: 2px;
     margin: 2px;
     top: 0px;
-    right: 140px;
 }
 
-#console_camera_button_logo {
+.console_button:hover {
+    filter: brightness(1.5);
+}
+
+.console_button_icon {
     padding: 0px;
     margin: 0px;
     height: 17px;
     width: 17px;
-}
-#console_camera_button:hover {
-    filter: brightness(1.5);
 }
 
 

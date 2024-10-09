@@ -1,7 +1,7 @@
 /*
-Copyright 2022 by Herbert Potechius,
-Ernst-Abbe-Hochschule Jena - University of Applied Sciences - Department of Electrical Engineering and Information
-Technology - Immersive Media and AR/VR Research Group.
+Copyright 2024 by Herbert Potechius,
+Technical University of Berlin
+Faculty IV - Electrical Engineering and Computer Science - Institute of Telecommunication Systems - Communication Systems Group
 All rights reserved.
 This file is released under the "MIT License Agreement".
 Please see the LICENSE file that should have been included as part of this package.
@@ -14,33 +14,20 @@ Please see the LICENSE file that should have been included as part of this packa
     margin: $box_margin;
     width: calc(100% - 2 * #{$box_margin} - 2 * #{$box_border});
     height: calc(100% - 2 * #{$box_margin} - 2 * #{$box_border});
-    //background-color: blue;
-    //border: 1px solid $darkgrey;
 }
-
-
 
 #Body_body {
     position: absolute;
-    //background-color: green;
     width: calc(100% - 400px);
-    // window_height - header - footer - console
     height: calc(100% - 50px - 50px - 200px);
     top: 50px;
     left: 200px;
 }
 
-// #renderer_src {
-//     position: absolute;
-//     width: calc(100% - 2 * #{$box_border});
-//     height: calc(100% - 2 * #{$box_border});
-//     border: solid $darkgrey $box_border;
-// }
 #renderer_src {
     position: absolute;
     width: $renderer_innerwidth;
     height: $renderer_innerheight;
-    //margin: $box_margin;
     border: solid $darkgrey $box_border;
 }
 
@@ -100,8 +87,6 @@ Please see the LICENSE file that should have been included as part of this packa
     cursor: default;
 }
 
-
-// styling of the tabs
 .tab-list_body {  
     margin: 0px;
     padding: 0px;
@@ -129,15 +114,11 @@ Please see the LICENSE file that should have been included as part of this packa
 }
 
 .tab-content_body {
-    // $padding: 5px;
     position: absolute;
-    // padding: $padding;
     background-color: purple;
     width: 100%;
     height: calc(100% - #{$tab_span});
-    // overflow-y: scroll;
 }
-
 
 #body_source_button {
     position: absolute;
@@ -221,7 +202,7 @@ Please see the LICENSE file that should have been included as part of this packa
     position: relative;
     background-color: $darkgrey;
     width: calc(100% - 40px);
-    height: calc((100% / 6) - 32px);
+    height: calc((100% / 5) - 32px);
     padding: 10px;
     margin: 10px;
     font-weight: bold;

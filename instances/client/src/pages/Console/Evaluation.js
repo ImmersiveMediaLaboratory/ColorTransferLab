@@ -12,7 +12,7 @@ import './Console.scss';
 import SysConf from "settings/SystemConfiguration"
 import Terminal from './Terminal';
 import {consolePrint} from 'pages/Console/Terminal'
-import {server_request} from 'utils/Utils'
+import {server_request} from 'utils/connection'
 import {execution_params_objects} from 'pages/Console/Console'
 import {active_server} from 'pages/SideBarLeft/Server'
 import { pathjoin } from 'utils/Utils';

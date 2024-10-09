@@ -8,7 +8,7 @@ const vertexShader = LightFieldShader.vertexShader
 const fragmentShader = LightFieldShader.fragmentShader
 
 
-const PlaneComponent = ({ camsX, camsY, width, height, cameraGap, fieldTexture, aperture, focus, stInput }) => {
+const LightFieldPlane = ({ camsX, camsY, width, height, cameraGap, fieldTexture, aperture, focus, stInput }) => {
     const planeRef = useRef();
     const planePtsRef = useRef();
     const {scene} = useThree();
@@ -52,4 +52,4 @@ const PlaneComponent = ({ camsX, camsY, width, height, cameraGap, fieldTexture, 
     return null;
 };
 
-export default PlaneComponent;
+export default LightFieldPlane;

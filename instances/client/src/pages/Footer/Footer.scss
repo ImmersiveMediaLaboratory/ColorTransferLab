@@ -1,7 +1,7 @@
 /*
-Copyright 2022 by Herbert Potechius,
-Ernst-Abbe-Hochschule Jena - University of Applied Sciences - Department of Electrical Engineering and Information
-Technology - Immersive Media and AR/VR Research Group.
+Copyright 2024 by Herbert Potechius,
+Technical University of Berlin
+Faculty IV - Electrical Engineering and Computer Science - Institute of Telecommunication Systems - Communication Systems Group
 All rights reserved.
 This file is released under the "MIT License Agreement".
 Please see the LICENSE file that should have been included as part of this package.
@@ -12,7 +12,6 @@ Please see the LICENSE file that should have been included as part of this packa
 
 #Footer_footer {
     position: absolute;
-    // margin-top: calc(100vh - 50px);
     top: calc(100% - #{$footer_height});
     padding-top: 15px;
     height: 35px;
@@ -20,5 +19,4 @@ Please see the LICENSE file that should have been included as part of this packa
     background-color: $grey;
     color: $lightgrey;
     text-align: center;
-    
 }

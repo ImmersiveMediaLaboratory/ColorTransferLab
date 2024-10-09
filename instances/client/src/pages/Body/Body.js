@@ -196,9 +196,6 @@ function Body(props) {
                     <div className='body_button' id="body_settings_button" onClick={() => showMenus(["#settings_main"])}>
                         Settings
                     </div>
-                    <div className='body_button' id="body_darkmode_button" onClick={toggleDarkmode}>
-                        Darkmode
-                    </div>
                 </div>
 
             </div>

@@ -14,11 +14,9 @@ Reduce video size:
 
 import React, {Suspense, useState, useEffect, useRef, useImperativeHandle, forwardRef} from 'react';
 import { OrbitControls, PerspectiveCamera, OrthographicCamera, Plane } from "@react-three/drei";
-import CustomCanvas from 'rendering/CustomCanvas';
-import Axis from "rendering/Axis"
 import {Canvas} from "@react-three/fiber";
 import './LightFieldRenderer.scss';
-import PlaneComponent from 'rendering/PlaneComponent';
+import LightFieldPlane from 'rendering/LightFieldPlane';
 import $ from 'jquery';
 import * as THREE from 'three';
 
@@ -165,7 +163,7 @@ const LightFieldRenderer = (props) => {
             </div>
 
             <Canvas>
-                <PlaneComponent
+                <LightFieldPlane
                     camsX={camsX}
                     camsY={camsY}
                     width={width.current}

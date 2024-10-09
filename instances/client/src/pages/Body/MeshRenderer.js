@@ -10,7 +10,7 @@ Please see the LICENSE file that should have been included as part of this packa
 import React, {useEffect, useState, useRef} from 'react';
 import { OrbitControls, PerspectiveCamera, OrthographicCamera, Plane } from "@react-three/drei";
 import CustomCanvas from 'rendering/CustomCanvas';
-import Axis from "rendering/Axis"
+import Axes from "rendering/Axes"
 import './MeshRenderer.scss';
 import $ from 'jquery';
 import {pathjoin} from 'utils/Utils';
@@ -24,7 +24,7 @@ import ReactDOMServer from 'react-dom/server';
 const MeshRenderer = (props) => {    
 
     const [grid, changeGrid] = useState(<gridHelper args={[20,20, 0x222222, 0x222222]}/>)
-    const [axis, changeAxis] = useState(<Axis />)
+    const [axis, changeAxis] = useState(<Axes />)
     const [perspectiveView, setPerspectiveView] = useState(true)
     const [isFieldSettingVisible, setIsFieldSettingVisible] = useState(true);
     const [isTextureMapVisible, setIsTextureMapVisible] = useState(false);
@@ -60,7 +60,7 @@ const MeshRenderer = (props) => {
     -------------------------------------------------------------------------------------------------------------*/
     const handleAxisChange = (e) => {
         if (e.target.checked) {
-            changeAxis(<Axis />);
+            changeAxis(<Axes />);
         } else {
             changeAxis(null);
         }

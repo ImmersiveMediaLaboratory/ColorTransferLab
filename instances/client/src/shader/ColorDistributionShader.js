@@ -1,7 +1,7 @@
 /*
-Copyright 2022 by Herbert Potechius,
-Ernst-Abbe-Hochschule Jena - University of Applied Sciences - Department of Electrical Engineering and Information
-Technology - Immersive Media and AR/VR Research Group.
+Copyright 2024 by Herbert Potechius,
+Technical University of Berlin
+Faculty IV - Electrical Engineering and Computer Science - Institute of Telecommunication Systems - Communication Systems Group
 All rights reserved.
 This file is released under the "MIT License Agreement".
 Please see the LICENSE file that should have been included as part of this package.
@@ -17,10 +17,8 @@ class ColorDistributionShader {
 
         void main() {
             vColor = color;
-
             vec3 pos = vec3(position.xyz);
             pos = vec3(pos.rgb) * 4.0;
-
             gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0 );
             gl_PointSize = pointsize;
         }

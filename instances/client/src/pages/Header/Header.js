@@ -1,72 +1,77 @@
 /*
-Copyright 2022 by Herbert Potechius,
-Ernst-Abbe-Hochschule Jena - University of Applied Sciences - Department of Electrical Engineering and Information
-Technology - Immersive Media and AR/VR Research Group.
+Copyright 2024 by Herbert Potechius,
+Technical University of Berlin
+Faculty IV - Electrical Engineering and Computer Science - Institute of Telecommunication Systems - Communication Systems Group
 All rights reserved.
 This file is released under the "MIT License Agreement".
 Please see the LICENSE file that should have been included as part of this package.
 */
 
-import React from 'react';
-import {useState, useEffect} from "react";
-import './Header.scss';
+import React, {useState, useEffect} from "react";
 import $ from 'jquery';
-import { consolePrint } from 'pages/Console/Terminal';
+import './Header.scss';
 
-/* ----------------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------------------
--- Renders website logo, name and app version.
--------------------------------------------------------------------------------------------------------------------
------------------------------------------------------------------------------------------------------------------*/
+
+/******************************************************************************************************************
+ ******************************************************************************************************************
+ ** FUNCTIONAL COMPONENT
+ ** Defined the header of the webpage containing a clickable logo which redirects to the page 
+ ** https://potechius.com, the title of the webpage (with the version number), the version number of the app and 
+ ** a button which redirects to the github page of the app.
+ ******************************************************************************************************************
+ ******************************************************************************************************************/
 function Header(props) {
-    // HP logo in the top left corner of the Header 
+    /**************************************************************************************************************
+     **************************************************************************************************************
+     ** STATES & REFERENCES & VARIABLES
+     **************************************************************************************************************
+     **************************************************************************************************************/
+    const [componentStyle, setComponentStyle] = useState({});
     const logo_header = "assets/logo.png";
-    const icon_darkmode_button = "assets/icons/icon_darkmode2.png";
     const icon_menu_button = "assets/icons/icon_menu.png";
-    const icon_linkedin_button = "assets/icons/icon_linkedin.png";
     const icon_github_button = "assets/icons/icon_github.png";
-    // Title of the webpage in the header component
     const title_header = "ColorTransferLab";
-    // Version number of the app
     const version_header = "v 3.0.0"
-    /*-------------------------------------------------------------------------------------------------------------
-    ---------------------------------------------------------------------------------------------------------------
-    -- STATES
-    ---------------------------------------------------------------------------------------------------------------
-    -------------------------------------------------------------------------------------------------------------*/
-    const [mobileMaxWidth, setMobileMaxWidth] = useState(null);
 
-    /*-------------------------------------------------------------------------------------------------------------
-    ---------------------------------------------------------------------------------------------------------------
-    -- HOOKS
-    ---------------------------------------------------------------------------------------------------------------
-    -------------------------------------------------------------------------------------------------------------*/
+    /**************************************************************************************************************
+     **************************************************************************************************************
+     ** HOOKS
+     **************************************************************************************************************
+     **************************************************************************************************************/
 
-    /*-------------------------------------------------------------------------------------------------------------
-    -- ...
-    -------------------------------------------------------------------------------------------------------------*/
+    /**************************************************************************************************************
+     *
+     **************************************************************************************************************/
     useEffect(() => {
-        $("#Header_darkmode").on("click", toggleDarkmode)
         const styles = getComputedStyle(document.documentElement);
-        setMobileMaxWidth(String(styles.getPropertyValue('--mobile-max-width')).trim());
+        const mobileMaxWidth = String(styles.getPropertyValue('--mobile-max-width')).trim();
+        const updateComponentStyle = () => {
+            if (window.innerWidth < mobileMaxWidth) {
+                setComponentStyle({ display: "block"});
+                $("#Header_github").css({marginLeft: "calc(100vw - 100px)"})
+            } else {
+                setComponentStyle({});
+                $("#Header_github").css({marginLeft: "calc(100vw - 50px)"})
+            }
+        };
+
+        updateComponentStyle();
+        window.addEventListener('resize', updateComponentStyle);
+
+        return () => {
+            window.removeEventListener('resize', updateComponentStyle);
+        };
     }, []);
 
-    let componentStyle = {};
-    if (window.innerWidth < mobileMaxWidth) {
-        componentStyle = { display: "block"};
-    }
+    /**************************************************************************************************************
+     **************************************************************************************************************
+     ** FUNCTIONS
+     **************************************************************************************************************
+     **************************************************************************************************************/
 
-    /*-------------------------------------------------------------------------------------------------------------
-    ---------------------------------------------------------------------------------------------------------------
-    -- FUNCTIONS
-    ---------------------------------------------------------------------------------------------------------------
-    -------------------------------------------------------------------------------------------------------------*/
-    const toggleDarkmode = () => {
-        consolePrint("WARNING", "Darkmode not supported ...")
-        //props.toggleDarkmode(prevDarkmode => !prevDarkmode);
-        // setDarkmode(darkmode => !darkmode)
-    }
-
+    /**************************************************************************************************************
+     * Toogles the menu of the webpage. Menu button is only visible on mobile devices.
+     **************************************************************************************************************/
     function toogleMenu() {
         if ($("#body_menu").css("display") === "none") {
             $("#body_menu").css("display", "block")
@@ -75,20 +80,11 @@ function Header(props) {
         }
     }
 
-
-
-    if (window.innerWidth < mobileMaxWidth) {
-        $("#Header_darkmode").css("display", "none");
-    }
-    else 
-    {
-        $("#Header_darkmode").css("display", "block");
-    }
-
-    /* ------------------------------------------------------------------------------------------------------------
-    -- Render method
-    -------------------------------------------------------------------------------------------------------------*/
-
+    /**************************************************************************************************************
+     **************************************************************************************************************
+     ** RENDERING
+     **************************************************************************************************************
+     **************************************************************************************************************/
     return (
         <header id='Header_header'>
             <a href="https://potechius.com" target="_blank" rel="noreferrer">
@@ -96,17 +92,12 @@ function Header(props) {
             </a>
             <div id="Header_text" >{title_header}</div>
             <div id="header_version">{version_header}</div>
-            <img id="Header_darkmode" src={icon_darkmode_button} alt=""/>
             <a href="https://github.com/ImmersiveMediaLaboratory/ColorTransferLab" target="_blank" rel="noreferrer">
                 <img id="Header_github" src={icon_github_button} alt=""/>
             </a>
-            {/* <a href="https://www.linkedin.com/in/herbert-p-2154a1216/" target="_blank" rel="noreferrer">
-                <img id="Header_linkedin" src={icon_linkedin_button} alt=""/>
-            </a> */}
             <img id="Header_menu" onClick={toogleMenu} src={icon_menu_button} alt="" style={componentStyle}/>
         </header>
     );
-
-  }
+}
 
 export default Header;

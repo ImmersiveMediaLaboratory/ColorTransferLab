@@ -1,16 +1,14 @@
 /*
-Copyright 2022 by Herbert Potechius,
-Ernst-Abbe-Hochschule Jena - University of Applied Sciences - Department of Electrical Engineering and Information
-Technology - Immersive Media and AR/VR Research Group.
+Copyright 2024 by Herbert Potechius,
+Technical University of Berlin
+Faculty IV - Electrical Engineering and Computer Science - Institute of Telecommunication Systems - Communication Systems Group
 All rights reserved.
 This file is released under the "MIT License Agreement".
 Please see the LICENSE file that should have been included as part of this package.
 */
 
-import React from 'react';
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import $ from 'jquery';
-
 import ColorHistogram from './ColorHistogram';
 import Evaluation from './Evaluation';
 import Terminal from './Terminal';
@@ -19,13 +17,13 @@ import Information from './Information';
 import {consolePrint} from './Terminal'
 import {evalPrint, exportMetrics} from 'pages/Console/Evaluation'
 import {execution_approach} from 'pages/SideBarLeft/Algorithms'
-import {pathjoin, server_post_request2, getRandomID} from 'utils/Utils';
+import {server_post_request2} from 'utils/connection';
+import {pathjoin, getRandomID} from 'utils/Utils';
 import {active_server} from 'pages/SideBarLeft/Server'
 import {showView} from 'pages/Body/Renderer'
 import {active_reference} from "pages/Body/Body"
 import {color_palette} from "pages/Body/ColorTheme"
 import {request_database_content} from "pages/SideBarRight/Database"
-
 import './Console.scss';
 
 
@@ -62,104 +60,111 @@ const apply_color_transfer = (data, parameters) => {
         else if(output_extension === "volu")
             renderer_image_inner.attr("data-src", pathjoin(active_server,"data", "Output", "$volumetric$" + rankey , rankey + "." + output_extension))
         
-
         renderer_image_inner.attr("data-update", getRandomID())
     }
 }
 
 
-/*-----------------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------------------
--- 
--------------------------------------------------------------------------------------------------------------------
------------------------------------------------------------------------------------------------------------------*/
-function Console(props) {
+/******************************************************************************************************************
+ ******************************************************************************************************************
+ ** FUNCTIONAL COMPONENT
+ ******************************************************************************************************************
+ ******************************************************************************************************************/
+function Console() {
+    /**************************************************************************************************************
+     **************************************************************************************************************
+     ** STATES & REFERENCES & VARIABLES
+     **************************************************************************************************************
+     **************************************************************************************************************/
+    const [componentStyle, setComponentStyle] = useState({});
+    const [mobileMaxWidth, setMobileMaxWidth] = useState(null);
+
     const icon_play_button = "assets/icons/icon_play.png";
     const icon_upload_button = "assets/icons/icon_upload.png";
     const icon_eval_button = "assets/icons/icon_eval.png";
     const icon_camera_button = "assets/icons/icon_camera.png";
     const icon_export_metric_button = "assets/icons/icon_export_metric.png";
-
     const icon_terminal_button = "assets/icons/icon_terminal.png";
     const icon_evaluation_button = "assets/icons/icon_evaluation.png";
     const icon_configuration_button = "assets/icons/icon_configuration.png";
     const icon_colorstats_button = "assets/icons/icon_colorstats.png";
     const icon_information_button = "assets/icons/icon_information.png";
 
-    const [mobileMaxWidth, setMobileMaxWidth] = useState(null);
+    /**************************************************************************************************************
+     **************************************************************************************************************
+     ** HOOKS
+     **************************************************************************************************************
+     **************************************************************************************************************/
 
-    /*-------------------------------------------------------------------------------------------------------------
-    ---------------------------------------------------------------------------------------------------------------
-    -- HOOKS
-    ---------------------------------------------------------------------------------------------------------------
-    -------------------------------------------------------------------------------------------------------------*/
-
-    /*-------------------------------------------------------------------------------------------------------------
-    -- ...
-    -------------------------------------------------------------------------------------------------------------*/
+    /**************************************************************************************************************
+     * Update the style of the console component depending on the window width.
+     **************************************************************************************************************/
     useEffect(() => {
         const styles = getComputedStyle(document.documentElement);
-        setMobileMaxWidth(String(styles.getPropertyValue('--mobile-max-width')).trim());
-        
-        $("#console_play_button").on("click", function(){handleClickPlay()})
-
-        // automatically scrolls the terminal content to the bottom
-        let interval = setInterval(() => {
-            // $("#Console_tab_console_ta").scrollTop($("#Console_tab_console_ta")[0].scrollHeight);
-        }, 200);
-
-        return () => {
-            clearInterval(interval);
+        const mobileMaxWidth2 = String(styles.getPropertyValue('--mobile-max-width')).trim();
+        setMobileMaxWidth(mobileMaxWidth);
+        const updateComponentStyle = () => {
+            if (window.innerWidth < mobileMaxWidth2) {
+                setComponentStyle({ left: "0px", width: "calc(100% - 6px)"});
+            } else {
+                setComponentStyle({});
+            }
         };
 
+        updateComponentStyle();
+        window.addEventListener('resize', updateComponentStyle);
+
+        $("#console_play_button").on("click", function(){handleClickPlay()})
+
+        return () => {
+            window.removeEventListener('resize', updateComponentStyle);
+        };
     }, []);
 
-    let componentStyle = {};
-    if (window.innerWidth < mobileMaxWidth) {
-        componentStyle = { left: "0px", width: "calc(100% - 6px)"};
-    }
+    /**************************************************************************************************************
+     **************************************************************************************************************
+     ** FUNCTIONS
+     **************************************************************************************************************
+     **************************************************************************************************************/
 
+    /**************************************************************************************************************
+     * Allows the upload of local images and point clouds.
+     * The items can be accessed via the <Uploads> button within the <DATABASE> window.
+     * DISABLED: The upload function is disabled in the current version.
+     **************************************************************************************************************/
+    // function chooseFile() {
+    //     let input = document.createElement('input');
+    //     input.type = 'file';
+    //     input.onchange = _this => {
+    //             let files =   Array.from(input.files);
 
-    /*---------------------------------------------------------------------------------------------------------------
-    -- Allows the upload of local images and point clouds.
-    -- The items can be accessed via the <Uploads> button within the <DATABASE> window.
-    ---------------------------------------------------------------------------------------------------------------*/
-    function chooseFile() {
-        let input = document.createElement('input');
-        input.type = 'file';
-        //input.webkitdirectory = true
-        // input.directory = true 
-        // input.multiple = true
-        input.onchange = _this => {
-                let files =   Array.from(input.files);
-
-                try {
-                    const xmlHttp = new XMLHttpRequest();
-                    const theUrl = pathjoin(active_server, "upload");
-                    xmlHttp.open( "POST", theUrl, false );
+    //             try {
+    //                 const xmlHttp = new XMLHttpRequest();
+    //                 const theUrl = pathjoin(active_server, "upload");
+    //                 xmlHttp.open( "POST", theUrl, false );
                     
-                    let formData = new FormData()
-                    formData.append("file", files[0]);
+    //                 let formData = new FormData()
+    //                 formData.append("file", files[0]);
 
-                    // console.log(formData)
+    //                 // console.log(formData)
 
-                    xmlHttp.send(formData);
-                    consolePrint("INFO", "File uploaded")
+    //                 xmlHttp.send(formData);
+    //                 consolePrint("INFO", "File uploaded")
 
-                    // update databse content
-                    request_database_content(active_server)
-                    //request_database_content()
-                }
-                catch (e) {
-                    console.log(e)
-                }
-            };
-        input.click();
-    }
+    //                 // update databse content
+    //                 request_database_content(active_server)
+    //                 //request_database_content()
+    //             }
+    //             catch (e) {
+    //                 console.log(e)
+    //             }
+    //         };
+    //     input.click();
+    // }
 
-    /*---------------------------------------------------------------------------------------------------------------
-    -- ...
-    ---------------------------------------------------------------------------------------------------------------*/
+    /**************************************************************************************************************
+     * Sends a request to the server to apply the selected color transfer algorithm.
+     **************************************************************************************************************/
     function handleClickPlay() {
         // check if a Single Input Reference or a Color Theme Reference is selected
         let ref_val
@@ -169,7 +174,6 @@ function Console(props) {
             ref_val = color_palette
 
         // check if source object, reference object and approach are selected
-        console.log(execution_params_objects)
         if(execution_params_objects["src"] !== "" && ref_val !== "" && execution_approach["method"] !== "") {
             consolePrint("INFO", "Apply " + execution_approach["method"])
 
@@ -182,8 +186,6 @@ function Console(props) {
             var rankey = getRandomID()
             // uses the generated key as output name
             execution_params_objects["out"] = pathjoin("Output", rankey)
-
-
 
             var out_dat = {
                 "source": execution_params_objects["src"],
@@ -199,6 +201,9 @@ function Console(props) {
         }
     }
 
+    /**************************************************************************************************************
+     * 
+     **************************************************************************************************************/
     function showMenus(active_menus, event) {
         const menu_list = ["#Console_tab_console_ta", "#Console_tab_console_evaluation", "#Console_tab_console_configuration", "#Console_tab_console_test4", "#Console_tab_console_test5"]
 
@@ -207,15 +212,15 @@ function Console(props) {
         for(let i = 0; i < active_menus.length; i++)
             $(active_menus[i]).css("display", "block")
 
-        
         $(".console_header_element").css("background-color", getComputedStyle(document.documentElement).getPropertyValue('--headercolor'))
         $(event.currentTarget).css("background-color", getComputedStyle(document.documentElement).getPropertyValue('--backgroundcolor'));
     }
 
-    
-    /*---------------------------------------------------------------------------------------------------------------
-    --
-    ---------------------------------------------------------------------------------------------------------------*/
+    /**************************************************************************************************************
+     **************************************************************************************************************
+     ** RENDERING
+     **************************************************************************************************************
+     **************************************************************************************************************/
     return (
         <div id='console_main' style={componentStyle}>
             <div id="console_header">
@@ -239,8 +244,6 @@ function Console(props) {
                 </div>
             </div>
 
-
-
             <div id="console_body">
                 <Terminal id="Console_tab_console_ta"/>
                 <Evaluation id="Console_tab_console_evaluation"/>
@@ -253,27 +256,21 @@ function Console(props) {
                 <Information id="Console_tab_console_test5"/>
             </div>
 
+            <div id="console_play_button" className="console_button">
+                <img id="console_play_button_logo" src={icon_play_button} className="console_button_icon" alt="" title={"Apply the selected algorithm."}/>
+            </div>
 
-
-
-            <div id="console_play_button">
-                <img id="console_play_button_logo" src={icon_play_button} alt="" title={"Apply the selected algorithm."}/>
+            <div id="console_eval_button" className="console_button">
+                <img id="console_eval_button_logo" onClick={evalPrint} src={icon_eval_button} className="console_button_icon" alt="" title={"Apply multiple evaluaiton metrics on source, reference and output."}/>
             </div>
-            <div id="console_upload_button">
-                <img id="console_upload_button_logo" onClick={chooseFile} src={icon_upload_button} alt="" title={"Upload a local file to the chosen Server."}/>
+            <div id="console_export_metric_button" className="console_button">
+                <img id="console_export_metric_button_logo" onClick={exportMetrics} src={icon_export_metric_button} className="console_button_icon" alt="" title={"Export the evaluation results."}/>
             </div>
-            <div id="console_eval_button">
-                <img id="console_eval_button_logo" onClick={evalPrint} src={icon_eval_button} alt="" title={"Apply multiple evaluaiton metrics on source, reference and output."}/>
-            </div>
-            <div id="console_export_metric_button">
-                <img id="console_export_metric_button_logo" onClick={exportMetrics} src={icon_export_metric_button} alt="" title={"Export the evaluation results."}/>
-            </div>
-            <div id="console_camera_button">
-                <img id="console_camera_button_logo" src={icon_camera_button} alt="" title={"Open camera to capture either a source or reference image."}/>
+            <div id="console_camera_button" className="console_button">
+                <img id="console_camera_button_logo" src={icon_camera_button} className="console_button_icon" alt="" title={"Open camera to capture either a source or reference image."}/>
             </div>
         </div>
     );
-
 }
 
 export default Console;

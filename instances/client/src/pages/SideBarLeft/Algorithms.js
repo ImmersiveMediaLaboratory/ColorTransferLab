@@ -10,19 +10,15 @@ Please see the LICENSE file that should have been included as part of this packa
 import React from "react";
 import { useState, useEffect } from "react";
 import $ from 'jquery';
-
-//import Tabs from "./../Tabs/Tabs";
 import {consolePrint} from 'pages/Console/Terminal'
 import {setConfiguration} from "pages/Console/Configuration"
 import {setInformation} from "pages/Console/Information"
-import {server_request} from 'utils/Utils'
-
+import {server_request} from 'utils/connection'
 import './Algorithms.scss';
 
 
 let icon_availability_yes = "assets/icons/icon_availability_yes.png";
 let icon_availability_no = "assets/icons/icon_availability_no.png";
-
 
 const icon_availability_image_yes = "assets/icons/icon_image_available.png";
 const icon_availability_image_no = "assets/icons/icon_image_available_no.png";
@@ -58,10 +54,10 @@ export const request_available_methods = (server_address) => {
     }
 }
 
-const stat_obj = {
-    "title": "Reinhard's Color Transfer",
-    "name": "Reinhard",
-}
+// const stat_obj = {
+//     "title": "Reinhard's Color Transfer",
+//     "name": "Reinhard",
+// }
 
 /*-------------------------------------------------------------------------------------------------------------
 -- create the color transfer methods based on the request sent to the python server

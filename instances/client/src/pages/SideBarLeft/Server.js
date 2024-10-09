@@ -14,7 +14,7 @@ import {consolePrint} from 'pages/Console/Terminal'
 import {request_available_metrics} from 'pages/Console/Evaluation'
 import {request_available_methods} from 'pages/SideBarLeft/Algorithms'
 import {request_database_content} from 'pages/SideBarRight/Database'
-import {server_request} from 'utils/Utils'
+import {server_request} from 'utils/connection'
 
 import './Server.scss';
 

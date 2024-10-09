@@ -647,7 +647,7 @@ const Renderer = (props) =>  {
                 setComplete={setComplete}
             />
 
-            {/* <LoadingView id={view_loadingID}/> */}
+            <LoadingView id={view_loadingID}/>
             <RenderBar id={renderBarID}/>
 
         </div>
