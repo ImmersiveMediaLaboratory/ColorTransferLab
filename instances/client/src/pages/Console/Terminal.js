@@ -8,35 +8,9 @@ Please see the LICENSE file that should have been included as part of this packa
 */
 
 import React, {useEffect} from 'react';
-import './Console.scss';
+import {consolePrint} from 'Utils/Utils'
+import './Terminal.scss';
 
-/*---------------------------------------------------------------------------------------------------------------
--- Prints the given output with timestamp and type.
--- Available types: (1) INFO, (2) WARNING, (3) ERROR (4) UNDEFINED 
----------------------------------------------------------------------------------------------------------------*/
-export const consolePrint = (type, output) => {
-    if(type == "INFO")
-        var sClass = "server_info"
-    else if(type == "WARNING")
-        var sClass = "server_warning"
-    else if(type == "ERROR")
-        var sClass = "server_error"
-    else
-        var sClass = "server_undefined"
-
-    var today = new Date()
-    var time = today.getHours().toString().padStart(2, '0') + ":" +
-               today.getMinutes().toString().padStart(2, '0') + ":" +
-               today.getSeconds().toString().padStart(2, '0');
-    var output = "<span class='" + sClass + "'>[" + type + " - " + time +"]</span>" + " " + output + "...<br>"
-    //document.getElementById("Console_tab_console_ta").innerHTML += output
-
-    var objDiv = document.getElementById("Console_tab_console_ta")
-    objDiv.innerHTML += output 
-    
-    // Scroll to the bottom
-    objDiv.scrollTop = objDiv.scrollHeight;
-}
 
 /******************************************************************************************************************
  ******************************************************************************************************************
@@ -63,7 +37,7 @@ function Terminal(props) {
      **************************************************************************************************************
      **************************************************************************************************************/
     return (
-        <div id={props.id}/>
+        <div id={props.id} className='terminal'/>
     );
 }
 

@@ -13,7 +13,6 @@ import './VideoRenderer.scss';
 function VideoRenderer(props) {    
 
     useEffect(() => {
-        console.log(props.filePath)
         props.setComplete(Math.random())
     }, [props.filePath]);
 

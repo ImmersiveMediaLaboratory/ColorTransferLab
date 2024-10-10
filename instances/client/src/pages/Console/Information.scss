@@ -7,20 +7,11 @@ This file is released under the "MIT License Agreement".
 Please see the LICENSE file that should have been included as part of this package.
 */
 
-@import 'settings/Global.scss';
-
-
-.configuration {
+.information{
     position: absolute;
     margin: 5px;
     width: calc(100% - 10px);
     height: calc(100% - 10px);
     overflow: auto;
     display: none;
-}
-
-.cell_config {
-    width:  calc(100vw * 0.25);
-    word-wrap: break-word;
-    overflow-wrap: break-word;
 }

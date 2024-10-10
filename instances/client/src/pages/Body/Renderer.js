@@ -15,11 +15,11 @@ import ColorDistribution2 from "rendering/ColorDistribution2"
 import VoxelGrid from "rendering/VoxelGrid"
 import ColorHistogram from "rendering/ColorHistogram"
 import TriangleMesh from "rendering/TriangleMesh"
-import Terminal, { consolePrint } from 'pages/Console/Terminal';
-import {active_server} from 'pages/SideBarLeft/Server'
-import {updateHistogram} from 'pages/Console/ColorHistogram'
-import {pathjoin, request_file_existence} from 'utils/Utils';
-import {execution_params_objects} from 'pages/Console/Console'
+import Terminal from 'pages/Console/Terminal';
+import {active_server} from 'Utils/System'
+import {updateHistogram} from 'Utils/Utils'
+import {pathjoin, request_file_existence, consolePrint} from 'Utils/Utils';
+import {execution_params_objects} from 'Utils/System'
 
 import ImageRenderer from 'pages/Body/ImageRenderer'
 import VideoRenderer from 'pages/Body/VideoRenderer'
@@ -283,6 +283,8 @@ const Renderer = (props) =>  {
             setFilePath_LightField(lightfield_path)
             switchView("LightField")
         }
+
+        
 
         //server_post_request(active_server, "color_distribution", pathjoin(initPath, file_path, file_name_with_ext), updateColorDistribution, window)
         //server_post_request(active_server, "color_histogram", pathjoin(initPath, file_path, file_name_with_ext), updateHistogram, window)
@@ -628,7 +630,7 @@ const Renderer = (props) =>  {
                 filePath={filePath_Mesh}
                 setComplete={setComplete}
                 renderBarID={renderBarID}
-                view={TITLE} 
+                view={RID} 
                 //rendering={mesh.current} 
                 //obj_path={obj_path.current} 
                 obj_type={mode.current}

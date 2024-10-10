@@ -13,7 +13,7 @@ import CustomCanvas from 'rendering/CustomCanvas';
 import Axes from "rendering/Axes"
 import './MeshRenderer.scss';
 import $ from 'jquery';
-import {pathjoin} from 'utils/Utils';
+import {pathjoin} from 'Utils/Utils';
 import {active_server} from 'pages/SideBarLeft/Server'
 import TriangleMesh from "rendering/TriangleMesh"
 import PointCloud from "rendering/PointCloud"
@@ -43,6 +43,8 @@ const MeshRenderer = (props) => {
 
 
     const initPath = "data"
+
+    const RID = props.view
 
     /* ------------------------------------------------------------------------------------------------------------
     -- 
@@ -134,6 +136,7 @@ const MeshRenderer = (props) => {
             const obj = <PointCloud
                             key={Math.random()} 
                             file_path={props.filePath} 
+                            view={RID}
                             //id={TITLE} 
                             //center={ref_pc_center} 
                             //scale={ref_pc_scale}  

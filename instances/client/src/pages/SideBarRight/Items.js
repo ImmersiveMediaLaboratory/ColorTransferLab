@@ -11,7 +11,7 @@ import React from 'react';
 import { useState, useEffect, useRef } from "react";
 import $ from 'jquery';
 import './Items.scss';
-import { consolePrint } from 'pages/Console/Terminal';
+import {consolePrint} from 'Utils/Utils';
 
 /*-----------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------------

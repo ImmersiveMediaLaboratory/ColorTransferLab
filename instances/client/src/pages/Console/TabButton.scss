@@ -10,17 +10,24 @@ Please see the LICENSE file that should have been included as part of this packa
 @import 'settings/Global.scss';
 
 
-.configuration {
-    position: absolute;
-    margin: 5px;
-    width: calc(100% - 10px);
-    height: calc(100% - 10px);
-    overflow: auto;
-    display: none;
+.console_header_element {
+    display: flex;
+    float: left;
+    border: 1px solid $grey;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    height: 23px;
+    width: calc((100% - 180px)  / 5);
+    background-color: $darkgrey;
+    cursor: default;
 }
 
-.cell_config {
-    width:  calc(100vw * 0.25);
-    word-wrap: break-word;
-    overflow-wrap: break-word;
+.console_header_element:hover {
+    filter: brightness(1.1);
+}
+
+.console_icons {
+    position: absolute;
+    width: 15px;
 }

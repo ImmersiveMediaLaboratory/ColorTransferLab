@@ -18,6 +18,7 @@ import { PLYLoader } from 'three/examples/jsm/loaders/PLYLoader'
 import * as THREE from 'three'
 import PointShader from "shader/PointShader"
 import SysConf from "settings/SystemConfiguration"
+import { updateHistogram } from 'Utils/Utils';
 import $ from 'jquery';
 const vertexShader = PointShader.vertexShader
 const fragmentShader = PointShader.fragmentShader
@@ -95,9 +96,6 @@ function PointCloud(props) {
     let scaling = useRef(1.0)
     let center = useRef(new THREE.Vector3(0,0,0))
 
-    console.log(process.env.PUBLIC_URL + '/' + props.file_path)
-    console.log(process.env.PUBLIC_URL)
-    console.log(props.file_path)
 
     useEffect(() => {
         const loader = new PLYLoader();
@@ -134,6 +132,20 @@ function PointCloud(props) {
                 let colors_buf = new Float32Array(obj.attributes.color.array)
                 colors.current = new BufferAttribute(colors_buf, 3);
 
+                
+                // create a histogram of colors for rendering in the histogram tab of the console
+                const colorsArray = colors.current.array;
+                const histogram = new Array(256).fill(null).map(() => new Array(3).fill(0));
+
+                for (let i = 0; i < colorsArray.length; i += 3) {
+                    const r = Math.min(Math.max(Math.round(colorsArray[i] * 255), 0), 255);
+                    const g = Math.min(Math.max(Math.round(colorsArray[i+1] * 255), 0), 255);
+                    const b = Math.min(Math.max(Math.round(colorsArray[i+2] * 255), 0), 255);
+                    histogram[r][0]++;
+                    histogram[g][1]++;
+                    histogram[b][2]++;
+                }
+                updateHistogram(histogram, props.view)
 
                 // Resets the progress bar after loading is complete
                 $(`#${props.renderBar}`).css("width", "0%")

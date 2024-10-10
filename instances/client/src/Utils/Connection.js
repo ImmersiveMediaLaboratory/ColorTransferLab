@@ -9,7 +9,7 @@ Please see the LICENSE file that should have been included as part of this packa
 
 // import ColorHistogram from "rendering/ColorHistogram"
 // import VoxelGrid from "rendering/VoxelGrid";
-import {pathjoin} from 'utils/Utils'
+import {pathjoin} from 'Utils/Utils'
 
 /******************************************************************************************************************
  * Entry point of the application.

@@ -18,7 +18,6 @@ function CustomCanvas(props) {
     //meshLength.current = props.rendering.length
 
     useEffect(() => {
-        console.log("CustomCanvas useEffect")
         if (Array.isArray(props.rendering)) {
             const interval = setInterval(() => {
                 setCurrentIndex((prevIndex) => {

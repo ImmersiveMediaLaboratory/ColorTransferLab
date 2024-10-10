@@ -66,8 +66,6 @@ const GaussianSplatRenderer = (props) => {
     }, []);
 
     useEffect(() => {
-        console.log("Filepath changed")
-        console.log(props.filePath)
         if (props.filePath !== null) {
             console.log(props.filePath)
             // file name should be in the format "filename-ksplat.gsp"
@@ -116,8 +114,6 @@ const GaussianSplatRenderer = (props) => {
 
     useEffect(() => {
         if (viewer.current !== null && viewer.current.splatMesh != undefined) {
-            console.log(viewer.current.splatMesh)
-            console.log(viewer.current.splatMesh.splatScale)
             // the initial execution of this function will fail because the splatMesh is not yet created
             try {
                 viewer.current.splatMesh.setSplatScale(splatScale / 100.0);

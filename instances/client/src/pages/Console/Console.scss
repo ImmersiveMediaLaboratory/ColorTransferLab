@@ -1,7 +1,7 @@
 /*
-Copyright 2022 by Herbert Potechius,
-Ernst-Abbe-Hochschule Jena - University of Applied Sciences - Department of Electrical Engineering and Information
-Technology - Immersive Media and AR/VR Research Group.
+Copyright 2024 by Herbert Potechius,
+Technical University of Berlin
+Faculty IV - Electrical Engineering and Computer Science - Institute of Telecommunication Systems - Communication Systems Group
 All rights reserved.
 This file is released under the "MIT License Agreement".
 Please see the LICENSE file that should have been included as part of this package.
@@ -29,23 +29,6 @@ Please see the LICENSE file that should have been included as part of this packa
     color: $lightgrey;
 }
 
-.console_header_element {
-    display: flex;
-    float: left;
-    border: 1px solid $grey;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    height: 23px;
-    width: calc((100% - 180px)  / 5);
-    background-color: $darkgrey;
-    cursor: default;
-}
-
-.console_header_element:hover {
-    filter: brightness(1.1);
-}
-
 #console_body {
     position: absolute;
     top: 25px;
@@ -53,125 +36,44 @@ Please see the LICENSE file that should have been included as part of this packa
     width: 100%;
 }
 
-#Console_tab_console_ta{
-    position: absolute;
-    margin: 5px;
-    width: calc(100% - 10px);
-    height: calc(100% - 10px);
-    overflow: auto;
-}
-
-#Console_tab_console_evaluation{
-    position: absolute;
-    margin: 5px;
-    width: calc(100% - 10px);
-    height: calc(100% - 10px);
-    overflow: auto;
-    display: none;
-}
-
-#Console_tab_console_configuration{
-    position: absolute;
-    margin: 5px;
-    width: calc(100% - 10px);
-    height: calc(100% - 10px);
-    overflow: auto;
-    display: none;
-}
-
-#Console_tab_console_test4{
-    position: absolute;
-    margin: 5px;
-    width: calc(100% - 10px);
-    height: calc(100% - 10px);
-    overflow: auto;
-    display: none;
-}
-
-#Console_tab_console_test5{
-    position: absolute;
-    margin: 5px;
-    width: calc(100% - 10px);
-    height: calc(100% - 10px);
-    overflow: auto;
-    display: none;
-}
-
-.console_icons {
-    position: absolute;
-    width: 15px;
-}
-
-#console_play_button {
-    right: 20px;
-}
-
-#console_upload_button {
-    right: 50px;
-}
-
-#console_eval_button {
-    right: 50px;
-}
-
-#console_export_metric_button {
-    right: 80px;
-}
-
-#console_camera_button {
-    right: 110px;
-}
-
-.console_button {
-    position: absolute;
-    padding: 2px;
-    margin: 2px;
-    top: 0px;
-}
-
-.console_button:hover {
-    filter: brightness(1.5);
-}
-
-.console_button_icon {
-    padding: 0px;
-    margin: 0px;
-    height: 17px;
-    width: 17px;
+.button-container {
+    display: flex;
+    justify-content: flex-end; /* Schiebt die Buttons nach rechts */
+    gap: 0px; /* Abstand zwischen den Buttons */
 }
 
 
-.tab-list_console {  
-    margin: 0px;
-    padding: 0px;
-    background-color: $darkgrey;
-  }
+// .tab-list_console {  
+//     margin: 0px;
+//     padding: 0px;
+//     background-color: $darkgrey;
+//   }
 
-.tabs_console {
-    background-color: salmon;
-}
+// .tabs_console {
+//     background-color: salmon;
+// }
   
-.tab-list-item_console {
-    display: inline-block;
-    list-style: none;
-    width: 120px;
-    height: 21px;
-    text-align: center;
-    padding-top: 4px;
-    font-family: "Arial", Helvetica, sans-serif;
-    color: $lightgrey;
-}
+// .tab-list-item_console {
+//     display: inline-block;
+//     list-style: none;
+//     width: 120px;
+//     height: 21px;
+//     text-align: center;
+//     padding-top: 4px;
+//     font-family: "Arial", Helvetica, sans-serif;
+//     color: $lightgrey;
+// }
 
-.tab-list-active_console {
-    background-color: $grey;
-}
+// .tab-list-active_console {
+//     background-color: $grey;
+// }
 
-.tab-content_console {
-    $padding: 5px;
-    position: absolute;
-    padding: $padding;
-    background-color: $grey;
-    //width: calc(#{$console_innerwidth} - 2 * #{$padding});
-    height: calc(#{$console_innerheight} - 30px - 2 * #{$padding});
-    overflow-y: scroll;
-}
+// .tab-content_console {
+//     $padding: 5px;
+//     position: absolute;
+//     padding: $padding;
+//     background-color: $grey;
+//     //width: calc(#{$console_innerwidth} - 2 * #{$padding});
+//     height: calc(#{$console_innerheight} - 30px - 2 * #{$padding});
+//     overflow-y: scroll;
+// }

@@ -1,13 +1,22 @@
 /*
-Copyright 2022 by Herbert Potechius,
-Ernst-Abbe-Hochschule Jena - University of Applied Sciences - Department of Electrical Engineering and Information
-Technology - Immersive Media and AR/VR Research Group.
+Copyright 2024 by Herbert Potechius,
+Technical University of Berlin
+Faculty IV - Electrical Engineering and Computer Science - Institute of Telecommunication Systems - Communication Systems Group
 All rights reserved.
 This file is released under the "MIT License Agreement".
 Please see the LICENSE file that should have been included as part of this package.
 */
 @import 'settings/Global.scss';
 
+
+.histogram {
+    position: absolute;
+    margin: 5px;
+    width: calc(100% - 10px);
+    height: calc(100% - 10px);
+    overflow: auto;
+    display: none;
+}
 
 .color_histogram{
     $scrolloffset: 20px;
@@ -35,15 +44,16 @@ Please see the LICENSE file that should have been included as part of this packa
     top: calc(159px - 30px)
 }
 
+#histogram_src {
+    $scrolloffset: 20px;
+}
 
 #histogram_ref {
-    position: absolute;
     $scrolloffset: 20px;
     left: calc((100% - 2 * 5px - #{$scrolloffset}) / 3 + 8px);
 }
 
 #histogram_out {
-    position: absolute;
     $scrolloffset: 20px;
     left: calc(((100% - 2 * 5px - #{$scrolloffset}) / 3 + 6px) * 2);
 }

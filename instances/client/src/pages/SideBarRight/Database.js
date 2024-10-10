@@ -11,11 +11,11 @@ import React from 'react';
 import {useState, useEffect} from "react";
 import './Database.scss';
 import $ from 'jquery';
-import {consolePrint} from 'pages/Console/Terminal'
-import {server_request} from 'utils/connection'
-import {active_server} from 'pages/SideBarLeft/Server'
+import {consolePrint} from 'Utils/Utils'
+import {server_request} from 'Utils/Connection'
+import {active_server} from 'Utils/System'
 import {createPreviewCard} from 'pages/Body/PreviewBoard'
-import {pathjoin} from 'utils/Utils'
+import {pathjoin} from 'Utils/Utils'
 
 /*
 example:
@@ -38,7 +38,6 @@ const icon_items_voluvideo = "assets/icons/icon_voluvideo.png";
 const icon_items_lightfields = "assets/icons/icon_lightfield.png"
 const icon_items_gaussiansplat = "assets/icons/icon_gaussiansplatting.png"
 const icon_items_mesh = "assets/icons/icon_mesh.png";
-const sidebar_database = "DATABASE"
 
 /*-------------------------------------------------------------------------------------------------------------
 -- [ {"name": "images",
@@ -89,7 +88,6 @@ export const create_folder_button = (folder, count, folder_path) => {
     // add button icon
     $("<img/>").attr({class: "database_elem_icon", src: icon_database_elem, title: folder["name"]}).appendTo(database_elem)
 
-
     // add button text
     $("<div/>").html(folder["name"]).attr({class: "database_elem_text"}).appendTo(database_elem)
 
@@ -104,12 +102,6 @@ export const create_folder_button = (folder, count, folder_path) => {
     }
 
     var arr_subs = []
-
-    // check if folder contains 
-
-    // if(folder["name"] == "Meshes") 
-    //     database_elem.addEventListener("click", function() {show_files(folder, pathjoin(folder_path, folder["name"]))});
-
     let num_meshes = 0
     for (const subfolder of folder["folders"]){
         // folder with the start string "$mesh$" contains meshes, i.e, one obj, mtl and png file
@@ -121,9 +113,6 @@ export const create_folder_button = (folder, count, folder_path) => {
             num_meshes += 1
             continue
         }
-        // Folder "Meshes" contains only folders containing the meshes, i.e., obj, png and mtl files. No subfolder will be created
-        // if(folder["name"] == "Meshes")
-        //     continue 
 
         const new_folder = create_folder_button(subfolder, count + 1, pathjoin(folder_path, folder["name"]))
         arr_subs.push(new_folder[0])
@@ -422,7 +411,7 @@ function Database(props) {
         <div id="database_main" style={componentStyle}>
             <div id="database_header">
                 <img id='database_header_logo' src={icon_database} alt=""/>
-                <div id='database_header_name'>{sidebar_database}</div>
+                <div id='database_header_name'>DATABASE</div>
             </div>
             <div id="database_body">
                 <div className="database_elem">

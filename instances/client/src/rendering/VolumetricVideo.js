@@ -7,8 +7,8 @@ This file is released under the "MIT License Agreement".
 Please see the LICENSE file that should have been included as part of this package.
 */
 
-import React, { useState, useRef, useEffect } from "react";
-import {pathjoin} from 'utils/Utils';
+import React from "react";
+import {pathjoin} from 'Utils/Utils';
 import TriangleMesh from "rendering/TriangleMesh"
 
 class VolumetricVideo {

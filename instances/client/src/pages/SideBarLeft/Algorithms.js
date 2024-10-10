@@ -10,10 +10,10 @@ Please see the LICENSE file that should have been included as part of this packa
 import React from "react";
 import { useState, useEffect } from "react";
 import $ from 'jquery';
-import {consolePrint} from 'pages/Console/Terminal'
-import {setConfiguration} from "pages/Console/Configuration"
-import {setInformation} from "pages/Console/Information"
-import {server_request} from 'utils/connection'
+import {consolePrint} from 'Utils/Utils'
+import {setConfiguration} from "Utils/Utils"
+import {setInformation} from "Utils/Utils"
+import {server_request} from 'Utils/Connection'
 import './Algorithms.scss';
 
 
@@ -53,11 +53,6 @@ export const request_available_methods = (server_address) => {
         consolePrint("WARNING", "No color transfer methods were found")
     }
 }
-
-// const stat_obj = {
-//     "title": "Reinhard's Color Transfer",
-//     "name": "Reinhard",
-// }
 
 /*-------------------------------------------------------------------------------------------------------------
 -- create the color transfer methods based on the request sent to the python server
@@ -129,27 +124,48 @@ export const activate_color_transfer = (param) => {
     setConfiguration(param);
 }
 
-/*-----------------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------------------
--- Contains texts
--------------------------------------------------------------------------------------------------------------------
------------------------------------------------------------------------------------------------------------------*/
+/******************************************************************************************************************
+ ******************************************************************************************************************
+ ** FUNCTIONAL COMPONENT
+ ******************************************************************************************************************
+ ******************************************************************************************************************/
 function Algorithms(props) {
+    /**************************************************************************************************************
+     **************************************************************************************************************
+     ** STATES & REFERENCES & VARIABLES
+     **************************************************************************************************************
+     **************************************************************************************************************/
+    const [mobileMaxWidth, setMobileMaxWidth] = useState(null);
+    const [componentStyle, setComponentStyle] = useState({});
     const icon_algorithms = "assets/icons/icon_algorithm_grey.png";
-
     const icon_colortransfer_button = "assets/icons/icon_colortransfer.png";
     const icon_segmentation_button = "assets/icons/icon_segmentation.png";
     const icon_classification_button = "assets/icons/icon_classification.png";
-    const icon_reconstruction_button = "assets/icons/icon_reconstruction.png";
-    const icon_registration_button = "assets/icons/icon_registration.png";
-
     const sidebar_algorithms = "ALGORITHMS"
 
-    const [mobileMaxWidth, setMobileMaxWidth] = useState(null);
+    /**************************************************************************************************************
+     **************************************************************************************************************
+     ** HOOKS
+     **************************************************************************************************************
+     **************************************************************************************************************/
 
+    /**************************************************************************************************************
+     * Update the style of the console component depending on the window width.
+     **************************************************************************************************************/
     useEffect(() => {
         const styles = getComputedStyle(document.documentElement);
-        setMobileMaxWidth(String(styles.getPropertyValue('--mobile-max-width')).trim());
+        const mobileMaxWidth2 = String(styles.getPropertyValue('--mobile-max-width')).trim();
+        setMobileMaxWidth(mobileMaxWidth2);
+        const updateComponentStyle = () => {
+            if (window.innerWidth < mobileMaxWidth2) {
+                setComponentStyle({display: "none", width: "calc(100% - 6px)", top: "0px", height: "calc(100% - 6px)"});
+            } else {
+                setComponentStyle({});
+            }
+        };
+
+        updateComponentStyle();
+        window.addEventListener('resize', updateComponentStyle);
 
         // Create Button for color transfer algorithms which run on the client side
         const stat_obj = {
@@ -164,16 +180,20 @@ function Algorithms(props) {
         }
         createCTButtons(stat_obj)
 
+        return () => {
+            window.removeEventListener('resize', updateComponentStyle);
+        };
     }, []);
 
-    let algorithmsStyle = {};
-    if (window.innerWidth < mobileMaxWidth) {
-        algorithmsStyle = {display: "none", width: "calc(100% - 6px)", top: "0px", height: "calc(100% - 6px)"};
-    }
+    /**************************************************************************************************************
+     **************************************************************************************************************
+     ** FUNCTIONS
+     **************************************************************************************************************
+     **************************************************************************************************************/
 
-    /* ------------------------------------------------------------------------------------------------------------
-    -- 
-    -------------------------------------------------------------------------------------------------------------*/
+    /**************************************************************************************************************
+     * 
+     **************************************************************************************************************/
     function showMenus(active_menus, event) {
         const menu_list = ["#algorithms_content_colorTransfer", "#algorithms_content_segmentation", "#algorithms_content_classification", "#algorithms_content_reconstruction", "#algorithms_content_registration"]
 
@@ -189,9 +209,13 @@ function Algorithms(props) {
         $(event.currentTarget).css("background-color", getComputedStyle(document.documentElement).getPropertyValue('--backgroundcolor'));
     }
     
-
+    /**************************************************************************************************************
+     **************************************************************************************************************
+     ** RENDERING
+     **************************************************************************************************************
+     **************************************************************************************************************/
     return (
-        <div id="algorithms_main" style={algorithmsStyle}>
+        <div id="algorithms_main" style={componentStyle}>
             <div id="algorithms_header">
                 <img id="algorithms_header_logo" src={icon_algorithms} alt=""/>
                 <div id="algorithms_header_name">{sidebar_algorithms}</div>
@@ -209,26 +233,14 @@ function Algorithms(props) {
                 <div className="algorithms_menu_item" id="algorithms_menu_classification" onClick={(event) => showMenus(["#algorithms_content_classification"], event)}>
                 {window.innerWidth < mobileMaxWidth ? <img className="algorithms_icons" alt="" src={icon_classification_button}/> : <div className="algorithms_menu_item_text">Colorization</div>}
                 </div>
-                {/* <div className="algorithms_menu_item" id="algorithms_menu_reconstruction" onClick={(event) => showMenus(["#algorithms_content_reconstruction"], event)}>
-                {window.innerWidth < mobileMaxWidth ? <img className="algorithms_icons" alt="" src={icon_reconstruction_button}/> : <div className="algorithms_menu_item_text">Reconstruction</div>}
-                </div>
-                <div className="algorithms_menu_item" id="algorithms_menu_registration" onClick={(event) => showMenus(["#algorithms_content_registration"], event)}>
-                {window.innerWidth < mobileMaxWidth ? <img className="algorithms_icons" alt="" src={icon_registration_button}/> : <div className="algorithms_menu_item_text">Registration</div>}
-                </div> */}
             </div>
 
             <div className="algorithms_list" id="algorithms_content_colorTransfer"/>
             <div className="algorithms_list" id="algorithms_content_segmentation">
-                <span className="temp_algos">Not supported yet!</span>
+                <span style={{"color":"grey"}} className="temp_algos">Please select a server instance to enable this service.</span>
             </div>
             <div className="algorithms_list" id="algorithms_content_classification">
-                <span className="temp_algos">Not supported yet!</span>
-            </div>
-            <div className="algorithms_list" id="algorithms_content_reconstruction">
-                <span className="temp_algos">Not supported yet!</span>
-            </div>
-            <div className="algorithms_list" id="algorithms_content_registration">
-                <span className="temp_algos">Not supported yet!</span>
+                <span style={{"color":"grey"}} className="temp_algos">Please select a server instance to enable this service.</span>
             </div>
         </div>
     );

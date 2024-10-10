@@ -8,23 +8,20 @@ Please see the LICENSE file that should have been included as part of this packa
 */
 
 import React, { useEffect, useRef, useState } from 'react';
-import './Body.scss';
+import $ from 'jquery';
 import Renderer from './Renderer';
 import ColorTheme from './ColorTheme';
 import PreviewBoard from './PreviewBoard';
+import {consolePrint} from 'Utils/Utils'
 import 'settings/Global.scss';
-import $ from 'jquery';
-import {consolePrint} from 'pages/Console/Terminal'
-
+import './Body.scss';
 
 
 export let active_reference = "Single Input"
 
 export const setReferenceWindow = (tab) => {
-    if(tab === "Single Input" || tab === "Color Theme") {
+    if(tab === "Single Input" || tab === "Color Theme")
         active_reference = tab
-        console.log(active_reference)
-    }
 }
 
 /*-----------------------------------------------------------------------------------------------------------------

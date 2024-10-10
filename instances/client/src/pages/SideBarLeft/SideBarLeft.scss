@@ -1,7 +1,7 @@
 /*
-Copyright 2022 by Herbert Potechius,
-Ernst-Abbe-Hochschule Jena - University of Applied Sciences - Department of Electrical Engineering and Information
-Technology - Immersive Media and AR/VR Research Group.
+Copyright 2024 by Herbert Potechius,
+Technical University of Berlin
+Faculty IV - Electrical Engineering and Computer Science - Institute of Telecommunication Systems - Communication Systems Group
 All rights reserved.
 This file is released under the "MIT License Agreement".
 Please see the LICENSE file that should have been included as part of this package.
@@ -9,54 +9,12 @@ Please see the LICENSE file that should have been included as part of this packa
 
 @import 'settings/Global.scss';
 
-#SideBarLeft_sidebarleft {
+
+.sidebarleft {
     position: absolute;
     top: $header_height;
-    //background-color: green;
     height: $sidebarleft_height;
     width: $sidebarleft_width;
     z-index: 999999;
     pointer-events: none;
 }
-// #sidebarleft_main {
-//     position: absolute;
-//     top: $header_height;
-//     margin: $box_margin;
-//     height: $sidebarleft_innerheight;
-//     width: $sidebarleft_innerwidth;
-//     background-color: $grey;
-//     border: solid $darkgrey $box_border;
-// }
-
-// #sidebarleft_header {
-//     width: $sidebarleft_innerwidth;
-//     height: 25px;
-//     background-color: $darkgrey;
-//     color: $lightgrey;
-// }
-
-// #sidebarleft_header_logo {
-//     height: 25px;
-//     width: 25px;
-// }
-
-// #sidebarleft_header_name {
-//     position: absolute;
-//     left: 30px;
-//     top: 4px;
-//     font-family: "Arial", Helvetica, sans-serif;
-//     font-size: 14px;
-// }
-
-// .sidebarleft_approach {
-//     background-color: $grey;
-//     margin: 10px;
-//     padding: 5px;
-//     border: solid $darkgrey 1px;
-//     border-radius: 3px;
-//     //box-shadow:0px 0px 5px 0px #AAAAAA;
-// }
-
-// .sidebarleft_approach:hover {
-//     box-shadow:0px 0px 5px 0px cyan;
-// }
