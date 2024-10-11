@@ -18,105 +18,68 @@ import {active_server} from 'pages/SideBarLeft/Server'
 import TriangleMesh from "rendering/TriangleMesh"
 import PointCloud from "rendering/PointCloud"
 import VolumetricVideo from 'rendering/VolumetricVideo';
-import ReactDOMServer from 'react-dom/server';
+import RendererButton from './RendererButton';
+import Settings from 'pages/SideBarRight/Settings';
+import SettingsField from './SettingsField';
+import SettingsFieldItem from './SettingsFieldItem';
+import InfoField from './InfoField';
 
-
+/******************************************************************************************************************
+ ******************************************************************************************************************
+ ** FUNCTIONAL COMPONENT
+ ******************************************************************************************************************
+ ******************************************************************************************************************/
 const MeshRenderer = (props) => {    
-
+    /**************************************************************************************************************
+     **************************************************************************************************************
+     ** STATES & REFERENCES & VARIABLES
+     **************************************************************************************************************
+     **************************************************************************************************************/
     const [grid, changeGrid] = useState(<gridHelper args={[20,20, 0x222222, 0x222222]}/>)
     const [axis, changeAxis] = useState(<Axes />)
+    const [camera, setCamera] = useState(null);
     const [perspectiveView, setPerspectiveView] = useState(true)
-    const [isFieldSettingVisible, setIsFieldSettingVisible] = useState(true);
+    const [isFieldSettingVisible, setIsFieldSettingVisible] = useState(false);
+    const [isFieldInfoVisible, setIsFieldInfoVisible] = useState(false);
     const [isTextureMapVisible, setIsTextureMapVisible] = useState(false);
     const [fps, setFps] = useState(1);
+    const [info, setInfo] = useState({});
+
+    const pointCloudRef = useRef();
+    const meshRef = useRef();
 
     const currentIndex = useRef(0);
-
     const activeObject = useRef([]);
     const activeTextureMap = useRef([]);
 
-
     const button_settings_texture_icon = "assets/icons/icon_settings_grey.png";
     const button_texturemap_texture_icon = "assets/icons/icon_texturemap_grey.png";
+    const button_settings_dist_icon = "assets/icons/icon_dist_grey.png";
+    const button_settings_histo_icon = "assets/icons/icon_histogram_grey.png";
+    const button_settings_info_icon = "assets/icons/icon_information.png";
 
     const textureMapID = "texture_map" + props.id;
-
-
     const initPath = "data"
-
     const RID = props.view
 
-    /* ------------------------------------------------------------------------------------------------------------
-    -- 
-    -------------------------------------------------------------------------------------------------------------*/
-    const handleGridChange = (e) => {
-        if (e.target.checked) {
-            changeGrid(<gridHelper args={[20, 20, 0x222222, 0x222222]} />);
-        } else {
-            changeGrid(null);
-        }
-    };
+    /**************************************************************************************************************
+     **************************************************************************************************************
+     ** HOOKS
+     **************************************************************************************************************
+     **************************************************************************************************************/
 
-    /* ------------------------------------------------------------------------------------------------------------
-    -- 
-    -------------------------------------------------------------------------------------------------------------*/
-    const handleAxisChange = (e) => {
-        if (e.target.checked) {
-            changeAxis(<Axes />);
-        } else {
-            changeAxis(null);
-        }
-    };
-
-    /* ------------------------------------------------------------------------------------------------------------
-    -- 
-    -------------------------------------------------------------------------------------------------------------*/
-    const handlePointSizeChange = (e) => {
-        console.log("handlePointSizeChange")
-    }
-
-    /* ------------------------------------------------------------------------------------------------------------
-    -- 
-    -------------------------------------------------------------------------------------------------------------*/
-    const handleOrthographicViewChange = (e) => {
-        setPerspectiveView(!e.target.checked)
-    };
-
-    const handleFpsChange = (event) => {
-        setFps(event.target.value);
-    };
-
-    const handleVertexNormalViewChange = (e) => {
-        console.log("handleVertexNormalViewChange")
-    }
-
-
-    let cameraview;
-    if(perspectiveView)
-        cameraview = <PerspectiveCamera position={[4, 4, 4]} makeDefault />
-    else
-        cameraview = <OrthographicCamera position={[10, 10, 10]} zoom={40} makeDefault />
-
-    /* ------------------------------------------------------------------------------------------------------------
-    -- 
-    -------------------------------------------------------------------------------------------------------------*/
-    const showSettings = () => {
-        setIsFieldSettingVisible(!isFieldSettingVisible);
-    };
-
-    /* ------------------------------------------------------------------------------------------------------------
-    -- 
-    -------------------------------------------------------------------------------------------------------------*/
-    const showTextureMap = () => {
-        console.log("showTextureMap")
-        setIsTextureMapVisible(!isTextureMapVisible);
-    }
-
+    /**************************************************************************************************************
+     * 
+     **************************************************************************************************************/
     useEffect(() => {
+        setIsFieldInfoVisible(false)
+        setIsFieldSettingVisible(false)
         if(props.obj_type === "Mesh") {
             const obj = <TriangleMesh 
                             key={Math.random()} 
                             file_name={props.filePath} 
+                            ref={meshRef}
+                            view={RID}
                             renderBar={props.renderBarID} 
                             setGLOComplete={props.setComplete}
                         />
@@ -132,20 +95,18 @@ const MeshRenderer = (props) => {
             props.setComplete(Math.random())
         }
         else if(props.obj_type === "PointCloud") {
-            console.log(props.filePath)
-            const obj = <PointCloud
+            let obj = <PointCloud
                             key={Math.random()} 
                             file_path={props.filePath} 
                             view={RID}
-                            //id={TITLE} 
-                            //center={ref_pc_center} 
-                            //scale={ref_pc_scale}  
+                            ref={pointCloudRef}
                             renderBar={props.renderBarID} 
                             setGLOComplete={props.setComplete}
                         />
 
             activeObject.current.length = 0;
             activeObject.current.push(obj)
+
             props.setComplete(Math.random())
         }
         else if(props.obj_type === "VolumetricVideo") {
@@ -155,7 +116,6 @@ const MeshRenderer = (props) => {
             activeObject.current.length = 0;
             activeTextureMap.current.length = 0;
 
-
             const volumetricVideo = new VolumetricVideo();
             const loadVideo = async () => {
                 const voluReturn = await volumetricVideo.createVolumetricVideo(props.filePath, props.setComplete);
@@ -164,20 +124,197 @@ const MeshRenderer = (props) => {
                 console.log(activeObject.current);
             };
             loadVideo();
-
         }
 
     }, [props.filePath]);
 
+    /**************************************************************************************************************
+     * 
+     **************************************************************************************************************/
+    useEffect(() => {
+        if (perspectiveView) {
+            setCamera(<PerspectiveCamera position={[4, 4, 4]} makeDefault />)
+        } else {
+            setCamera(<OrthographicCamera position={[10, 10, 10]} zoom={40} makeDefault />);
+        }
+    }, [perspectiveView]);
+
+    /**************************************************************************************************************
+     **************************************************************************************************************
+     ** FUNCTIONS
+     **************************************************************************************************************
+     **************************************************************************************************************/
+
+    /**************************************************************************************************************
+     * 
+     **************************************************************************************************************/
+    const handleGridChange = (e) => {
+        if (e.target.checked) {
+            changeGrid(<gridHelper args={[20, 20, 0x222222, 0x222222]} />);
+        } else {
+            changeGrid(null);
+        }
+    };
+
+    /**************************************************************************************************************
+     * 
+     **************************************************************************************************************/
+    const handleAxisChange = (e) => {
+        if (e.target.checked) {
+            changeAxis(<Axes />);
+        } else {
+            changeAxis(null);
+        }
+    };
+
+    /**************************************************************************************************************
+     * 
+     **************************************************************************************************************/
+    const handlePointSizeChange = (e) => {
+        if (pointCloudRef.current)
+            pointCloudRef.current.updateState({
+                pointsize: e.target.value,
+            })
+    }
+
+    /**************************************************************************************************************
+     * 
+     **************************************************************************************************************/
+    const handleOrthographicViewChange = (e) => {
+        setPerspectiveView(!e.target.checked)
+        
+    };
+
+    /**************************************************************************************************************
+     * 
+     **************************************************************************************************************/
+    const handleFpsChange = (event) => {
+        setFps(event.target.value);
+    };
+
+    /**************************************************************************************************************
+     * 
+     **************************************************************************************************************/
+    const handleVertexNormalViewChange = (e) => {
+        console.log("handleVertexNormalViewChange")
+        console.log(e.target.checked)
+        if (pointCloudRef.current)
+            pointCloudRef.current.updateState({
+                colornormal: e.target.checked,
+            })
+    }
+
+    /**************************************************************************************************************
+     * 
+     **************************************************************************************************************/
+    const showSettings = () => {
+        setIsFieldSettingVisible(!isFieldSettingVisible);
+
+        if(!isFieldSettingVisible)
+            setIsFieldInfoVisible(false)
+    };
+
+    /**************************************************************************************************************
+     * 
+     **************************************************************************************************************/
+    const showTextureMap = () => {
+        console.log("showTextureMap")
+        setIsTextureMapVisible(!isTextureMapVisible);
+    }
+
+    /**************************************************************************************************************
+     * 
+     **************************************************************************************************************/
+    const switchColorDistribution = () => {
+
+        if (props.obj_type === "Mesh") {
+            if (meshRef.current)
+                meshRef.current.updateState({
+                    colordistribution:  !meshRef.current.getState().colordistribution,
+                    //colorhistogram: false
+                })
+        } else if (props.obj_type === "PointCloud") {
+            if (pointCloudRef.current)
+                pointCloudRef.current.updateState({
+                    colordistribution:  !pointCloudRef.current.getState().colordistribution,
+                    colorhistogram: false
+                })
+        }
+    }
+
+    /**************************************************************************************************************
+     * 
+     **************************************************************************************************************/
+    const switchColorHistogram = () => {
+        if (pointCloudRef.current)
+            pointCloudRef.current.updateState({
+                colorhistogram:  !pointCloudRef.current.getState().colorhistogram,
+                colordistribution: false
+            })
+    }
+
+    /**************************************************************************************************************
+     * 
+     **************************************************************************************************************/
+    const handleWireFrameChange = (e) => {
+        console.log(e.target.checked)
+        if (meshRef.current)
+            meshRef.current.updateState({
+                wireframe:  e.target.checked,
+            })
+    }
+    
+    /**************************************************************************************************************
+     * 
+     **************************************************************************************************************/
+    const handleFaceNormal = (e) => {
+        console.log(e.target.checked)
+        if (meshRef.current)
+            meshRef.current.updateState({
+                faceNormal:  e.target.checked,
+            })
+    }
+
+    /**************************************************************************************************************
+     * 
+     **************************************************************************************************************/
+    const showInfo = () => {
+        setIsFieldInfoVisible(!isFieldInfoVisible);
+
+        // Hide the settings field if the info field is visible
+        // Note that isFieldInfoVisible has to be false, because the state is not updated immediately
+        if(!isFieldInfoVisible)
+            setIsFieldSettingVisible(false)
+
+        if (props.obj_type === "Mesh") {
+            setInfo(meshRef.current.getState().info);
+        } else if (props.obj_type === "PointCloud") {
+            setInfo(pointCloudRef.current.getState().info);
+        }
+    }
+
+    /**************************************************************************************************************
+     **************************************************************************************************************
+     ** RENDERING
+     **************************************************************************************************************
+     **************************************************************************************************************/
+    console.log(props.obj_type)
     return (
         <div id={props.id} className="renderer_mesh">
-            {/* Button for showing the settings for the mesh view */}
-            <div className='button_settings' onClick={showSettings}>
-                <img className="button_settings_texture_icon" src={button_settings_texture_icon}/>
-            </div>
-            {/* Button for showing the mesh's texture map */}
-            <div className='button_texturemap' onClick={showTextureMap}>
-                <img className="button_texturemap_texture_icon" src={button_texturemap_texture_icon}/>
+            {/* Header of the renderer containing buttons for changing the output of the render view*/}
+            <div className="rendererbutton-container">
+                {/* Button for showing the mesh's texture map */}
+                {props.obj_type === "VolumetricVideo" || props.obj_type === "Mesh" && (
+                    <RendererButton onClick={showTextureMap} src={button_texturemap_texture_icon}/>
+                )}
+                {/* Button for showing object information */}
+                <RendererButton onClick={showInfo} src={button_settings_info_icon}/>
+                {/* Button for switching between mesh view and the color dostribution view */}
+                <RendererButton onClick={switchColorHistogram} src={button_settings_histo_icon}/>
+                {/* Button for switching between mesh view and the color dostribution view */}
+                <RendererButton onClick={switchColorDistribution} src={button_settings_dist_icon}/>
+                {/* Button for showing the settings for the mesh view */}
+                <RendererButton onClick={showSettings} src={button_settings_texture_icon}/>
             </div>
 
             {/* Framenumber counter */}
@@ -185,6 +322,7 @@ const MeshRenderer = (props) => {
                 <div className="voluCounter">Frame: {currentIndex.current}</div>
             )}
 
+            {/* Canvas for rendering the mesh / pointcloud / volumetric video */}
             <CustomCanvas 
                 view={props.view} 
                 rendering={activeObject.current} 
@@ -196,11 +334,12 @@ const MeshRenderer = (props) => {
             >
                 <ambientLight/>
                 <OrbitControls />
-                {cameraview}
+                {camera}
                 {grid}
                 {axis}
             </CustomCanvas>
 
+            {/* Shows the texture map of the current mesh. */}
             <img 
                 id={textureMapID} 
                 style={{ display: isTextureMapVisible ? 'block' : 'none' }} 
@@ -209,162 +348,49 @@ const MeshRenderer = (props) => {
                 data-src={""}
             />
 
-            {/* Settings field for Mesh*/}
-            {props.obj_type === "Mesh" && (
-                <div className="field_settings" style={{ display: isFieldSettingVisible ? 'none' : 'block' }}>
-                    <table style={{width:"100%"}}>
-                        <tbody>
-                            <tr>
-                                <td className='field_settings_table_cell'>Show Grid</td>
-                                <td className='field_settings_table_cell'>
-                                    <input 
-                                        type="checkbox"
-                                        defaultChecked
-                                        onChange={handleGridChange} 
-                                    />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td className='field_settings_table_cell'>Show Axes</td>
-                                <td className='field_settings_table_cell'>
-                                    <input 
-                                        type="checkbox"
-                                        defaultChecked
-                                        onChange={handleAxisChange} 
-                                    />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td className='field_settings_table_cell'>Orthographic View</td>
-                                <td className='field_settings_table_cell'>
-                                    <input 
-                                        type="checkbox"
-                                        defaultChecked={false}
-                                        onChange={handleOrthographicViewChange} 
-                                    />
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+            {/* Settings for the mesh view */}
+            <SettingsField visibility={isFieldSettingVisible}>
+                <SettingsFieldItem type={"checkbox"} default={true} onChange={handleGridChange}>Show Grid</SettingsFieldItem>
+                <SettingsFieldItem type={"checkbox"} default={true} onChange={handleAxisChange}>Show Axes</SettingsFieldItem>
+                <SettingsFieldItem type={"checkbox"}  default={false} onChange={handleOrthographicViewChange}>Orthographic View</SettingsFieldItem>
+                {/*Point Cloud specific settings */}
+                {props.obj_type === "PointCloud" && (
+                    <>
+                        <SettingsFieldItem type={"checkbox"}  default={false} onChange={handleVertexNormalViewChange}>Vertex Normal View</SettingsFieldItem>
+                        <SettingsFieldItem type={"range"} min="1" max="10" default={1} onChange={handlePointSizeChange}>Point Size</SettingsFieldItem>
+                    </>
+                )}
+                {/*Mesh and Volumetric Video specific settings */}
+                {(props.obj_type === "VolumetricVideo" || props.obj_type === "Mesh") && (
+                    <>
+                        <SettingsFieldItem type={"checkbox"}  default={false} onChange={handleWireFrameChange}>WireFrame</SettingsFieldItem>
+                    </>
+                )}
+                {/*Volumetric Video specific settings */}
+                {props.obj_type === "VolumetricVideo" && (
+                    <>
+                        <SettingsFieldItem type={"range"} min="1" max="10" value={fps} onChange={handleFpsChange}>FPS</SettingsFieldItem>
+                    </>
+                )}
+                {/*Mesh specific settings */}
+                {props.obj_type === "Mesh" && (
+                    <>
+                        <SettingsFieldItem type={"checkbox"}  default={false} onChange={handleFaceNormal}>Face Normal</SettingsFieldItem>
+                    </>
+                )}
+            </SettingsField>
+
+            {/* Information field of the current object. Show for point clouds the number of vertices, etc. */}
+
+            <InfoField visibility={isFieldInfoVisible}>
+                {info}
+            </InfoField>
+            {/* <div className='fieldInfo' style={{ display: isFieldInfoVisible ? 'block' : 'none' }}>
+                <div className="fieldInfoText">
+                    Ihr Text hier
                 </div>
-            )}
-            {/* Settings field for Point Clouds*/}
-            {props.obj_type === "PointCloud" && (
-                <div className="field_settings" style={{ display: isFieldSettingVisible ? 'none' : 'block' }}>
-                    <table style={{width:"100%"}}>
-                        <tbody>
-                            <tr>
-                                <td className='field_settings_table_cell'>Show Grid</td>
-                                <td className='field_settings_table_cell'>
-                                    <input 
-                                        type="checkbox"
-                                        defaultChecked
-                                        onChange={handleGridChange} 
-                                    />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td className='field_settings_table_cell'>Show Axes</td>
-                                <td className='field_settings_table_cell'>
-                                    <input 
-                                        type="checkbox"
-                                        defaultChecked
-                                        onChange={handleAxisChange} 
-                                    />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td className='field_settings_table_cell'>Orthographic View</td>
-                                <td className='field_settings_table_cell'>
-                                    <input 
-                                        type="checkbox"
-                                        defaultChecked={false}
-                                        onChange={handleOrthographicViewChange} 
-                                    />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td className='field_settings_table_cell'>Vertex Normal View</td>
-                                <td className='field_settings_table_cell'>
-                                    <input 
-                                        type="checkbox"
-                                        id="settings_colornormal"
-                                        defaultChecked={false}
-                                        onChange={handleVertexNormalViewChange} 
-                                    />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td className='field_settings_table_cell'>Point Size</td>
-                                <td>
-                                    <input 
-                                        id="settings_pointsize" 
-                                        type="range" 
-                                        min="1" 
-                                        max="10" 
-                                        defaultValue="1" 
-                                        style={{width: "100%"}}
-                                        onChange={handlePointSizeChange} 
-                                    />
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            )}
-            {/* Settings field for Volumetric Video*/}
-            {props.obj_type === "VolumetricVideo" && (
-                <div className="field_settings" style={{ display: isFieldSettingVisible ? 'none' : 'block' }}>
-                    <table style={{width:"100%"}}>
-                        <tbody>
-                            <tr>
-                                <td className='field_settings_table_cell'>Show Grid</td>
-                                <td className='field_settings_table_cell'>
-                                    <input 
-                                        type="checkbox"
-                                        defaultChecked
-                                        onChange={handleGridChange} 
-                                    />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td className='field_settings_table_cell'>Show Axes</td>
-                                <td className='field_settings_table_cell'>
-                                    <input 
-                                        type="checkbox"
-                                        defaultChecked
-                                        onChange={handleAxisChange} 
-                                    />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td className='field_settings_table_cell'>Orthographic View</td>
-                                <td className='field_settings_table_cell'>
-                                    <input 
-                                        type="checkbox"
-                                        defaultChecked={false}
-                                        onChange={handleOrthographicViewChange} 
-                                    />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td className='field_settings_table_cell'>FPS: <span>{fps}</span></td>
-                                <td>
-                                    <input 
-                                        type="range" 
-                                        min="1" 
-                                        max="60" 
-                                        value={fps}
-                                        style={{width: "100%"}}
-                                        onChange={handleFpsChange} 
-                                    />
-                                    
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            )}
+            </div> */}
+
         </div>
     )
 };

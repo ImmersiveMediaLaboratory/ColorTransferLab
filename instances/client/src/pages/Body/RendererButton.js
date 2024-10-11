@@ -7,31 +7,25 @@ This file is released under the "MIT License Agreement".
 Please see the LICENSE file that should have been included as part of this package.
 */
 
-
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import React, { useEffect } from 'react';
-import { createBrowserHistory } from 'history';
-import Main from './pages/Main/Main'
-import './settings/Global.scss';
+import "./RendererButton.scss";
 
 
 /******************************************************************************************************************
  ******************************************************************************************************************
- ** Entry point of the application.
+ ** FUNCTIONAL COMPONENT
  ******************************************************************************************************************
  ******************************************************************************************************************/
-function App() {
-    return (
-        <Router>
-            <Routes>
-                <Route path="/ColorTransferLab" exact element={<Main/>} />
-            </Routes>
-        </Router>
-    );
+function RendererButton(props) {
+    /**************************************************************************************************************
+     **************************************************************************************************************
+     ** RENDERING
+     **************************************************************************************************************
+     **************************************************************************************************************/
+    return(
+        <div className="rendererbutton" onClick={props.onClick}>
+            <img className="rendererbutton_icon" src={props.src}/>
+        </div>
+    )
 }
 
-export default App;
-
-export const history = createBrowserHistory({
-    basename: process.env.PUBLIC_URL
-});
+export default RendererButton;

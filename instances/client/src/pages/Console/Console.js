@@ -203,6 +203,7 @@ function Console() {
             <div id="console_header">
                 <TabButton 
                     iconPath={icon_terminal_button} 
+                    defaultActive={true}
                     menuID={"console_terminal"}
                     title="Shows status messages and errors."
                 >

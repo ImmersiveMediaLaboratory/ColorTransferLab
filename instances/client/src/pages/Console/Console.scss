@@ -41,39 +41,3 @@ Please see the LICENSE file that should have been included as part of this packa
     justify-content: flex-end; /* Schiebt die Buttons nach rechts */
     gap: 0px; /* Abstand zwischen den Buttons */
 }
-
-
-// .tab-list_console {  
-//     margin: 0px;
-//     padding: 0px;
-//     background-color: $darkgrey;
-//   }
-
-// .tabs_console {
-//     background-color: salmon;
-// }
-  
-// .tab-list-item_console {
-//     display: inline-block;
-//     list-style: none;
-//     width: 120px;
-//     height: 21px;
-//     text-align: center;
-//     padding-top: 4px;
-//     font-family: "Arial", Helvetica, sans-serif;
-//     color: $lightgrey;
-// }
-
-// .tab-list-active_console {
-//     background-color: $grey;
-// }
-
-// .tab-content_console {
-//     $padding: 5px;
-//     position: absolute;
-//     padding: $padding;
-//     background-color: $grey;
-//     //width: calc(#{$console_innerwidth} - 2 * #{$padding});
-//     height: calc(#{$console_innerheight} - 30px - 2 * #{$padding});
-//     overflow-y: scroll;
-// }

@@ -85,22 +85,22 @@ function Settings(props) {
                     />
                 </td>
             </tr> 
-            <tr>
+            {/* <tr>
                 <td>RGB Color Space</td>
                 <td><input id="settings_rgbcolorspace" type="checkbox" /></td>
             </tr>
             <tr>
                 <td>3D RGB Color Histogram</td>
                 <td><input id="settings_3dcolorhistogram" type="checkbox" /></td>
-            </tr>
-            <tr>
+            </tr> */}
+            {/* <tr>
                 <td>Voxel Grid</td>
                 <td><input id="settings_voxelgrid" type="checkbox" /></td>
             </tr>
             <tr>
                 <td title={"The objects have to be loaded manually again for showing the new voxel level."}>Voxel Level</td>
                 <td><input id="settings_voxellevel" type="range" min="1" max="3" defaultValue="1" style={{width: "75px"}}/></td>
-            </tr>
+            </tr> */}
             </tbody>
         </table>
         </div>

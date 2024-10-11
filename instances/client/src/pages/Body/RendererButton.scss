@@ -1,0 +1,25 @@
+/*
+Copyright 2024 by Herbert Potechius,
+Technical University of Berlin
+Faculty IV - Electrical Engineering and Computer Science - Institute of Telecommunication Systems - Communication Systems Group
+All rights reserved.
+This file is released under the "MIT License Agreement".
+Please see the LICENSE file that should have been included as part of this package.
+*/
+
+.rendererbutton {
+    position: relative;
+    width: 15px;
+    padding: 5px;
+    height: 15px;
+    z-index: 9998;
+    right: 0px;
+}
+
+.rendererbutton_icon{
+    height: 100%;
+}
+
+.rendererbutton_icon:hover{
+    filter: brightness(1.5);
+}

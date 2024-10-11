@@ -13,9 +13,6 @@ import $ from 'jquery';
 
 function CustomCanvas(props) {    
     const [currentIndex, setCurrentIndex] = useState(0);
-    //const meshLength = useRef( props.rendering.length)
-
-    //meshLength.current = props.rendering.length
 
     useEffect(() => {
         if (Array.isArray(props.rendering)) {

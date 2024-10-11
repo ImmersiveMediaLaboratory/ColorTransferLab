@@ -33,13 +33,16 @@ function TabButton(props) {
                 //setComponentStyle({ width: "calc(100%)", height: "calc(100% - 300px)", left: "0px" });
                 setField(<img className="console_icons" alt="" src={props.iconPath}/>);
             } else {
-                //setComponentStyle({});
                 setField(props.children);
             }
         };
 
+        // sets the terminal as the default active menu with lightgrey background color
+        if(props.defaultActive)
+            setComponentStyle({backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--backgroundcolor')})
+
         updateComponentStyle();
-        window.addEventListener('resize', updateComponentStyle);
+        window.addEventListener('resize', updateComponentStyle)
 
         return () => {
             window.removeEventListener('resize', updateComponentStyle);
@@ -62,12 +65,13 @@ function TabButton(props) {
             $(active_menus[i]).css("display", "block")
 
         $(".console_header_element").css("background-color", getComputedStyle(document.documentElement).getPropertyValue('--headercolor'))
+        // change the background color of the clicked tab header element
         $(event.currentTarget).css("background-color", getComputedStyle(document.documentElement).getPropertyValue('--backgroundcolor'));
     }
 
 
     return (
-        <div title={props.title} className="console_header_element" onClick={(event) => showMenus(["#"+props.menuID], event)}>
+        <div title={props.title} style={componentStyle} className="console_header_element" onClick={(event) => showMenus(["#"+props.menuID], event)}>
             {field}
         </div>
     );

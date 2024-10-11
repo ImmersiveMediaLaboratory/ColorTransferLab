@@ -14,7 +14,6 @@ import {active_server} from 'Utils/System'
 import {available_metrics} from 'Utils/System'
 import {evaluation_results} from 'Utils/System'
 import {server_request} from 'Utils/Connection'
-import { GPU } from "external/gpu-browser.min.js"
 
 /******************************************************************************************************************
  * Send request to python server for evaluation which will be printed within the Evaluation tab.
@@ -153,7 +152,6 @@ const createEmptyEvaluationResults = (data) => {
  * 
  ******************************************************************************************************************/
 export const exportMetrics = () => {
-    console.log("EX")
     if(Object.keys(evaluation_results).length == 0) {
         consolePrint("WARNING", "Server has to be selected for exporting evaluation results...")
     } else {
@@ -408,13 +406,8 @@ export const updateHistogram_old = (stat_obj, window) => {
         image[(x + (h-y) * w) * 4 + 3] = 255;
     }
 
-    console.log(window)
-    console.log(stat_obj)
-
-
     let canvasid = "histogram_canvas_" + window
     let histostatsid = "histogram_stats_" + window
-
 
     var histogram = stat_obj["data"]["histogram"]
     var mean = stat_obj["data"]["mean"]
@@ -455,11 +448,7 @@ export const updateHistogram_old = (stat_obj, window) => {
 /******************************************************************************************************************
  * 
  ******************************************************************************************************************/
-export const updateHistogram = (stat_obj, window) => {
-    console.log(window)
-
-
-
+export const updateHistogram = (stat_obj, mean, std, window) => {
     const setPixel = (x, y, w, h, image, r, g, b, val) => {
         if(val == "all") {
             image[(x + (h-y) * w) * 4 + 0] = r;
@@ -474,10 +463,6 @@ export const updateHistogram = (stat_obj, window) => {
     
         image[(x + (h-y) * w) * 4 + 3] = 255;
     }
-
-    console.log(window)
-    console.log(stat_obj)
-
 
     let canvasid = "histogram_canvas_" + window
     let histostatsid = "histogram_stats_" + window
@@ -499,8 +484,6 @@ export const updateHistogram = (stat_obj, window) => {
         return max;
     }
 
-    console.log(histogram)
-    
     const maxV = findMaxIn2DArray(histogram)
     //var maxV = Math.max.apply(null, histogram.map(function(row){ return Math.max.apply(Math, row); }))
 
@@ -529,7 +512,7 @@ export const updateHistogram = (stat_obj, window) => {
     }
     ctx.putImageData(imageData, 0, 0);
 
-    // var stats_color = document.getElementById(histostatsid);
-    // stats_color.innerHTML = "Mean: (" + mean[0] + ", " + mean[1] + ", " + mean[2] + ") - " +
-    //                         "Std: (" + std[0] + ", " + std[1] + ", " + std[2] + ")"
+    var stats_color = document.getElementById(histostatsid);
+    stats_color.innerHTML = "Mean: (" + mean[0] + ", " + mean[1] + ", " + mean[2] + ") - " +
+                            "Std: (" + std[0] + ", " + std[1] + ", " + std[2] + ")"
 }

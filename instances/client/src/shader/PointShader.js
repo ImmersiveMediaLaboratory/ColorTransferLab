@@ -12,6 +12,7 @@ class PointShader {
     static vertexShader = 
         `
         uniform float pointsize;
+        uniform bool enableColorDistribution;
 
         varying vec3 vColor;
         varying vec3 vNormal;
@@ -21,7 +22,14 @@ class PointShader {
             vColor = color;
             vNormal = normal;
 
-            vec3 pos = vec3(position.xyz);
+            vec3 pos;
+
+            if(!enableColorDistribution) {
+                pos = vec3(position.xyz);
+            }
+            else {
+                pos = vec3(color.rgb) * 4.0;
+            }
 
             gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0 );
             gl_PointSize = pointsize;
@@ -37,7 +45,7 @@ class PointShader {
 
         void main() {
             if(enableNormalColor) {
-                gl_FragColor = vec4(abs(normalize(vNormal.xyz)), 1);
+                gl_FragColor = vec4(abs(normalize(vNormal.xyz)), 1.0);
             }
             else {
                 // LinearTosRGB encoding
@@ -45,6 +53,7 @@ class PointShader {
             }
         }     
         `
+
 }
 
 export default PointShader
