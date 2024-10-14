@@ -29,27 +29,6 @@ Please see the LICENSE file that should have been included as part of this packa
     filter: brightness(0.7);
 }
 
-#Header_github {
-    position: absolute;
-    margin-left: calc(100vw - 50px);
-    height: 30px;
-}
-
-#Header_github:hover {
-    filter: brightness(1.5);
-}
-
-#Header_menu {
-    position: absolute;
-    margin-left: calc(100vw - 50px);
-    height: 30px;
-    display: none;
-}
-
-#Header_menu:hover {
-    box-shadow:0px 0px 2px 0px cyan;
-}
-
 #Header_text {
     position: absolute;
     color: $lightgrey;
@@ -64,3 +43,35 @@ Please see the LICENSE file that should have been included as part of this packa
     margin-top: 10px;
 }
 
+#header-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+#Header_feedback, #Header_github, #Header_menu {
+    position: relative;
+    margin: 0 10px;
+    height: 100%;
+}
+
+#Header_menu {
+    display: none;
+}
+
+#Header_feedback{
+    border: 2px solid $darkgrey;
+    background-color: $darkgrey;
+    border-radius: 5px;
+    padding: 2px;
+    font-size: 12pt;
+}
+
+#Header_github_logo, #Header_menu_logo {
+    position: relative;
+    height: 30px;
+}
+
+#Header_github:hover, #Header_menu:hover, #Header_feedback:hover {
+    filter: brightness(1.5);
+}

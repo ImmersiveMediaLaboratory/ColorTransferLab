@@ -1,0 +1,18 @@
+{
+    "service": "methods",
+    "enabled": true,
+    "data": [
+        {
+            "name": "Global Color Transfer",
+            "key": "GLO",
+            "type": "Color Transfer",
+            "author": "Erik Reinhard ...",
+            "year": 2001,
+            "publication": "Color Transfer between Images",
+            "abstract": "...",
+            "datatypes": ["Image", "PointCloud", "Mesh", "Video", "VolumetricVideo", "LightField"],
+            "local": true,
+            "enabled": true
+        }
+    ]
+}

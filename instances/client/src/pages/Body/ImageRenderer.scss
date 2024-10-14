@@ -3,40 +3,23 @@
 .renderer_image{
     position: absolute;
     visibility: hidden;
-    background-color: black;
+    background-color: $grey;
     width: 100%;
-    top: 25px;
-    height: calc(#{100%} - 25px);
-    // z-index: 998;
+    height: calc(100%);
 }
 
 .renderer_image_inner {
     width: 100%;
-    height: 100%;
+    height: calc(100% - 25px);
     object-fit: contain;
-    // transition: transform 0.25s ease; /* Für sanfte Übergänge */
-    // cursor: grab;
 }
 
-// .renderer_image_inner:active {
-//     cursor: grabbing; /* Zeigt an, dass das Bild gegriffen wird */
-//   }
-
-.zoom-container {
-    overflow: hidden; /* Verhindert das Überlaufen des Bildes */
-    position: relative;
-    width: 100%;
-    height: 100%;
-  }
+.rendererbutton-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
   
-// .zoom-container img {
-//     cursor: zoom-in; /* Zeigt an, dass das Bild zoombar ist */
-// }
-
-// .zoom-container.zoomed img {
-//     cursor: zoom-out; /* Zeigt an, dass das Bild herausgezoomt werden kann */
-// }
-
 .ir_button_settings{
     position: absolute;
     width: 15px;

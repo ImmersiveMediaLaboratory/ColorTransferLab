@@ -12,11 +12,12 @@ import {pathjoin} from 'Utils/Utils';
 import TriangleMesh from "rendering/TriangleMesh"
 
 class VolumetricVideo {
-    async createVolumetricVideo(filepath, setComplete) {
+    async createVolumetricVideo(filepath, setComplete, view) {
         const json_path = filepath + ".json";
         console.log(json_path)
         const activeObject = [];
         const activeTextureMap = [];
+        const meshRefs = [];
 
         try {
             const response = await fetch(json_path);
@@ -31,10 +32,15 @@ class VolumetricVideo {
                 activeTextureMap.push(texture_path);
 
                 const subpath = pathjoin(filepath + "_" + paddedNumber);
+                const meshRef = React.createRef();
+                meshRefs.push(meshRef);
                 const obj3D = (
                     <TriangleMesh 
                         key={Math.random()} 
                         file_name={subpath} 
+                        ref={meshRef}
+                        view={view}
+                        type="VolumetricVideo"
                         setGLOComplete={setComplete}
                     />
                 );
@@ -44,7 +50,7 @@ class VolumetricVideo {
             console.error("Error loading JSON:", error);
         }
 
-        return [activeObject, activeTextureMap];
+        return [activeObject, activeTextureMap, meshRefs];
     }
 }
 

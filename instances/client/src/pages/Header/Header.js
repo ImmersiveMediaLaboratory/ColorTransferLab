@@ -48,10 +48,10 @@ function Header(props) {
         const updateComponentStyle = () => {
             if (window.innerWidth < mobileMaxWidth) {
                 setComponentStyle({ display: "block"});
-                $("#Header_github").css({marginLeft: "calc(100vw - 100px)"})
+                //$("#Header_github").css({marginLeft: "calc(100vw - 100px)"})
             } else {
                 setComponentStyle({});
-                $("#Header_github").css({marginLeft: "calc(100vw - 50px)"})
+                //$("#Header_github").css({marginLeft: "calc(100vw - 50px)"})
             }
         };
 
@@ -92,10 +92,22 @@ function Header(props) {
             </a>
             <div id="Header_text" >{title_header}</div>
             <div id="header_version">{version_header}</div>
-            <a href="https://github.com/ImmersiveMediaLaboratory/ColorTransferLab" target="_blank" rel="noreferrer">
-                <img id="Header_github" src={icon_github_button} alt=""/>
-            </a>
-            <img id="Header_menu" onClick={toogleMenu} src={icon_menu_button} alt="" style={componentStyle}/>
+
+
+            <div id="header-container">
+                <div id="Header_feedback">
+                    Feedback
+                </div>
+
+                <a id="Header_github" href="https://github.com/ImmersiveMediaLaboratory/ColorTransferLab" target="_blank" rel="noreferrer">
+                    <img id="Header_github_logo" src={icon_github_button} alt=""/>
+                </a>
+
+                <div id="Header_menu" style={componentStyle}> 
+                    <img id="Header_menu_logo" onClick={toogleMenu} src={icon_menu_button} alt=""/>
+                </div>
+                
+            </div>
         </header>
     );
 }

@@ -14,6 +14,9 @@ import {active_server} from 'Utils/System'
 import {available_metrics} from 'Utils/System'
 import {evaluation_results} from 'Utils/System'
 import {server_request} from 'Utils/Connection'
+import * as THREE from "three";
+import {TextureLoader, BufferAttribute} from 'three';
+
 
 /******************************************************************************************************************
  * Send request to python server for evaluation which will be printed within the Evaluation tab.
@@ -166,9 +169,9 @@ export const exportMetrics = () => {
 /******************************************************************************************************************
  * Request available color transfer metrics and create entries
  ******************************************************************************************************************/
-const createMetricEntries = (metrics) => {
+export const createMetricEntries = (metrics) => {
     // init evaluation
-    var console_eval = document.getElementById("Console_tab_console_evaluation")
+    var console_eval = document.getElementById("console_evaluation")
     console_eval.innerHTML = ""
 
     const tbl = document.createElement("table");
@@ -178,19 +181,30 @@ const createMetricEntries = (metrics) => {
     const cell = document.createElement("th");
     const cellText = document.createTextNode("Metric")
     cell.appendChild(cellText);
+
+    const cell3 = document.createElement("th");
+    const cellText3 = document.createTextNode("Name")
+    cell3.appendChild(cellText3);
+
     const cell2 = document.createElement("th");
     const cellText2 = document.createTextNode("Value")
     cell2.appendChild(cellText2);
 
     const row = document.createElement("tr");
     row.appendChild(cell);
+    row.appendChild(cell3);
     row.appendChild(cell2);
     tblBody.appendChild(row)
 
     for(let j = 0; j < metrics.length; j++) {
         const cell = document.createElement("td");
-        const cellText = document.createTextNode(metrics[j])
+        cell.setAttribute("title", metrics[j]["description"])
+        const cellText = document.createTextNode(metrics[j]["key"])
         cell.appendChild(cellText);
+
+        const cell3 = document.createElement("td");
+        const cellText3 = document.createTextNode(metrics[j]["name"])
+        cell3.appendChild(cellText3);
 
         const cell2 = document.createElement("td");
         const cellText2 = document.createTextNode(" ")
@@ -198,6 +212,7 @@ const createMetricEntries = (metrics) => {
 
         const row = document.createElement("tr");
         row.appendChild(cell);
+        row.appendChild(cell3);
         row.appendChild(cell2);
         tblBody.appendChild(row)
     }
@@ -441,7 +456,7 @@ export const updateHistogram_old = (stat_obj, window) => {
     ctx.putImageData(imageData, 0, 0);
 
     var stats_color = document.getElementById(histostatsid);
-    stats_color.innerHTML = "Mean: (" + mean[0] + ", " + mean[1] + ", " + mean[2] + ") - " +
+    stats_color.innerHTML = "Mean: (" + mean[0] + ", " + mean[1] + ", " + mean[2] + ") <br/>" +
                             "Std: (" + std[0] + ", " + std[1] + ", " + std[2] + ")"
 }
 
@@ -513,6 +528,165 @@ export const updateHistogram = (stat_obj, mean, std, window) => {
     ctx.putImageData(imageData, 0, 0);
 
     var stats_color = document.getElementById(histostatsid);
-    stats_color.innerHTML = "Mean: (" + mean[0] + ", " + mean[1] + ", " + mean[2] + ") - " +
+    stats_color.innerHTML = "Mean: (" + mean[0] + ", " + mean[1] + ", " + mean[2] + ") <br/> " +
                             "Std: (" + std[0] + ", " + std[1] + ", " + std[2] + ")"
+}
+
+/**************************************************************************************************************
+ * 
+ **************************************************************************************************************/
+export const calculateMeanAndStdDev = (colorsArray, normalized, channels) => {
+    let scale = 1.0
+    if(normalized)
+        scale = 255.0
+
+    const r = [], g = [], b = [];
+    for (let i = 0; i < colorsArray.length; i += channels) {
+        const rValue = colorsArray[i] * scale;
+        const gValue = colorsArray[i + 1] * scale;
+        const bValue = colorsArray[i + 2] * scale;
+
+        if (!isNaN(rValue) && !isNaN(gValue) && !isNaN(bValue)) {
+            r.push(rValue);
+            g.push(gValue);
+            b.push(bValue);
+        }
+    }
+
+    const calculateStats = (array) => {
+        const sum = array.reduce((acc, value) => acc + value, 0);
+        const mean = Math.round(sum / array.length);
+
+        const squaredDifferences = array.map(value => Math.pow(value - mean, 2));
+        const meanSquaredDifference = squaredDifferences.reduce((acc, value) => acc + value, 0) / array.length;
+        const stdDev = Math.round(Math.sqrt(meanSquaredDifference));
+
+        return { mean, stdDev };
+    };
+
+    const rStats = calculateStats(r);
+    const gStats = calculateStats(g);
+    const bStats = calculateStats(b);
+
+    return {
+        mean: [rStats.mean, gStats.mean, bStats.mean],
+        stdDev: [rStats.stdDev, gStats.stdDev, bStats.stdDev]
+    };
+}
+/**************************************************************************************************************
+ * 
+ **************************************************************************************************************/
+export const calculateColorHistograms = (colorsArray, normalized, channels) => {
+    // create a histogram of colors for rendering in the histogram tab of the console
+    const histogram = new Array(256).fill(null).map(() => new Array(3).fill(0));
+    // Initialisieren Sie ein 3D-Array für die Bins
+    const bins = new Array(10).fill(null).map(() => 
+        new Array(10).fill(null).map(() => 
+            new Array(10).fill(0)
+        )
+    );
+
+    let scale = 255.0
+    if(normalized)
+        scale = 1.0
+
+    // Initialisieren Sie eine Variable für den maximalen Wert
+    let maxValue = 0;
+    for (let i = 0; i < colorsArray.length; i += channels) {
+
+        const rScale = colorsArray[i] / scale
+        const gScale = colorsArray[i+1] / scale
+        const bScale = colorsArray[i+2] / scale
+
+        const r = Math.min(Math.max(Math.round(rScale * 255), 0), 255);
+        const g = Math.min(Math.max(Math.round(gScale * 255), 0), 255);
+        const b = Math.min(Math.max(Math.round(bScale * 255), 0), 255);
+        if (isNaN(r) || isNaN(g) || isNaN(b))
+            continue
+
+        histogram[r][0]++;
+        histogram[g][1]++;
+        histogram[b][2]++;
+
+        // Bestimmen Sie die Bin-Indizes
+        const rBin = Math.min(Math.floor(rScale * 10), 9);
+        const gBin = Math.min(Math.floor(gScale * 10), 9);
+        const bBin = Math.min(Math.floor(bScale * 10), 9);
+
+        // Erhöhen Sie die Zählung für das entsprechende Bin
+        bins[rBin][gBin][bBin]++;
+        if (bins[rBin][gBin][bBin] > maxValue) {
+            maxValue = bins[rBin][gBin][bBin];
+        }
+    }
+
+    // volume of largest sphere
+    let maxVolume = 4/3 * Math.PI * Math.pow(0.5, 3)
+    let spheres = []
+    
+    for (let r = 0; r < 10; r++) {
+        for (let g = 0; g < 10; g++) {
+            for (let b = 0; b < 10; b++) {
+                if (bins[r][g][b] > 0) {
+                    const color = new THREE.Color(r / 10 + 0.05, g / 10 + 0.05, b / 10 + 0.05);
+
+
+                    // 0.05 is added to the color values to place the sphere in the center of the bin
+                    // Each bin has a size of 0.1.
+                    const position = new THREE.Vector3((r / 10 + 0.05) * 4, (g / 10 + 0.05) * 4, (b / 10 + 0.05) * 4) ;
+                    // caluculate radius of sphere based on the scaled volume of the sphere
+                    const radius = Math.pow(bins[r][g][b] / maxValue  * maxVolume / Math.PI * 3/4, 1/3);
+                    const scale = Math.max(radius / 10 * 4 * 2, 0.05)//bins[r][g][b] / maxValue / 10 * 4; // Skalierung, damit die größte Kugel das gesamte Bin ausfüllt
+
+                    spheres.push(
+                        <mesh key={`${r}-${g}-${b}`} position={position} scale={[scale, scale, scale]}>
+                            <sphereGeometry args={[0.5, 32, 32]} />
+                            <meshStandardMaterial color={color} />
+                        </mesh>
+                    );
+                }
+            }
+        }
+    }
+
+    return [histogram, spheres];
+}
+
+/**************************************************************************************************************
+ * 
+ **************************************************************************************************************/
+// Function to load a texture and convert it into an array
+export const loadTextureAndConvertToArray = (url, callback) => {
+    console.log('Loading texture:', url);
+    const loader = new TextureLoader();
+    loader.load(
+        url,
+        (texture) => {
+            // Create a canvas element
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+
+            // Set the canvas size to the texture size
+            canvas.width = texture.image.width;
+            canvas.height = texture.image.height;
+
+
+            // Draw the texture onto the canvas
+            context.drawImage(texture.image, 0, 0);
+
+            // Extract the pixel data from the canvas
+            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+            const pixelArray = imageData.data;
+
+            // Die Anzahl der Kanäle ist 4 (RGBA) für ein Standard-Canvas
+            const numberOfChannels = imageData.data.length / (canvas.width * canvas.height);
+
+            // Call the callback function with the pixel array
+            callback(pixelArray, canvas.width, canvas.height, numberOfChannels);
+        },
+        undefined,
+        (error) => {
+            console.error('Error loading texture:', error);
+        }
+    );
 }

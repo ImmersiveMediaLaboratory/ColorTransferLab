@@ -118,40 +118,6 @@ function Console() {
             renderer_image_inner.attr("data-update", getRandomID())
         }
     }
-    /**************************************************************************************************************
-     * Allows the upload of local images and point clouds.
-     * The items can be accessed via the <Uploads> button within the <DATABASE> window.
-     * DISABLED: The upload function is disabled in the current version.
-     **************************************************************************************************************/
-    function chooseFile() {
-        let input = document.createElement('input');
-        input.type = 'file';
-        input.onchange = _this => {
-                let files =   Array.from(input.files);
-
-                try {
-                    const xmlHttp = new XMLHttpRequest();
-                    const theUrl = pathjoin(active_server, "upload");
-                    xmlHttp.open( "POST", theUrl, false );
-                    
-                    let formData = new FormData()
-                    formData.append("file", files[0]);
-
-                    // console.log(formData)
-
-                    xmlHttp.send(formData);
-                    consolePrint("INFO", "File uploaded")
-
-                    // update databse content
-                    request_database_content(active_server)
-                    //request_database_content()
-                }
-                catch (e) {
-                    console.log(e)
-                }
-            };
-        input.click();
-    }
 
     /**************************************************************************************************************
      * Sends a request to the server to apply the selected color transfer algorithm.
@@ -250,11 +216,6 @@ function Console() {
 
             {/* Buttons for uploading a photo, executing the color transfer and the evaluation. */}
             <div className="button-container">
-                <ExecutionButton 
-                    iconPath={icon_camera_button} 
-                    onClick={exportMetrics}
-                    title={"Open camera to capture either a source or reference image."}
-                />
                 <ExecutionButton 
                     iconPath={icon_export_metric_button} 
                     onClick={exportMetrics}

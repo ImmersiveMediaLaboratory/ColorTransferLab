@@ -10,9 +10,19 @@ Please see the LICENSE file that should have been included as part of this packa
 import React, {Suspense, useState, useEffect, useRef} from 'react';
 import {Canvas} from "@react-three/fiber";
 import $ from 'jquery';
+import {updateHistogram, calculateColorHistograms, calculateMeanAndStdDev,loadTextureAndConvertToArray} from 'Utils/Utils';
 
 function CustomCanvas(props) {    
     const [currentIndex, setCurrentIndex] = useState(0);
+    const meshRefs = useRef([]);
+    const [info, setInfo] = useState(null);
+
+    useEffect(() => {
+        if (info !== null) {
+            props.setInfo(info);
+        }
+    }, [info, props]);
+
 
     useEffect(() => {
         if (Array.isArray(props.rendering)) {
@@ -23,11 +33,41 @@ function CustomCanvas(props) {
                     if (nu === 0) {
                         return 0;
                     } else {
-                        const newIndex = (prevIndex + 1) % nu;
+                        let newIndex = (prevIndex + 1) % nu;
+
+                        if(!props.playing.current) {
+                            newIndex = prevIndex;
+                            if(props.forward.current) {
+                                newIndex = (prevIndex + 1) % nu;
+                                props.forward.current = false;
+                            }
+                            if(props.backward.current) {
+                                newIndex = prevIndex - 1;
+                                if (newIndex < 0) {
+                                    newIndex = nu - 1;
+                                }
+                                props.backward.current = false;
+                            }
+                        }
+
+
+
                         $("#" + props.textureMapID).attr("src", props.activeTextureMap[newIndex]);
+                        $("#voluCounterID").html("Frame: " + newIndex + " / " + (nu - 1));
 
                         console.log("CustomCanvas useEffect currentIndex: " + newIndex)
                         props.currentIndex.current = newIndex;
+                        if(props.refs[newIndex].current !== null) {
+                            const histo = props.refs[newIndex].current.getState().histogram2D;
+                            const view = props.refs[newIndex].current.getState().view;
+                            const mean = props.refs[newIndex].current.getState().mean;
+                            const stdDev = props.refs[newIndex].current.getState().stdDev;
+                            
+                            if(histo.length !== 0)
+                                updateHistogram(histo, mean, stdDev, view)
+
+                            setInfo(props.refs[newIndex].current.getState().info);
+                        }
                         return newIndex;
                     }
                 });
@@ -37,13 +77,11 @@ function CustomCanvas(props) {
     }, [props.fps]);
 
     return (
-        <Canvas id={props.id} className={props.className}>
+        <Canvas id={props.id} className={props.className} style={{"height": "calc(100% - 25px)"}}>
             {props.children}
             <Suspense fallback={null}>
-                {/* {<group>{props.rendering[currentIndex]}</group>} */}
-                {/* {<group>{props.rendering}</group>} */}
-                {props.rendering.map((mesh, index) => (
-                    <group key={index} visible={index === currentIndex}>
+                 {props.rendering.map((mesh, index) => (
+                    <group key={index} visible={index === currentIndex} ref={el => meshRefs.current[index] = el}>
                         {mesh}
                     </group>
                 ))}

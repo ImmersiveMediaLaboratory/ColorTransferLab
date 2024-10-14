@@ -14,6 +14,12 @@ Please see the LICENSE file that should have been included as part of this packa
 }
 
 .emptyRenderer{
+    background-color: $grey ;
+    width: 100%;
+    height: 100%;
+}
+
+.emptyRendererInner{
     position: absolute;
     top: 25px;
     height: calc((100% - 227px));
@@ -27,7 +33,7 @@ Please see the LICENSE file that should have been included as part of this packa
     padding: 50px;
     margin: 50px;
     background-color: $grey;
-
+    z-index: 9999;
     border: 1px dashed $lightgrey;
     border-radius: 15px;
 }
@@ -44,6 +50,23 @@ Please see the LICENSE file that should have been included as part of this packa
     font-size: 10pt;
     z-index: 998;
     opacity: 0.9;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.uploadButton{
+    border: 2px solid $darkgrey;
+    background-color: $darkgrey;
+    border-radius: 5px;
+    width: calc(100% - 10px);
+    padding: 5px;
+    margin-top: 20px;
+    font-size: 12pt;
+}
+
+.uploadButton:hover{
+    filter: brightness(1.5);
 }
 
 

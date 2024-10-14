@@ -213,7 +213,6 @@ export const show_files = (fold, file_path) => {
                 createPreviewCard(pathjoin(active_server, "previews", file_path), file_name, full_path)
         }
         else if(element["name"].includes("$volumetric$")){
-            console.log("VV")
             let file_name = element["name"].replace("$volumetric$", "")
             let items_elem = $("<div/>").attr("title", file_name).attr("draggable", "true").addClass("items_elem");
             let items_elem_icon = $("<img/>").addClass("items_elem_icon").attr("src", icon_items_voluvideo)

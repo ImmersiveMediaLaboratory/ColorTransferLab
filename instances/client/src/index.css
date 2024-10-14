@@ -17,11 +17,13 @@ html {
     margin: 0;
     overflow: hidden;
     width: 100vw;
-    height: var(--app-height);
+    height: var(--app-height);    
+
 }
 
 body {
     padding: 0;
+    min-width: 1000px;
     margin: 0;
     overflow: hidden;
     width: 100vw;

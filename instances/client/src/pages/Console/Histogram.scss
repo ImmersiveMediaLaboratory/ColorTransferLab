@@ -22,7 +22,8 @@ Please see the LICENSE file that should have been included as part of this packa
     $scrolloffset: 20px;
     position: absolute;
     background-color: black;
-    height: calc(159px - 30px);
+    //height: calc(159px - 30px);
+    height: calc(100% - 40px);
     width: calc((100% - 2 * 5px - #{$scrolloffset}) / 3 - 8px);
     margin: 4px;
     padding: 0px;
@@ -40,8 +41,8 @@ Please see the LICENSE file that should have been included as part of this packa
     background-color: $darkgrey;
     width: 100%;
     padding: 0px;
-    height: 20px;
-    top: calc(159px - 30px)
+    height: 30px;
+    top: calc(159px - 40px)
 }
 
 #histogram_src {

@@ -89,7 +89,7 @@ function Server(props) {
         if (stat_obj["enabled"]) 
             consolePrint("INFO", "Servers were found... ")
         else 
-            consolePrint("INFO", "No server instance is running")
+            consolePrint("WARNING", "No server instance is running")
 
         // check if the request of available servers is fulfilled
         if (stat_obj["enabled"]) 

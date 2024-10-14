@@ -17,7 +17,7 @@ import {useFrame} from "@react-three/fiber";
 import { PLYLoader } from 'three/examples/jsm/loaders/PLYLoader'
 import * as THREE from 'three'
 import PointShader from "shader/PointShader"
-import { updateHistogram } from 'Utils/Utils';
+import { updateHistogram, calculateColorHistograms, calculateMeanAndStdDev } from 'Utils/Utils';
 import $ from 'jquery';
 
 
@@ -37,6 +37,10 @@ const PointCloud = forwardRef((props, ref) => {
         colornormal: false,
         colordistribution: false,
         colorhistogram: false,
+        histogram2D: [],
+        mean: [0,0,0],
+        stdDev: [0,0,0],
+        view: props.view,
         info: {
             "#Vertices": 0
         }
@@ -152,13 +156,20 @@ const PointCloud = forwardRef((props, ref) => {
 
                 // Skalieren der Farbwerte von 0-1 auf 0-255
                 // Berechnung des Mittelwerts und der Standardabweichung für jeden Kanal
-                const { mean, stdDev } = calculateMeanAndStdDev(colors.current.array);
+                const { mean, stdDev } = calculateMeanAndStdDev(colors.current.array, true, 3);
 
                 // set the histogram data for 2D and 3D rendering
-                const histograms = calculateColorHistograms(colors.current.array)
-                const histogram2D = histograms[0]
+                const histograms = calculateColorHistograms(colors.current.array, true, 3);
+
+                setState(prevState => ({
+                    ...prevState,
+                    histogram2D: histograms[0],
+                    mean: mean,
+                    stdDev: stdDev
+                }));
+
                 histogram3D.current = histograms[1]
-                updateHistogram(histogram2D, mean, stdDev, props.view)
+                updateHistogram(histograms[0], mean, stdDev, props.view)
 
                 // Resets the progress bar after loading is complete
                 $(`#${props.renderBar}`).css("width", "0%")
@@ -180,110 +191,6 @@ const PointCloud = forwardRef((props, ref) => {
             }
         );
     }, [])
-
-    /**************************************************************************************************************
-     **************************************************************************************************************
-     ** FUNCTIONS
-     **************************************************************************************************************
-     **************************************************************************************************************/
-
-    /**************************************************************************************************************
-     * 
-     **************************************************************************************************************/
-    function calculateMeanAndStdDev(colorsArray) {
-        const r = [], g = [], b = [];
-        for (let i = 0; i < colorsArray.length; i += 3) {
-            r.push(colorsArray[i] * 255);
-            g.push(colorsArray[i + 1] * 255);
-            b.push(colorsArray[i + 2] * 255);
-        }
-    
-        const calculateStats = (array) => {
-            const sum = array.reduce((acc, value) => acc + value, 0);
-            const mean = Math.round(sum / array.length);
-    
-            const squaredDifferences = array.map(value => Math.pow(value - mean, 2));
-            const meanSquaredDifference = squaredDifferences.reduce((acc, value) => acc + value, 0) / array.length;
-            const stdDev = Math.round(Math.sqrt(meanSquaredDifference));
-    
-            return { mean, stdDev };
-        };
-    
-        const rStats = calculateStats(r);
-        const gStats = calculateStats(g);
-        const bStats = calculateStats(b);
-    
-        return {
-            mean: [rStats.mean, gStats.mean, bStats.mean],
-            stdDev: [rStats.stdDev, gStats.stdDev, bStats.stdDev]
-        };
-    }
-    /**************************************************************************************************************
-     * 
-     **************************************************************************************************************/
-    const calculateColorHistograms = (colorsArray) => {
-        // create a histogram of colors for rendering in the histogram tab of the console
-        const histogram = new Array(256).fill(null).map(() => new Array(3).fill(0));
-        // Initialisieren Sie ein 3D-Array für die Bins
-        const bins = new Array(10).fill(null).map(() => 
-            new Array(10).fill(null).map(() => 
-                new Array(10).fill(0)
-            )
-        );
-
-        // Initialisieren Sie eine Variable für den maximalen Wert
-        let maxValue = 0;
-        for (let i = 0; i < colorsArray.length; i += 3) {
-            const r = Math.min(Math.max(Math.round(colorsArray[i] * 255), 0), 255);
-            const g = Math.min(Math.max(Math.round(colorsArray[i+1] * 255), 0), 255);
-            const b = Math.min(Math.max(Math.round(colorsArray[i+2] * 255), 0), 255);
-            histogram[r][0]++;
-            histogram[g][1]++;
-            histogram[b][2]++;
-
-            // Bestimmen Sie die Bin-Indizes
-            const rBin = Math.min(Math.floor(colorsArray[i] * 10), 9);
-            const gBin = Math.min(Math.floor(colorsArray[i+1] * 10), 9);
-            const bBin = Math.min(Math.floor(colorsArray[i+2] * 10), 9);
-
-            // Erhöhen Sie die Zählung für das entsprechende Bin
-            bins[rBin][gBin][bBin]++;
-            if (bins[rBin][gBin][bBin] > maxValue) {
-                maxValue = bins[rBin][gBin][bBin];
-            }
-        }
-
-        // volume of largest sphere
-        let maxVolume = 4/3 * Math.PI * Math.pow(0.5, 3)
-        let spheres = []
-        
-        for (let r = 0; r < 10; r++) {
-            for (let g = 0; g < 10; g++) {
-                for (let b = 0; b < 10; b++) {
-                    if (bins[r][g][b] > 0) {
-                        const color = new THREE.Color(r / 10 + 0.05, g / 10 + 0.05, b / 10 + 0.05);
-
-
-                        // 0.05 is added to the color values to place the sphere in the center of the bin
-                        // Each bin has a size of 0.1.
-                        const position = new THREE.Vector3((r / 10 + 0.05) * 4, (g / 10 + 0.05) * 4, (b / 10 + 0.05) * 4) ;
-                        // caluculate radius of sphere based on the scaled volume of the sphere
-                        const radius = Math.pow(bins[r][g][b] / maxValue  * maxVolume / Math.PI * 3/4, 1/3);
-                        const scale = Math.max(radius / 10 * 4 * 2, 0.05)//bins[r][g][b] / maxValue / 10 * 4; // Skalierung, damit die größte Kugel das gesamte Bin ausfüllt
-
-                        spheres.push(
-                            <mesh key={`${r}-${g}-${b}`} position={position} scale={[scale, scale, scale]}>
-                                <sphereGeometry args={[0.5, 32, 32]} />
-                                <meshStandardMaterial color={color} />
-                            </mesh>
-                        );
-                    }
-                }
-            }
-        }
-
-        return [histogram, spheres];
-    }
 
     /**************************************************************************************************************
      **************************************************************************************************************

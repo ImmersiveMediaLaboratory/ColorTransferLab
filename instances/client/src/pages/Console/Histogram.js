@@ -202,15 +202,15 @@ function Histogram(props) {
         <div id={props.id} className='histogram'>
             <div id="histogram_src" className='color_histogram'>
                 <canvas id={"histogram_canvas_src"} className="canvas" width="256" height="100"></canvas>
-                <div id={"histogram_stats_src"} className="histogram_stats">Mean: (0, 0, 0) - Std: (0, 0, 0)</div>
+                <div id={"histogram_stats_src"} className="histogram_stats">Mean: (0, 0, 0) <br/> Std: (0, 0, 0)</div>
             </div>
             <div id="histogram_ref" className='color_histogram'>
                 <canvas id={"histogram_canvas_ref"} className="canvas" width="256" height="100"></canvas>
-                <div id={"histogram_stats_ref"} className="histogram_stats">Mean: (0, 0, 0) - Std: (0, 0, 0)</div>
+                <div id={"histogram_stats_ref"} className="histogram_stats">Mean: (0, 0, 0) <br/> Std: (0, 0, 0)</div>
             </div>
             <div id="histogram_out" className='color_histogram'>
                 <canvas id={"histogram_canvas_out"} className="canvas" width="256" height="100"></canvas>
-                <div id={"histogram_stats_out"} className="histogram_stats">Mean: (0, 0, 0) - Std: (0, 0, 0)</div>
+                <div id={"histogram_stats_out"} className="histogram_stats">Mean: (0, 0, 0) <br/> Std: (0, 0, 0)</div>
             </div>
         </div>
     );

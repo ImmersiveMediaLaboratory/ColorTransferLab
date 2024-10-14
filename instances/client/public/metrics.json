@@ -1,0 +1,106 @@
+{
+    "service": "metrics",
+    "enabled": true,
+    "data": [
+        {
+            "name": "Peak Signal-to-Noise Ratio",
+            "key": "PSNR",
+            "description": ""
+        },
+        {
+            "name": "Histogram Intersection",
+            "key": "HI",
+            "description": ""
+        },
+        {
+            "name": "Correlation",
+            "key": "Corr",
+            "description": ""
+        },
+        {
+            "name": "Bhattacharyya Distance",
+            "key": "BA",
+            "description": ""
+        },
+        {
+            "name": "Mean-Squared Error",
+            "key": "MSE",
+            "description": ""
+        },
+        {
+            "name": "Root-Mean-Squared Error",
+            "key": "RMSE",
+            "description": ""
+        },
+        {
+            "name": "Colorfulness",
+            "key": "CF",
+            "description": ""
+        },
+        {
+            "name": "Multi-Scale Structural Similarity Index",
+            "key": "MSSSIM",
+            "description": ""
+        },
+        {
+            "name": "Structural Similarity Index",
+            "key": "SSIM",
+            "description": "Structural Similarity Index (SSIM) is a perceptual metric that quantifies the image quality degradation that is caused by processing such as data compression or by losses in data transmission."
+        },
+        {
+            "name": "Gradient-based Structural Similarity Index",
+            "key": "GSSIM",
+            "description": ""
+        },
+        {
+            "name": "4-component Structural Similarity Index",
+            "key": "IVSSIM",
+            "description": ""
+        },
+        {
+            "name": "4-component enhanced Gradient-based Structural Similarity Index",
+            "key": "IVEGSSIM",
+            "description": ""
+        },
+        {
+            "name": "Feature Similarity Index",
+            "key": "FSIM",
+            "description": ""
+        },
+        {
+            "name": "Blind/Referenceless Image Spatial Quality Evaluator",
+            "key": "BRISQUE",
+            "description": ""
+        },
+        {
+            "name": "Naturalness Image Quality Evaluator",
+            "key": "NIQE",
+            "description": ""
+        },
+        {
+            "name": "Visual Saliency-based Index",
+            "key": "VSI",
+            "description": ""
+        },
+        {
+            "name": "Color Transfer Quality Metric",
+            "key": "CTQM",
+            "description": ""
+        },
+        {
+            "name": "Learned Perceptual Image Patch Similarity",
+            "key": "LPIPS",
+            "description": ""
+        },
+        {
+            "name": "Neural Image Assessment",
+            "key": "NIMA",
+            "description": ""
+        },
+        {
+            "name": "Color and Structure Similarity",
+            "key": "CSS",
+            "description": ""
+        }
+    ]
+}

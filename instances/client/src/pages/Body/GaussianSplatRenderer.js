@@ -1,9 +1,25 @@
+/*
+Copyright 2024 by Herbert Potechius,
+Technical University of Berlin
+Faculty IV - Electrical Engineering and Computer Science - Institute of Telecommunication Systems - Communication Systems Group
+All rights reserved.
+This file is released under the "MIT License Agreement".
+Please see the LICENSE file that should have been included as part of this package.
+*/
+
 import "./GaussianSplatRenderer.scss"
 import * as GaussianSplats3D from '@mkkellogg/gaussian-splats-3d';
 import * as THREE from 'three';
 import React, { useRef, useEffect, useState } from 'react';
 import $ from 'jquery';
+import {updateHistogram, calculateColorHistograms, calculateMeanAndStdDev,loadTextureAndConvertToArray} from 'Utils/Utils';
 
+
+/******************************************************************************************************************
+ ******************************************************************************************************************
+ ** FUNCTIONAL COMPONENT
+ ******************************************************************************************************************
+ ******************************************************************************************************************/
 const GaussianSplatRenderer = (props) => {
     const [isFieldSettingVisible, setIsFieldSettingVisible] = useState(false);
     const [splatScale, setSplatScale] = useState(100.0);
@@ -87,6 +103,14 @@ const GaussianSplatRenderer = (props) => {
                         //viewer.current.splatMesh.setSplatScale(0.1);
                         props.setComplete(Math.random())
                         $(`#${props.renderBarID}`).css("width", "0%")
+
+
+                        console.log(viewer.current.splatMesh.splatDataTextures.baseData.colors)
+                        const pixelArray = viewer.current.splatMesh.splatDataTextures.baseData.colors
+                        const histograms = calculateColorHistograms(pixelArray, false, 4)
+                        const { mean, stdDev } = calculateMeanAndStdDev(pixelArray, false, 4);
+                        updateHistogram(histograms[0], mean, stdDev, props.view)
+                        console.log(histograms)
                     });
             });
 

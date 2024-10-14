@@ -30,6 +30,8 @@ import LoadingView from './LoadingView';
 import GaussianSplatRenderer from './GaussianSplatRenderer';
 import PointCloudVoxelGrid from 'rendering/PointCloud';
 
+import RendererButton from 'pages/Body/RendererButton';
+
 import * as THREE from 'three';
 
 import './Renderer.scss';
@@ -97,6 +99,12 @@ export const showView = (imageID, videoID, renderCanvasID, view_lightfieldID, vi
 -- Renderer windows for (1) Source, (2) Reference, (3) Output and (4) Comparison
 -------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------*/
+/******************************************************************************************************************
+ ******************************************************************************************************************
+ ** FUNCTIONAL COMPONENT
+ ** Renderer windows for (1) Source, (2) Reference and (3) Output
+ ******************************************************************************************************************
+ ******************************************************************************************************************/
 const Renderer = (props) =>  {
     /* ------------------------------------------------------------------------------------------------------------
     -- IMPORTANT:
@@ -111,6 +119,8 @@ const Renderer = (props) =>  {
     const [fieldTexture, setFieldTexture] = useState(null);
     const [init, setInit] = useState(false)
     const [view, setView] = useState(null)
+
+    const [defaultView, setDefaultView] = useState(true)
 
     // stores if the object is completely loaded
     const [complete, setComplete] = useState(false)
@@ -149,8 +159,6 @@ const Renderer = (props) =>  {
     const DROPPABLE = props.droppable;
     const TITLE = props.title
 
-
-
     const imageID = "renderer_image" + ID
     const videoID = "renderer_video" + ID
     const innerImageID = "renderer_image_inner" + ID
@@ -160,8 +168,10 @@ const Renderer = (props) =>  {
     const view_gaussianSplat_ID = "view_gaussiansplat_" + ID
     const infoboxID = "renderer_info" + ID
     const renderBarID = "renderer_bar" + ID
-    const view_emptyID = "view_empty_" + ID
     const view_loadingID = "view_loading_" + ID
+
+
+    const view_emptyID = "view_empty_" + RID
  
     const initPath = "data"
 
@@ -540,6 +550,8 @@ const Renderer = (props) =>  {
     }, []);
 
 
+
+
     /* ------------------------------------------------------------------------------------------------------------
     -- ...
     -------------------------------------------------------------------------------------------------------------*/
@@ -591,24 +603,77 @@ const Renderer = (props) =>  {
     }
 
 
+    /**************************************************************************************************************
+     * Allows the upload of local images and point clouds.
+     * The items can be accessed via the <Uploads> button within the <DATABASE> window.
+     * DISABLED: The upload function is disabled in the current version.
+     **************************************************************************************************************/
+    function chooseFile() {
+        let input = document.createElement('input');
+        input.type = 'file';
+        input.onchange = _this => {
+                let files =   Array.from(input.files);
+
+                try {
+                    const xmlHttp = new XMLHttpRequest();
+                    const theUrl = pathjoin(active_server, "upload");
+                    xmlHttp.open( "POST", theUrl, false );
+                    
+                    let formData = new FormData()
+                    formData.append("file", files[0]);
+
+                    // console.log(formData)
+
+                    xmlHttp.send(formData);
+                    consolePrint("INFO", "File uploaded")
+
+                    // update databse content
+                    //request_database_content(active_server)
+                    //request_database_content()
+                }
+                catch (e) {
+                    console.log(e)
+                }
+            };
+        input.click();
+    }
+
+    const switchDefault = () => {
+        $("#" + view_emptyID).css("display", "flex")
+        $("#" + imageID).css("visibility", "hidden")
+        $("#" + videoID).css("visibility", "hidden")
+        $("#" + renderCanvasID).css("display", "none")
+        $("#" + view_lightfieldID).css("display", "none")
+        $("#" + view_gaussianSplat_ID).css("display", "none")
+    }
+
     return(
         <div id={ID} style={props.style} className='renderer_container'>
-            <div className="renderer_title">{TITLE}</div>
- {/*        <div className='renderer_info_button' onClick={showObjectInfo}>
-                <img className="renderer_info_icon" src={icon_info_button}/>
-            </div> */}
+            <div className="renderer_title">
+                {ID !== 'renderer_out' ? <RendererButton onClick={switchDefault} src={"assets/icons/icon_x.png"}/> : null}
+                {TITLE}
+            </div>
+
             <div id={infoboxID} className='renderer_info_box'>
                 fasefs
             </div>
 
             <div id={view_emptyID} className='emptyRenderer'>
-                {ID === 'renderer_out' ? 'No output has been calculated yet.' : 'Select a file from the database or drag and drop it here.'}
+                <div className="emptyRendererInner">
+                    {ID === 'renderer_out' ? 'No output has been calculated yet.' : '(1) Select a file from the database (2) drag and drop it here or (3) upload it.'}
+                    {ID !== 'renderer_out' ?
+                        <div className='uploadButton' onClick={chooseFile}>
+                            Upload
+                        </div>
+                    : null}
+                </div>
             </div>
 
             <ImageRenderer 
                 id={imageID} 
                 filePath={filePath_Image}
                 setComplete={setComplete}
+                view={RID} 
                 innerid={innerImageID}
             />
             <VideoRenderer 
@@ -631,8 +696,6 @@ const Renderer = (props) =>  {
                 setComplete={setComplete}
                 renderBarID={renderBarID}
                 view={RID} 
-                //rendering={mesh.current} 
-                //obj_path={obj_path.current} 
                 obj_type={mode.current}
             />
             <LightFieldRenderer 
@@ -646,6 +709,7 @@ const Renderer = (props) =>  {
                 id={view_gaussianSplat_ID} 
                 filePath={filePath_GaussianSplat}
                 renderBarID={renderBarID}
+                view={RID} 
                 setComplete={setComplete}
             />
 

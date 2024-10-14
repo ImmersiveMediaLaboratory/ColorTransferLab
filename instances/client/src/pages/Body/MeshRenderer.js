@@ -43,13 +43,24 @@ const MeshRenderer = (props) => {
     const [isFieldInfoVisible, setIsFieldInfoVisible] = useState(false);
     const [isTextureMapVisible, setIsTextureMapVisible] = useState(false);
     const [fps, setFps] = useState(1);
+    // If the volumetric video ist stopped the fps has to be set to 60 in order use the forward and backward function
+    // properly. The original fps value is saved in savedFps.
+    const savedFps = useRef(1);
+
     const [info, setInfo] = useState({});
+
+    //const info = useRef({});
+
+    const voluPlay = useRef(true);
+    const voluForward = useRef(false);
+    const voluBackward = useRef(false);
 
     const pointCloudRef = useRef();
     const meshRef = useRef();
 
     const currentIndex = useRef(0);
     const activeObject = useRef([]);
+    const activeObjectRefs = useRef([]);
     const activeTextureMap = useRef([]);
 
     const button_settings_texture_icon = "assets/icons/icon_settings_grey.png";
@@ -80,6 +91,7 @@ const MeshRenderer = (props) => {
                             file_name={props.filePath} 
                             ref={meshRef}
                             view={RID}
+                            type="Mesh"
                             renderBar={props.renderBarID} 
                             setGLOComplete={props.setComplete}
                         />
@@ -92,6 +104,9 @@ const MeshRenderer = (props) => {
             activeTextureMap.current.length = 0;
             activeTextureMap.current.push(texture_path)
 
+            activeObjectRefs.current.length = 0;
+            activeObjectRefs.current.push(meshRef)
+
             props.setComplete(Math.random())
         }
         else if(props.obj_type === "PointCloud") {
@@ -100,12 +115,16 @@ const MeshRenderer = (props) => {
                             file_path={props.filePath} 
                             view={RID}
                             ref={pointCloudRef}
+                            type="PointCloud"
                             renderBar={props.renderBarID} 
                             setGLOComplete={props.setComplete}
                         />
 
             activeObject.current.length = 0;
             activeObject.current.push(obj)
+
+            activeObjectRefs.current.length = 0;
+            activeObjectRefs.current.push(pointCloudRef)
 
             props.setComplete(Math.random())
         }
@@ -115,12 +134,14 @@ const MeshRenderer = (props) => {
             console.log(json_path)
             activeObject.current.length = 0;
             activeTextureMap.current.length = 0;
+            activeObjectRefs.current.length = 0;
 
             const volumetricVideo = new VolumetricVideo();
             const loadVideo = async () => {
-                const voluReturn = await volumetricVideo.createVolumetricVideo(props.filePath, props.setComplete);
+                const voluReturn = await volumetricVideo.createVolumetricVideo(props.filePath, props.setComplete, RID);
                 activeObject.current.push(...voluReturn[0]);
                 activeTextureMap.current.push(...voluReturn[1]);
+                activeObjectRefs.current.push(...voluReturn[2]);
                 console.log(activeObject.current);
             };
             loadVideo();
@@ -171,10 +192,17 @@ const MeshRenderer = (props) => {
      * 
      **************************************************************************************************************/
     const handlePointSizeChange = (e) => {
-        if (pointCloudRef.current)
-            pointCloudRef.current.updateState({
-                pointsize: e.target.value,
-            })
+        if (props.obj_type === "Mesh") {
+            if (meshRef.current)
+                meshRef.current.updateState({
+                    pointsize: e.target.value,
+                })
+        } else if (props.obj_type === "PointCloud") {
+            if (pointCloudRef.current)
+                pointCloudRef.current.updateState({
+                    pointsize: e.target.value,
+                })
+        }
     }
 
     /**************************************************************************************************************
@@ -226,12 +254,11 @@ const MeshRenderer = (props) => {
      * 
      **************************************************************************************************************/
     const switchColorDistribution = () => {
-
         if (props.obj_type === "Mesh") {
             if (meshRef.current)
                 meshRef.current.updateState({
                     colordistribution:  !meshRef.current.getState().colordistribution,
-                    //colorhistogram: false
+                    colorhistogram: false
                 })
         } else if (props.obj_type === "PointCloud") {
             if (pointCloudRef.current)
@@ -239,6 +266,17 @@ const MeshRenderer = (props) => {
                     colordistribution:  !pointCloudRef.current.getState().colordistribution,
                     colorhistogram: false
                 })
+        } else if (props.obj_type === "VolumetricVideo") {
+            if (activeObjectRefs.current){
+                activeObjectRefs.current.forEach(ref => {
+                    if (ref.current) {
+                        ref.current.updateState({
+                            colordistribution: !ref.current.getState().colordistribution,
+                            colorhistogram: false
+                        });
+                    }
+                });
+            }
         }
     }
 
@@ -246,11 +284,31 @@ const MeshRenderer = (props) => {
      * 
      **************************************************************************************************************/
     const switchColorHistogram = () => {
-        if (pointCloudRef.current)
-            pointCloudRef.current.updateState({
-                colorhistogram:  !pointCloudRef.current.getState().colorhistogram,
-                colordistribution: false
-            })
+        if (props.obj_type === "Mesh") {
+            if (meshRef.current)
+                meshRef.current.updateState({
+                    colorhistogram:  !meshRef.current.getState().colorhistogram,
+                    colordistribution: false
+                })
+        } else if (props.obj_type === "PointCloud") {
+            if (pointCloudRef.current)
+                pointCloudRef.current.updateState({
+                    colorhistogram:  !pointCloudRef.current.getState().colorhistogram,
+                    colordistribution: false
+                })
+        } else if (props.obj_type === "VolumetricVideo") {
+            if (activeObjectRefs.current){
+                activeObjectRefs.current.forEach(ref => {
+                    if (ref.current) {
+                        ref.current.updateState({
+                            colorhistogram: !ref.current.getState().colorhistogram,
+                            colordistribution: false
+                        });
+                    }
+                });
+            }
+        }
+
     }
 
     /**************************************************************************************************************
@@ -258,10 +316,22 @@ const MeshRenderer = (props) => {
      **************************************************************************************************************/
     const handleWireFrameChange = (e) => {
         console.log(e.target.checked)
-        if (meshRef.current)
-            meshRef.current.updateState({
-                wireframe:  e.target.checked,
-            })
+        if (props.obj_type === "Mesh") {
+            if (meshRef.current)
+                meshRef.current.updateState({
+                    wireframe:  e.target.checked,
+                })
+        } else if (props.obj_type === "VolumetricVideo") {
+            if (activeObjectRefs.current){
+                activeObjectRefs.current.forEach(ref => {
+                    if (ref.current) {
+                        ref.current.updateState({
+                            wireframe: e.target.checked
+                        });
+                    }
+                });
+            }
+        }
     }
     
     /**************************************************************************************************************
@@ -286,11 +356,39 @@ const MeshRenderer = (props) => {
         if(!isFieldInfoVisible)
             setIsFieldSettingVisible(false)
 
-        if (props.obj_type === "Mesh") {
-            setInfo(meshRef.current.getState().info);
-        } else if (props.obj_type === "PointCloud") {
-            setInfo(pointCloudRef.current.getState().info);
+        // if (props.obj_type === "Mesh") {
+        //     setInfo(meshRef.current.getState().info);
+        // } else if (props.obj_type === "PointCloud") {
+        //     setInfo(pointCloudRef.current.getState().info);
+        // }
+    }
+
+    /**************************************************************************************************************
+     * 
+     **************************************************************************************************************/
+    const playStopVolumetricVideo = () => {
+        console.log("playStopVolumetricVideo")
+        if(!voluPlay.current) {
+            setFps(savedFps.current)
+        } else {
+            savedFps.current = fps;
+            setFps(60)
         }
+        voluPlay.current = !voluPlay.current;
+        console.log(voluPlay.current)
+    }
+
+    /**************************************************************************************************************
+     * 
+     **************************************************************************************************************/
+    const forwardVolumetricVideo = () => {
+        console.log("forwardVolumetricVideo")
+        voluForward.current = true;
+    }
+
+    const backwardVolumetricVideo = () => {
+        console.log("backwardVolumetricVideo")
+        voluBackward.current = true;
     }
 
     /**************************************************************************************************************
@@ -304,8 +402,13 @@ const MeshRenderer = (props) => {
             {/* Header of the renderer containing buttons for changing the output of the render view*/}
             <div className="rendererbutton-container">
                 {/* Button for showing the mesh's texture map */}
-                {props.obj_type === "VolumetricVideo" || props.obj_type === "Mesh" && (
-                    <RendererButton onClick={showTextureMap} src={button_texturemap_texture_icon}/>
+                {(props.obj_type === "VolumetricVideo" || props.obj_type === "Mesh") && (
+                    <>
+                        <RendererButton onClick={backwardVolumetricVideo} src={"assets/icons/icon_backward.png"}/>
+                        <RendererButton onClick={playStopVolumetricVideo} src={"assets/icons/play.png"}/>
+                        <RendererButton onClick={forwardVolumetricVideo} src={"assets/icons/icon_forward.png"}/>
+                        <RendererButton onClick={showTextureMap} src={button_texturemap_texture_icon}/>
+                    </>
                 )}
                 {/* Button for showing object information */}
                 <RendererButton onClick={showInfo} src={button_settings_info_icon}/>
@@ -319,18 +422,23 @@ const MeshRenderer = (props) => {
 
             {/* Framenumber counter */}
             {props.obj_type === "VolumetricVideo" && (
-                <div className="voluCounter">Frame: {currentIndex.current}</div>
+                <div id="voluCounterID" className="voluCounter">Frame: 0</div>
             )}
 
             {/* Canvas for rendering the mesh / pointcloud / volumetric video */}
             <CustomCanvas 
                 view={props.view} 
                 rendering={activeObject.current} 
+                refs={activeObjectRefs.current}
                 style={{ display: isTextureMapVisible ? 'none' : 'block' }}
                 textureMapID={textureMapID}
                 activeTextureMap={activeTextureMap.current}
                 currentIndex={currentIndex}
                 fps={fps}
+                playing={voluPlay}
+                forward={voluForward}
+                backward={voluBackward}
+                setInfo={setInfo}
             >
                 <ambientLight/>
                 <OrbitControls />
@@ -353,11 +461,11 @@ const MeshRenderer = (props) => {
                 <SettingsFieldItem type={"checkbox"} default={true} onChange={handleGridChange}>Show Grid</SettingsFieldItem>
                 <SettingsFieldItem type={"checkbox"} default={true} onChange={handleAxisChange}>Show Axes</SettingsFieldItem>
                 <SettingsFieldItem type={"checkbox"}  default={false} onChange={handleOrthographicViewChange}>Orthographic View</SettingsFieldItem>
+                <SettingsFieldItem type={"range"} min="1" max="10" default={1} onChange={handlePointSizeChange}>Point Size</SettingsFieldItem>
                 {/*Point Cloud specific settings */}
                 {props.obj_type === "PointCloud" && (
                     <>
                         <SettingsFieldItem type={"checkbox"}  default={false} onChange={handleVertexNormalViewChange}>Vertex Normal View</SettingsFieldItem>
-                        <SettingsFieldItem type={"range"} min="1" max="10" default={1} onChange={handlePointSizeChange}>Point Size</SettingsFieldItem>
                     </>
                 )}
                 {/*Mesh and Volumetric Video specific settings */}
@@ -381,15 +489,10 @@ const MeshRenderer = (props) => {
             </SettingsField>
 
             {/* Information field of the current object. Show for point clouds the number of vertices, etc. */}
-
             <InfoField visibility={isFieldInfoVisible}>
                 {info}
             </InfoField>
-            {/* <div className='fieldInfo' style={{ display: isFieldInfoVisible ? 'block' : 'none' }}>
-                <div className="fieldInfoText">
-                    Ihr Text hier
-                </div>
-            </div> */}
+
 
         </div>
     )

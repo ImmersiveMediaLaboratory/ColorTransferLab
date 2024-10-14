@@ -7,6 +7,7 @@ This file is released under the "MIT License Agreement".
 Please see the LICENSE file that should have been included as part of this package.
 */
 
+import { useEffect } from "react";
 import "./InfoField.scss";
 
 
@@ -16,6 +17,10 @@ import "./InfoField.scss";
  ******************************************************************************************************************
  ******************************************************************************************************************/
 function InfoField(props) {
+
+    useEffect(() => {
+        //console.log("InfoField useEffect");
+    }, [props.children]);
     /**************************************************************************************************************
      **************************************************************************************************************
      ** RENDERING
