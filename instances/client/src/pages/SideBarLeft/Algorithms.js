@@ -59,9 +59,20 @@ export const request_available_methods = (server_address) => {
 -------------------------------------------------------------------------------------------------------------*/
 export const createCTButtons = (stat_obj) => {
     $("#algorithms_content_colorTransfer").html("")
+    $("#algorithms_content_styleTransfer").html("")
+    $("#algorithms_content_colorization").html("")
     for (let elem of stat_obj["data"]){
+        let containerID = ""
+        if(elem["type"] === "Color Transfer")
+            containerID = "#algorithms_content_colorTransfer"
+        else if(elem["type"] === "Style Transfer")
+            containerID = "#algorithms_content_styleTransfer"
+        else if(elem["type"] === "Colorization")
+            containerID = "#algorithms_content_colorization"
+
         var d = document.createElement('div');
-        $(d).addClass("algorithms_approach").attr("title", elem["title"]).appendTo($("#algorithms_content_colorTransfer"))
+        // $(d).addClass("algorithms_approach").attr("title", elem["name"]).appendTo($("#algorithms_content_colorTransfer"))
+        $(d).addClass("algorithms_approach").attr("title", elem["name"]).appendTo($(containerID))
         $(d).on("click", function(){activate_color_transfer(elem)});
 
         // create green dots for each available data type -> and red dots for unavailable data types
@@ -94,7 +105,7 @@ export const createCTButtons = (stat_obj) => {
                 icon_availability_no = "assets/icons/icon_availability_no.png"
             }
 
-            if(elem["types"].includes(type))
+            if(elem["datatypes"].includes(type))
                 icon_available = icon_availability_yes
             else
                 icon_available = icon_availability_no
@@ -104,10 +115,8 @@ export const createCTButtons = (stat_obj) => {
             icon_pos_right += 15
         }
 
-
-
         var d_text = document.createElement('div');
-        $(d_text).addClass("algorithms_item_text").html(elem["name"]).appendTo($(d))
+        $(d_text).addClass("algorithms_item_text").html(elem["key"]).appendTo($(d))
     }
 }
 
@@ -121,7 +130,7 @@ export const activate_color_transfer = (param) => {
     consolePrint("INFO", "Set Color Transfer Algorithm to: " + param["name"] )
 
     setInformation(param);
-    setConfiguration(param);
+    //setConfiguration(param);
 }
 
 /******************************************************************************************************************
@@ -167,18 +176,19 @@ function Algorithms(props) {
         updateComponentStyle();
         window.addEventListener('resize', updateComponentStyle);
 
-        // Create Button for color transfer algorithms which run on the client side
-        const stat_obj = {
-            "data": [
-                {
-                    "title": "Global Color Transfer",
-                    "name": "GLO",
-                    "types": ["Image", "PointCloud", "Mesh", "Video", "VolumetricVideo"],
-                }
-            ]
-            
-        }
-        createCTButtons(stat_obj)
+        // sets the color transfer methods based on the methods.json file
+        const fetchData = async () => {
+            try {
+                const response = await fetch('methods.json');
+                const jsonData = await response.json();
+                console.log(jsonData)
+                createCTButtons(jsonData)
+            } catch (error) {
+                console.error('Error fetching JSON data:', error);
+            }
+        };
+    
+        fetchData();   
 
         return () => {
             window.removeEventListener('resize', updateComponentStyle);
@@ -195,7 +205,7 @@ function Algorithms(props) {
      * 
      **************************************************************************************************************/
     function showMenus(active_menus, event) {
-        const menu_list = ["#algorithms_content_colorTransfer", "#algorithms_content_segmentation", "#algorithms_content_classification", "#algorithms_content_reconstruction", "#algorithms_content_registration"]
+        const menu_list = ["#algorithms_content_colorTransfer", "#algorithms_content_styleTransfer", "#algorithms_content_colorization"]
 
         for(let i = 0; i < menu_list.length; i++)
             $(menu_list[i]).css("display", "none")
@@ -226,20 +236,20 @@ function Algorithms(props) {
                     {window.innerWidth < mobileMaxWidth ? <img className="algorithms_icons" alt="" src={icon_colortransfer_button}/> : <div className="algorithms_menu_item_text">Color Transfer</div>}
                 </div>
 
-                <div className="algorithms_menu_item" id="algorithms_menu_segmentation" onClick={(event) => showMenus(["#algorithms_content_segmentation"], event)}>
+                <div className="algorithms_menu_item" id="algorithms_menu_styleTransfer" onClick={(event) => showMenus(["#algorithms_content_styleTransfer"], event)}>
                 {window.innerWidth < mobileMaxWidth ? <img className="algorithms_icons" alt="" src={icon_segmentation_button}/> : <div className="algorithms_menu_item_text">Style Transfer</div>}
                 </div>
 
-                <div className="algorithms_menu_item" id="algorithms_menu_classification" onClick={(event) => showMenus(["#algorithms_content_classification"], event)}>
+                <div className="algorithms_menu_item" id="algorithms_menu_colorization" onClick={(event) => showMenus(["#algorithms_content_colorization"], event)}>
                 {window.innerWidth < mobileMaxWidth ? <img className="algorithms_icons" alt="" src={icon_classification_button}/> : <div className="algorithms_menu_item_text">Colorization</div>}
                 </div>
             </div>
 
             <div className="algorithms_list" id="algorithms_content_colorTransfer"/>
-            <div className="algorithms_list" id="algorithms_content_segmentation">
+            <div className="algorithms_list" id="algorithms_content_styleTransfer">
                 <span style={{"color":"grey"}} className="temp_algos">Please select a server instance to enable this service.</span>
             </div>
-            <div className="algorithms_list" id="algorithms_content_classification">
+            <div className="algorithms_list" id="algorithms_content_colorization">
                 <span style={{"color":"grey"}} className="temp_algos">Please select a server instance to enable this service.</span>
             </div>
         </div>

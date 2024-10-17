@@ -397,8 +397,10 @@ export const setConfiguration = (param) => {
 export const setInformation = (param) => {
     // set abstract in information tab of console
     var console_info = document.getElementById("console_information")
-    console_info.innerHTML = "<b>Title</b>:<br>" + param["title"] + "<br><br>" + 
-                            "<b>Year</b>:<br>" + param["year"] + "<br><br>" + 
+    console_info.innerHTML = "<b>Publication</b>: " + param["publication"] + "<br>" +
+                            "<b>DOI</b>: " + "<a href='" + param["doi"] + "' target='_blank'>" + param["doi"] + "</a><br>" + 
+                            "<b>Year</b>: " + param["year"] + "<br>" + 
+                            "<b>Scientific Venue</b>: " + param["scientificVenue"] + "<br><br>" + 
                             "<b>Abstract</b>:<br>" + param["abstract"]
 }
 

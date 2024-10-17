@@ -28,9 +28,11 @@ function Information(props) {
      * Sets the information template consisting of title, year, and abstract.
      **************************************************************************************************************/
     useEffect(() => {
-        $("#"+props.id).html("<b>Title</b>:<br>" + "-" + "<br><br>" + 
-                             "<b>Year</b>:<br>" + "-" + "<br><br>" + 
-                             "<b>Abstract</b>:<br>" + "-");
+        $("#"+props.id).html("<b>Publication</b>: " + "..." + "<br>" +
+                             "<b>DOI</b>: " + "..." + "<br>" + 
+                             "<b>Year</b>: " + "..." + "<br>" + 
+                             "<b>Scientific Venue</b>: " + "..." + "<br><br>" + 
+                             "<b>Abstract</b>:<br>" + "...");
     }, []);
 
     /**************************************************************************************************************

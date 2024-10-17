@@ -92,6 +92,20 @@
                             "files": [
                                 "StumpHigh.ksplat"
                             ]
+                        },
+                        {
+                            "name": "$gaussiansplat$Plush",
+                            "folders": [],
+                            "files": [
+                                "Plush.splat"
+                            ]
+                        },
+                        {
+                            "name": "$gaussiansplat$PlushTest",
+                            "folders": [],
+                            "files": [
+                                "PlushTest.splat"
+                            ]
                         }
                     ],
                     "files": []

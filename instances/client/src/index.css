@@ -37,3 +37,13 @@ body {
 code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
+
+/* Neue CSS-Regeln für Links */
+a {
+    color: green; /* Ändere die Farbe aller Links zu Blau */
+    text-decoration: none; /* Optional: Entfernt die Unterstreichung */
+}
+
+a:hover {
+    color: lightgreen; /* Ändere die Farbe der Links beim Hover */
+}
