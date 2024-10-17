@@ -1,8 +1,8 @@
 {
   "SI1": {
-    "protocol": "http",
-    "lan": "192.168.178.191",
-    "wan": "192.168.178.191",
+    "protocol": "https",
+    "lan": "192.168.178.31",
+    "wan": "potechius.com",
     "port": 8002
   },
   "SI2": {

@@ -30,12 +30,37 @@ import requests
 
 import ssl
 
+from mailhandler import send_email
+
+
+
+# database_path = "../../ressources/settings/database_server.json"
+# settings_path = "../../ressources/settings/settings.json"
+# ca_bundle = '../../ressources/security/ca_bundle.crt'
+# certificate = '../../ressources/security/certificate.crt'
+# private = '../../ressources/security/private.key'
+
+database_path = "../ressources/settings/database_server.json"
+settings_path = "../ressources/settings/settings.json"
+ca_bundle = "/usr/syno/etc/certificate/system/default/ECC-fullchain.pem"
+certificate = "/usr/syno/etc/certificate/system/default/ECC-cert.pem"
+private = "/usr/syno/etc/certificate/system/default/ECC-privkey.pem"
+
 # ----------------------------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------------------
 #
 # ----------------------------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------------------
 class MyServer(SimpleHTTPRequestHandler):
+
+
+    # Überschreibe die translate_path Methode
+    def translate_path(self, path):
+        # Setze das Basisverzeichnis auf das gewünschte Verzeichnis
+        base_directory = os.path.join(os.path.dirname(__file__), 'Root')
+        # Verhindere den Zugriff auf das Rootverzeichnis
+        path = os.path.normpath(path).lstrip('/')
+        return os.path.join(base_directory, path)
     # ------------------------------------------------------------------------------------------------------------------
     # method description
     # ------------------------------------------------------------------------------------------------------------------
@@ -45,13 +70,15 @@ class MyServer(SimpleHTTPRequestHandler):
             self.send_response(200)
             self.send_header("Content-type", "text/html")
             self.end_headers()
-            return SimpleHTTPRequestHandler.do_GET(self)
-        if self.path == "/available_servers":
+            #return SimpleHTTPRequestHandler.do_GET(self)
+            self.wfile.write(b'')
+            return
+        elif self.path == "/available_servers":
             self.send_response(200)
             self.send_header("Content-type", "text/html")
             self.end_headers()
 
-            with open("../../ressources/settings/database_server.json", 'r') as f:
+            with open(database_path, 'r') as f:
                 data = json.load(f)
 
             if len(data) == 0:
@@ -101,6 +128,19 @@ class MyServer(SimpleHTTPRequestHandler):
             obj = self.getJson()
             print(obj)
             write_address_to_db(obj["name"], obj["protocol"], obj["address"], obj["port"], obj["visibility"])
+        elif self.path == "/feedback":
+            obj = self.getJson()
+            print(obj)
+            subject = "Feedback: " + obj["category"]
+            body = obj["message"]
+            to_email = "potechius.herbert@gmail.com"
+            from_email = "noreply@babblingbird.com"
+            smtp_server = "email-smtp.us-west-2.amazonaws.com"
+            smtp_port = 587
+            smtp_user = "AKIA3AUMTUG6D5CKOYIL"
+            smtp_password = "BJS9uC1EFFLmn/dLDDVpNsEZrXOZt4U6VqvQQ8CmdyX/"
+
+            send_email(subject, body, to_email, from_email, smtp_server, smtp_port, smtp_user, smtp_password)
 
         response = {
             "service": None,
@@ -139,8 +179,8 @@ def run(protocol, address, port, handler_class=BaseHTTPRequestHandler):
     httpd = ThreadedHTTPServer(server_address, handler_class)
     if protocol == "https":
         context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-        context.load_verify_locations('../../ressources/security/ca_bundle.crt')
-        context.load_cert_chain(certfile='../../ressources/security/certificate.crt', keyfile='../../ressources/security/private.key')
+        context.load_verify_locations(ca_bundle)
+        context.load_cert_chain(certfile=certificate, keyfile=private)
         context.check_hostname = False
         httpd.socket = context.wrap_socket(httpd.socket, server_side=True)
     httpd.serve_forever()
@@ -163,7 +203,7 @@ def check_servers():
     while(True):
         sleep(1)
         data_update = []
-        with open("../../ressources/settings/database_server.json", 'r') as f:
+        with open(database_path, 'r') as f:
             data = json.load(f)
             #print(data)
             for elem in data:
@@ -183,7 +223,7 @@ def check_servers():
                     print(data_update)
 
 
-        with open("../../ressources/settings/database_server.json", 'w') as f:
+        with open(database_path, 'w') as f:
             json_object = json.dumps(data_update, indent=4)
             f.write(json_object)
 
@@ -192,7 +232,7 @@ def check_servers():
 # write incomming server addresses into database file
 # ------------------------------------------------------------------------------------------------------------------
 def write_address_to_db(name, protocol, address, port, visibility):
-    with open("../../ressources/settings/database_server.json", 'r+') as f:
+    with open(database_path, 'r+') as f:
         data = json.load(f)
 
         dictionary = {
@@ -217,7 +257,7 @@ def exit_handler():
     print("#################################################################")
     print("# Server Instance 1 is ending ...")
     print("#################################################################")
-    with open("../../ressources/settings/database_server.json", 'w') as f:
+    with open(database_path, 'w') as f:
         f.write("[]")
 
 # ------------------------------------------------------------------------------------------------------------------
@@ -229,7 +269,7 @@ def main():
 
     atexit.register(exit_handler)
 
-    protocol, lan, port = read_settings("../../ressources/settings/settings.json")    
+    protocol, lan, port = read_settings(settings_path)    
     print("#################################################################")
     print("# Server Instance 1 is running on " + protocol + "://" +  lan + ":" + str(port) + " ...")
     print("#################################################################")

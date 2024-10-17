@@ -16,7 +16,8 @@ import SideBarRight from '../SideBarRight/SideBarRight';
 import Console from '../Console/Console';
 import Body from '../Body/Body';
 import './Main.scss';
-
+import {server_post_feedback} from 'Utils/Connection'
+import {active_server, SE1_server} from 'Utils/System'
 
 /******************************************************************************************************************
  ******************************************************************************************************************
@@ -33,6 +34,8 @@ function Main() {
     const [darkmode, setDarkmode] = useState(true);
     const [mobileLandscape, setMobileLandscape] = useState(false);
     const [singleView, setSingleView] = useState(false)
+    const [feedbackSent, setFeedbackSent] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
     /**************************************************************************************************************
      **************************************************************************************************************
@@ -61,6 +64,37 @@ function Main() {
         checkWindowSize();
     }, []);
 
+    
+    const handleSendFeedback = () => {
+        const feedbackArea1 = document.getElementById('feedback-area-1').value.trim();
+        const feedbackArea2 = document.getElementById('feedback-area-2').value.trim();
+
+        if (feedbackArea1 === '' || feedbackArea2 === '') {
+            setErrorMessage('Both feedback fields are required.');
+            return;
+        }
+
+        const feedback = {
+            category: feedbackArea1,
+            message: feedbackArea2
+        };
+
+        console.log(feedback);
+
+        server_post_feedback(SE1_server, "feedback", feedback)
+
+        setErrorMessage('');
+        setFeedbackSent(true);
+        setTimeout(() => {
+            setFeedbackSent(false);
+            document.getElementById('feedback-container').style.display = 'none';
+        }, 2000); // Overlay wird nach 2 Sekunden ausgeblendet
+    };
+
+    const closeFeedback = () => {
+        $("#feedback-container").css("display", "none");
+    };
+
     /**************************************************************************************************************
      **************************************************************************************************************
      ** RENDERING
@@ -75,6 +109,29 @@ function Main() {
             <SideBarRight setSingleView={setSingleView}/>
             {mobileLandscape ? <div id="landscapeOverlay">Landscape mode is not supported!</div> : <></>}
             <Footer/>
+
+            <div id="feedback-container">
+                <div id="feedback-opacity"/>
+                <div id="feedback-block">
+                {feedbackSent ? (
+                    <div id="overlay">
+                        <img id="img-success" src="assets/success.png" alt="Feedback sent" />
+                        <div id="feedback-success">Feedback sent successfully!</div>
+                    </div>
+                ) : (
+                    <>
+                        <div id="feedback-close" onClick={closeFeedback}>X</div>
+                        <div className='feedback-header'>Feedback Category</div>
+                        <textarea id="feedback-area-1" rows="4" cols="50" placeholder=""></textarea>
+                        <div className='feedback-header'>Message</div>
+                        <textarea id="feedback-area-2" rows="4" cols="50" placeholder=""></textarea>
+                        <button id="send-feedback-button" onClick={handleSendFeedback}>Send Feedback</button>
+                        {errorMessage && <div className="error-message">{errorMessage}</div>}
+                    </>
+                )}
+
+                </div>
+            </div>
         </div>
     );
 }

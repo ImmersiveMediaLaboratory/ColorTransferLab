@@ -396,7 +396,6 @@ const MeshRenderer = (props) => {
      ** RENDERING
      **************************************************************************************************************
      **************************************************************************************************************/
-    console.log(props.obj_type)
     return (
         <div id={props.id} className="renderer_mesh">
             {/* Header of the renderer containing buttons for changing the output of the render view*/}
@@ -404,10 +403,14 @@ const MeshRenderer = (props) => {
                 {/* Button for showing the mesh's texture map */}
                 {(props.obj_type === "VolumetricVideo" || props.obj_type === "Mesh") && (
                     <>
+                        <RendererButton onClick={showTextureMap} src={button_texturemap_texture_icon}/>
+                    </>
+                )}
+                {(props.obj_type === "VolumetricVideo") && (
+                    <>
                         <RendererButton onClick={backwardVolumetricVideo} src={"assets/icons/icon_backward.png"}/>
                         <RendererButton onClick={playStopVolumetricVideo} src={"assets/icons/play.png"}/>
                         <RendererButton onClick={forwardVolumetricVideo} src={"assets/icons/icon_forward.png"}/>
-                        <RendererButton onClick={showTextureMap} src={button_texturemap_texture_icon}/>
                     </>
                 )}
                 {/* Button for showing object information */}

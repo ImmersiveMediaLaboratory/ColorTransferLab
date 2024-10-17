@@ -59,3 +59,114 @@ Please see the LICENSE file that should have been included as part of this packa
     font-size: 2em;
     font-family: 'Courier New', monospace;
 }
+
+#feedback-container {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    display: none;
+    // background-color: $darkgrey;
+    // opacity: 0.8;
+    z-index: 9999999999999;
+}
+
+#feedback-opacity {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    background-color: $darkgrey;
+    opacity: 0.8;
+    z-index: 9999999999999;
+}
+
+#feedback-block {
+    background-color: white;
+    width: calc(80% - 80px);
+    height: calc(80% - 80px);
+    position: absolute;
+    z-index: 9999999999999;
+    top: 10%;
+    left: 10%;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+    padding: 40px;
+}
+
+#feedback-area-1,
+#feedback-area-2 {
+    width: 100%; /* Feste Breite */
+    margin-bottom: 40px;
+    resize: none; /* Deaktiviert das Ändern der Größe */
+}
+
+#feedback-area-1 {
+    height: 50px;
+}
+
+#feedback-area-2 {
+    height: calc(100% - 50px);
+}
+
+.feedback-header {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: $grey;
+}
+
+#send-feedback-button {
+    width: 150px; /* Feste Breite */
+    height: 40px; /* Feste Höhe */
+    font-weight: bold;
+    align-self: center; /* Button linksbündig ausrichten */
+    background-color: rgb(133, 174, 243);
+    cursor: pointer; /* Zeiger ändern, wenn über dem Button */
+}
+
+#feedback-close {
+    position: absolute;
+    color: black;
+    font-weight: bold;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+#feedback-close:hover {
+    color: $lightgrey;
+}
+
+#overlay {
+    position: relative;    
+    display: flex;
+    flex-direction: column;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: white; /* Halbtransparentes Schwarz */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Über allen anderen Elementen */
+}
+
+#img-success {
+    width: 200px;
+    height: 200px;
+}
+
+#feedback-success {
+    font-size: 20px;
+    font-weight: bold;
+    color: black;
+    margin-top: 20px;
+}
+
+.error-message {
+    color: rgb(145, 4, 4);
+    font-size: 14px;
+}

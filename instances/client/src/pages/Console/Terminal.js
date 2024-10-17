@@ -8,6 +8,7 @@ Please see the LICENSE file that should have been included as part of this packa
 */
 
 import React, {useEffect} from 'react';
+import $ from 'jquery';
 import {consolePrint} from 'Utils/Utils'
 import './Terminal.scss';
 
@@ -28,6 +29,9 @@ function Terminal(props) {
      * Prints the initial information message.
      **************************************************************************************************************/
     useEffect(() => {
+        // empty the terminal
+        $("#console_terminal").html("")
+
         consolePrint("INFO", "To reveal the available Compute Engines (CE), simply press the button located within the SERVER section. To set up and make your server visible here, please follow the instructions provided on out GitHub page at https://github.com/ImmersiveMediaLaboratory/ColorTransferLab ...")
     }, []);
 

@@ -13,7 +13,8 @@ import * as THREE from 'three';
 import React, { useRef, useEffect, useState } from 'react';
 import $ from 'jquery';
 import {updateHistogram, calculateColorHistograms, calculateMeanAndStdDev,loadTextureAndConvertToArray} from 'Utils/Utils';
-
+import { OrbitControls, PerspectiveCamera, OrthographicCamera, Plane } from "@react-three/drei";
+import OrbitControlNew from "rendering/OrbitControlNew";
 
 /******************************************************************************************************************
  ******************************************************************************************************************
@@ -73,7 +74,13 @@ const GaussianSplatRenderer = (props) => {
             "camera": camera.current,
             'sphericalHarmonicsDegree': 3,
             'sharedMemoryForWorkers': false,
+            "useBuiltInControls": false,
         });
+
+        // necessary to prevent the blocking of the wasd keys
+        viewer.current.perspectiveControls = new OrbitControlNew(camera.current, renderer.current.domElement);
+
+
 
         // Bereinige den Renderer bei der Demontage der Komponente
         return () => {
@@ -83,7 +90,7 @@ const GaussianSplatRenderer = (props) => {
 
     useEffect(() => {
         if (props.filePath !== null) {
-            console.log(props.filePath)
+
             // file name should be in the format "filename-ksplat.gsp"
             // gsp has to be removed and the "-" has to be replaced by "."
             let filePath = props.filePath.split(".")[0].replace("-", ".");
@@ -93,7 +100,7 @@ const GaussianSplatRenderer = (props) => {
                 viewer.current.addSplatScene(filePath, {
                     "showLoadingUI": false,
                     onProgress: (progress) => {
-                        console.log( Math.round(progress));
+                        //console.log( Math.round(progress));
                         //setLoaded(progress)calc(100% - 2px)
                         $(`#${props.renderBarID}`).css("width", Math.round(progress).toString() + "%")
                     }})
@@ -145,6 +152,14 @@ const GaussianSplatRenderer = (props) => {
             catch (e) {}
         }
     }, [splatScale]);
+
+
+
+    function myFunction() {
+        console.log('Display style has changed from none!');
+        // Weitere Aktionen hier
+    }
+    
 
     return(
         <div id={props.id} className="gaussianSplatRenderer">

@@ -80,6 +80,10 @@ function Header(props) {
         }
     }
 
+    function openFeedback() {
+        $("#feedback-container").css("display", "block");
+    }
+
     /**************************************************************************************************************
      **************************************************************************************************************
      ** RENDERING
@@ -95,7 +99,7 @@ function Header(props) {
 
 
             <div id="header-container">
-                <div id="Header_feedback">
+                <div id="Header_feedback" onClick={openFeedback} >
                     Feedback
                 </div>
 
@@ -106,8 +110,10 @@ function Header(props) {
                 <div id="Header_menu" style={componentStyle}> 
                     <img id="Header_menu_logo" onClick={toogleMenu} src={icon_menu_button} alt=""/>
                 </div>
-                
             </div>
+
+
+
         </header>
     );
 }

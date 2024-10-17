@@ -30,6 +30,10 @@ const icon_availability_video_yes = "assets/icons/icon_video_available_yes.png";
 const icon_availability_video_no = "assets/icons/icon_video_available_no.png";
 const icon_availability_voluvideo_yes = "assets/icons/icon_voluvideo_available_yes.png";
 const icon_availability_voluvideo_no = "assets/icons/icon_voluvideo_available_no.png";
+const icon_availability_lightfield_yes = "assets/icons/icon_lightfield_available_yes.png";
+const icon_availability_lightfield_no = "assets/icons/icon_lightfield_available_no.png";
+const icon_availability_gaussian_yes = "assets/icons/icon_gaussian_available_yes.png";
+const icon_availability_gaussian_no = "assets/icons/icon_gaussian_available_no.png";
 
 
 export let execution_approach = {
@@ -77,7 +81,7 @@ export const createCTButtons = (stat_obj) => {
 
         // create green dots for each available data type -> and red dots for unavailable data types
         let icon_pos_right = 5;
-        for(let type of ["Image", "Mesh", "PointCloud", "Video", "VolumetricVideo"]){
+        for(let type of ["Image", "Mesh", "PointCloud", "Video", "VolumetricVideo", "LightField", "GaussianSplatting"]){
             let icon_available;
 
             if(type === "Image") {
@@ -99,6 +103,14 @@ export const createCTButtons = (stat_obj) => {
             else if (type === "VolumetricVideo") {
                 icon_availability_yes = icon_availability_voluvideo_yes
                 icon_availability_no = icon_availability_voluvideo_no
+            }
+            else if (type === "LightField") {
+                icon_availability_yes = icon_availability_lightfield_yes
+                icon_availability_no = icon_availability_lightfield_no
+            }
+            else if (type === "GaussianSplatting") {
+                icon_availability_yes = icon_availability_gaussian_yes
+                icon_availability_no = icon_availability_gaussian_no
             }
             else {
                 icon_availability_yes = "assets/icons/icon_availability_yes.png"

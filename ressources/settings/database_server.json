@@ -1,9 +1,1 @@
-[
-    {
-        "name": "Local Server",
-        "protocol": "http",
-        "address": "192.168.178.191",
-        "port": 9001,
-        "visibility": "private"
-    }
-]
+[]

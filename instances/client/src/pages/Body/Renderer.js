@@ -122,6 +122,8 @@ const Renderer = (props) =>  {
 
     const [defaultView, setDefaultView] = useState(true)
 
+    const [gaussianRendererEnabled, setGaussianRendererEnabled] = useState(false)
+
     // stores if the object is completely loaded
     const [complete, setComplete] = useState(false)
 
@@ -337,7 +339,9 @@ const Renderer = (props) =>  {
         else if(view == "Video") {videoRenderer.css("visibility", "visible")}
         else if(view == "LightField") {lightFieldRenderer.css("display", "block")}
         else if(view == "Mesh") {meshRenderer.css("display", "block")}
-        else if(view == "GaussianSplat") {gaussianSplatRenderer.css("display", "block")}
+        else if(view == "GaussianSplat") {
+            gaussianSplatRenderer.css("display", "block")
+        }
     }
     /* ------------------------------------------------------------------------------------------------------------
     -- 
@@ -711,7 +715,7 @@ const Renderer = (props) =>  {
                 renderBarID={renderBarID}
                 view={RID} 
                 setComplete={setComplete}
-            />
+            /> 
 
             <LoadingView id={view_loadingID}/>
             <RenderBar id={renderBarID}/>

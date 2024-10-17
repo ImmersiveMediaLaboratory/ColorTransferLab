@@ -7,9 +7,10 @@ This file is released under the "MIT License Agreement".
 Please see the LICENSE file that should have been included as part of this package.
 */
 
-export let active_server = ""
-//export let SE1_server = "https://proxy.potechius.com";
-export let SE1_server = "http://192.168.178.191:8002";
+//export let active_server = ""
+export let active_server = "";
+export let SE1_server = "https://proxy.potechius.com";
+//export let SE1_server = "http://192.168.178.191:8002";
 
 export const execution_params_options = []
 

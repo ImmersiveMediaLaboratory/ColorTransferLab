@@ -146,6 +146,42 @@ export const server_post_request2 = (address, path, data, method, parameters) =>
 }
 
 /******************************************************************************************************************
+ * 
+ ******************************************************************************************************************/
+export const server_post_feedback = (address, path, data) => {
+    const xmlHttp = new XMLHttpRequest();
+    const theUrl = pathjoin(address, path);
+
+    var out_dat = data
+
+    xmlHttp.open("POST", theUrl, true );
+    xmlHttp.send(JSON.stringify(out_dat));
+
+    xmlHttp.onload = function (e) {
+        if (xmlHttp.readyState === 4) {
+            if (xmlHttp.status === 200) {
+                let stat = xmlHttp.responseText.replaceAll("\'", "\"");
+                stat = stat.replaceAll("True", "true");
+                stat = stat.replaceAll("False", "false");
+                stat = stat.replaceAll("None", "null");
+
+                // necessary for the server to return a string without html tags
+                let parser = new DOMParser();
+                let doc = parser.parseFromString(stat, "text/html");
+                stat = doc.body.textContent || "";
+
+                let stat_obj = JSON.parse(stat);
+            } else {
+                console.error(xmlHttp.statusText);
+            }
+        }
+    };
+    xmlHttp.onerror = function (e) {
+        console.error(xmlHttp.statusText);
+    };
+}
+
+/******************************************************************************************************************
  * Checks if file exists.
  ******************************************************************************************************************/
 export const request_file_existence = (method, url) => {
