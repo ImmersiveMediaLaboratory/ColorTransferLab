@@ -8,14 +8,12 @@ Please see the LICENSE file that should have been included as part of this packa
 */
 
 import React, {Suspense, useState, useEffect, useRef, useMemo} from 'react';
-import {useFrame} from "@react-three/fiber";
-import { OrbitControls, PerspectiveCamera, OrthographicCamera, Plane } from "@react-three/drei"
+import {OrbitControls, PerspectiveCamera, OrthographicCamera} from "@react-three/drei"
 import {Canvas} from "@react-three/fiber";
 import './ImageRenderer.scss';
 import $ from 'jquery';
 import * as THREE from "three";
 import Axes from "rendering/Axes"
-import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import RendererButton from './RendererButton';
 import SettingsField from './SettingsField';
 import SettingsFieldItem from './SettingsFieldItem';
@@ -37,7 +35,6 @@ function ImageRenderer(props) {
      **************************************************************************************************************/
     const [isFieldSettingVisible, setIsFieldSettingVisible] = useState(false);
     const [isFieldInfoVisible, setIsFieldInfoVisible] = useState(false);
-    const [initialScale, setInitialScale] = useState(0.5);
     const [update, setUpdate] = useState(0);
     const [info, setInfo] = useState({});
 

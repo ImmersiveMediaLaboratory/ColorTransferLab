@@ -8,18 +8,16 @@ Please see the LICENSE file that should have been included as part of this packa
 */
 
 import React, {useEffect, useState, useRef} from 'react';
-import { OrbitControls, PerspectiveCamera, OrthographicCamera, Plane } from "@react-three/drei";
+import {OrbitControls, PerspectiveCamera, OrthographicCamera} from "@react-three/drei";
 import CustomCanvas from 'rendering/CustomCanvas';
 import Axes from "rendering/Axes"
 import './MeshRenderer.scss';
-import $ from 'jquery';
 import {pathjoin} from 'Utils/Utils';
-import {active_server} from 'pages/SideBarLeft/Server'
+import {active_server} from 'Utils/System'
 import TriangleMesh from "rendering/TriangleMesh"
 import PointCloud from "rendering/PointCloud"
 import VolumetricVideo from 'rendering/VolumetricVideo';
 import RendererButton from './RendererButton';
-import Settings from 'pages/SideBarRight/Settings';
 import SettingsField from './SettingsField';
 import SettingsFieldItem from './SettingsFieldItem';
 import InfoField from './InfoField';
@@ -30,6 +28,7 @@ import InfoField from './InfoField';
  ******************************************************************************************************************
  ******************************************************************************************************************/
 const MeshRenderer = (props) => {    
+    const { FILEPATH, OBJTYPE, RENDERBARID, SETCOMPLETE } = props;
     /**************************************************************************************************************
      **************************************************************************************************************
      ** STATES & REFERENCES & VARIABLES
@@ -70,7 +69,6 @@ const MeshRenderer = (props) => {
     const button_settings_info_icon = "assets/icons/icon_information.png";
 
     const textureMapID = "texture_map" + props.id;
-    const initPath = "data"
     const RID = props.view
 
     /**************************************************************************************************************
@@ -85,10 +83,10 @@ const MeshRenderer = (props) => {
     useEffect(() => {
         setIsFieldInfoVisible(false)
         setIsFieldSettingVisible(false)
-        if(props.obj_type === "Mesh") {
+        if(OBJTYPE === "Mesh") {
             const obj = <TriangleMesh 
                             key={Math.random()} 
-                            file_name={props.filePath} 
+                            file_name={FILEPATH} 
                             ref={meshRef}
                             view={RID}
                             type="Mesh"
@@ -96,7 +94,7 @@ const MeshRenderer = (props) => {
                             setGLOComplete={props.setComplete}
                         />
 
-            const texture_path = pathjoin(props.filePath + ".png");
+            const texture_path = pathjoin(FILEPATH + ".png");
 
             activeObject.current.length = 0;
             activeObject.current.push(obj)
@@ -109,10 +107,10 @@ const MeshRenderer = (props) => {
 
             props.setComplete(Math.random())
         }
-        else if(props.obj_type === "PointCloud") {
+        else if(OBJTYPE === "PointCloud") {
             let obj = <PointCloud
                             key={Math.random()} 
-                            file_path={props.filePath} 
+                            file_path={FILEPATH} 
                             view={RID}
                             ref={pointCloudRef}
                             type="PointCloud"
@@ -128,17 +126,15 @@ const MeshRenderer = (props) => {
 
             props.setComplete(Math.random())
         }
-        else if(props.obj_type === "VolumetricVideo") {
-            console.log("Video")
-            const json_path = props.filePath + ".json";
-            console.log(json_path)
+        else if(OBJTYPE === "VolumetricVideo") {
+            const json_path = FILEPATH + ".json";
             activeObject.current.length = 0;
             activeTextureMap.current.length = 0;
             activeObjectRefs.current.length = 0;
 
             const volumetricVideo = new VolumetricVideo();
             const loadVideo = async () => {
-                const voluReturn = await volumetricVideo.createVolumetricVideo(props.filePath, props.setComplete, RID);
+                const voluReturn = await volumetricVideo.createVolumetricVideo(FILEPATH, props.setComplete, RID);
                 activeObject.current.push(...voluReturn[0]);
                 activeTextureMap.current.push(...voluReturn[1]);
                 activeObjectRefs.current.push(...voluReturn[2]);
@@ -147,7 +143,7 @@ const MeshRenderer = (props) => {
             loadVideo();
         }
 
-    }, [props.filePath]);
+    }, [FILEPATH, OBJTYPE, RENDERBARID, SETCOMPLETE ]);
 
     /**************************************************************************************************************
      * 
@@ -192,12 +188,12 @@ const MeshRenderer = (props) => {
      * 
      **************************************************************************************************************/
     const handlePointSizeChange = (e) => {
-        if (props.obj_type === "Mesh") {
+        if (OBJTYPE === "Mesh") {
             if (meshRef.current)
                 meshRef.current.updateState({
                     pointsize: e.target.value,
                 })
-        } else if (props.obj_type === "PointCloud") {
+        } else if (OBJTYPE === "PointCloud") {
             if (pointCloudRef.current)
                 pointCloudRef.current.updateState({
                     pointsize: e.target.value,
@@ -254,19 +250,19 @@ const MeshRenderer = (props) => {
      * 
      **************************************************************************************************************/
     const switchColorDistribution = () => {
-        if (props.obj_type === "Mesh") {
+        if (OBJTYPE === "Mesh") {
             if (meshRef.current)
                 meshRef.current.updateState({
                     colordistribution:  !meshRef.current.getState().colordistribution,
                     colorhistogram: false
                 })
-        } else if (props.obj_type === "PointCloud") {
+        } else if (OBJTYPE === "PointCloud") {
             if (pointCloudRef.current)
                 pointCloudRef.current.updateState({
                     colordistribution:  !pointCloudRef.current.getState().colordistribution,
                     colorhistogram: false
                 })
-        } else if (props.obj_type === "VolumetricVideo") {
+        } else if (OBJTYPE === "VolumetricVideo") {
             if (activeObjectRefs.current){
                 activeObjectRefs.current.forEach(ref => {
                     if (ref.current) {
@@ -284,19 +280,19 @@ const MeshRenderer = (props) => {
      * 
      **************************************************************************************************************/
     const switchColorHistogram = () => {
-        if (props.obj_type === "Mesh") {
+        if (OBJTYPE === "Mesh") {
             if (meshRef.current)
                 meshRef.current.updateState({
                     colorhistogram:  !meshRef.current.getState().colorhistogram,
                     colordistribution: false
                 })
-        } else if (props.obj_type === "PointCloud") {
+        } else if (OBJTYPE === "PointCloud") {
             if (pointCloudRef.current)
                 pointCloudRef.current.updateState({
                     colorhistogram:  !pointCloudRef.current.getState().colorhistogram,
                     colordistribution: false
                 })
-        } else if (props.obj_type === "VolumetricVideo") {
+        } else if (OBJTYPE === "VolumetricVideo") {
             if (activeObjectRefs.current){
                 activeObjectRefs.current.forEach(ref => {
                     if (ref.current) {
@@ -316,12 +312,12 @@ const MeshRenderer = (props) => {
      **************************************************************************************************************/
     const handleWireFrameChange = (e) => {
         console.log(e.target.checked)
-        if (props.obj_type === "Mesh") {
+        if (OBJTYPE === "Mesh") {
             if (meshRef.current)
                 meshRef.current.updateState({
                     wireframe:  e.target.checked,
                 })
-        } else if (props.obj_type === "VolumetricVideo") {
+        } else if (OBJTYPE === "VolumetricVideo") {
             if (activeObjectRefs.current){
                 activeObjectRefs.current.forEach(ref => {
                     if (ref.current) {
@@ -391,6 +387,44 @@ const MeshRenderer = (props) => {
         voluBackward.current = true;
     }
 
+    const downloadObject = () => {
+        console.log("downloadObject")
+        if (props.obj_type === "Mesh") {
+            const file_name = FILEPATH.split("/").pop() + ".zip";
+            const folder_path  = "ColorTransferLab/" + FILEPATH.split("/").slice(0, -1).join("/");
+            const file_path = folder_path + "/" + file_name;
+
+            // Verwende die aktuelle Adresse, wenn active_server leer ist
+            let base_url = active_server === "" ? window.location.origin : active_server;
+            // Erstelle die vollständige URL
+            const url = new URL(file_path, base_url).href;
+            console.log(url)
+
+            // Funktion zum Herunterladen der Datei
+            async function downloadFile(url, fileName) {
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        throw new Error(`Fehler beim Herunterladen der Datei: ${response.statusText}`);
+                    }
+                    const blob = await response.blob();
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = fileName;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                } catch (error) {
+                    console.error('Fehler beim Herunterladen der Datei:', error);
+                }
+            }
+
+            // Beispielaufruf
+            downloadFile(url, "File.zip");
+        }
+        
+    }
+
     /**************************************************************************************************************
      **************************************************************************************************************
      ** RENDERING
@@ -421,6 +455,8 @@ const MeshRenderer = (props) => {
                 <RendererButton onClick={switchColorDistribution} src={button_settings_dist_icon}/>
                 {/* Button for showing the settings for the mesh view */}
                 <RendererButton onClick={showSettings} src={button_settings_texture_icon}/>
+                {/* Button for showing the settings for the mesh view */}
+                <RendererButton onClick={downloadObject} src={"assets/icons/icon_export_metric.png"}/>
             </div>
 
             {/* Framenumber counter */}
@@ -455,6 +491,7 @@ const MeshRenderer = (props) => {
                 id={textureMapID} 
                 style={{ display: isTextureMapVisible ? 'block' : 'none' }} 
                 className='field_texture'
+                alt='Texture Map'
                 src={""}
                 data-src={""}
             />

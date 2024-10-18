@@ -163,6 +163,13 @@
                             ]
                         },
                         {
+                            "name": "$lightfield$amethystPDF",
+                            "folders": [],
+                            "files": [
+                                "amethystPDF.mp4"
+                            ]
+                        },
+                        {
                             "name": "$lightfield$amethystmedium",
                             "folders": [],
                             "files": [

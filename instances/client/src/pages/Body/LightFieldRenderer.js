@@ -12,14 +12,20 @@ Reduce video size:
     ffmpeg -i '/home/potechius/Downloads/rectified/output.mp4' -vf scale=512:-1 -c:a copy '/home/potechius/Downloads/outputmedium.mp4'
 */
 
-import React, {Suspense, useState, useEffect, useRef, useImperativeHandle, forwardRef} from 'react';
-import { OrbitControls, PerspectiveCamera, OrthographicCamera, Plane } from "@react-three/drei";
+import React, {useState, useEffect, useRef} from 'react';
+import {OrbitControls, PerspectiveCamera} from "@react-three/drei";
 import {Canvas} from "@react-three/fiber";
 import './LightFieldRenderer.scss';
 import LightFieldPlane from 'rendering/LightFieldPlane';
 import $ from 'jquery';
 import * as THREE from 'three';
 
+
+/******************************************************************************************************************
+ ******************************************************************************************************************
+ ** FUNCTIONAL COMPONENT
+ ******************************************************************************************************************
+ ******************************************************************************************************************/
 const LightFieldRenderer = (props) => {    
     const [isFieldSettingVisible, setIsFieldSettingVisible] = useState(true);
     const [focus, setFocus] = useState(0.0);
@@ -39,6 +45,41 @@ const LightFieldRenderer = (props) => {
 
     
     const button_settings_texture_icon = "assets/icons/icon_settings_grey.png";
+
+    useEffect(() => {
+        const loadVideo = async (data) => {
+            const camsX = data.grid_width;
+            const camsY = data.grid_height;
+            const resX = data.img_width;
+            const resY = data.img_height;
+            width.current = resX;
+            height.current = resY;
+            extractVideo(props.filePath, resX, resY, camsX, camsY, setFieldTexture, props.renderBarID, props.setComplete);
+        };
+        
+
+        if (props.filePath !== null) {
+            // read JSON file with lightfield meta data
+            const json_path = props.filePath.split(".")[0] + ".json";
+            console.log(json_path)
+
+            const loadJson = async () => {
+                try {
+                    const response = await fetch(json_path);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const data = await response.json();
+                    loadVideo(data);
+                } catch (error) {
+                    console.error("Error loading JSON:", error);
+                }
+            };
+            loadJson();
+        }
+
+    }, [props.filePath]);
+
 
 
     const showSettings = () => {
@@ -60,7 +101,6 @@ const LightFieldRenderer = (props) => {
     }
 
     const extractVideo = (filename, resX, resY, camsX, camsY, setFieldTexture, renderBarID, setComplete) => {
-        console.log('extracting video');
         const video = document.createElement('video');
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
@@ -72,8 +112,6 @@ const LightFieldRenderer = (props) => {
         let offset = 0;
         const allBuffer = new Uint8Array(resX * resY * 4 * camsX * camsY);
 
-        console.log('starting extraction');
-      
         const getBufferFromVideo = () => {
             ctx.drawImage(video, 0, 0, resX, resY);
             const imgData = ctx.getImageData(0, 0, resX, resY);
@@ -119,47 +157,16 @@ const LightFieldRenderer = (props) => {
         video.src = filename;
     }
 
-    useEffect(() => {
-        const loadVideo = async (data) => {
-            const camsX = data.grid_width;
-            const camsY = data.grid_height;
-            const resX = data.img_width;
-            const resY = data.img_height;
-            width.current = resX;
-            height.current = resY;
-            extractVideo(props.filePath, resX, resY, camsX, camsY, setFieldTexture, props.renderBarID, props.setComplete);
-        };
-        
-
-        if (props.filePath !== null) {
-            // read JSON file with lightfield meta data
-            const json_path = props.filePath.split(".")[0] + ".json";
-            console.log(json_path)
-
-            const loadJson = async () => {
-                try {
-                    const response = await fetch(json_path);
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    const data = await response.json();
-                    loadVideo(data);
-                } catch (error) {
-                    console.error("Error loading JSON:", error);
-                }
-            };
-            loadJson();
-        }
-
-    }, [props.filePath]);
-
+    /**************************************************************************************************************
+     **************************************************************************************************************
+     ** RENDERING
+     **************************************************************************************************************
+     **************************************************************************************************************/
     return (
-
         <div id={props.id} className="renderer_lightfield">
-
             {/* Button for showing the settings for the mesh view */}
             <div className='lfr_button_settings' onClick={showSettings}>
-                <img className="lfr_button_settings_texture_icon" src={button_settings_texture_icon}/>
+                <img className="lfr_button_settings_texture_icon" src={button_settings_texture_icon} alt=''/>
             </div>
 
             <Canvas>
@@ -173,7 +180,6 @@ const LightFieldRenderer = (props) => {
                     aperture={aperture}
                     focus={focus}
                     stInput={stInput}
-                    //uvCoords={uvCoords}
                 />
                 <OrbitControls 
                     enableDamping={true}
@@ -197,7 +203,8 @@ const LightFieldRenderer = (props) => {
                                     max="100" 
                                     defaultValue="0" 
                                     onChange={handleFocusChange} 
-                                    style={{width: "100%"}}/>
+                                    style={{width: "100%"}}
+                                />
                             </td>
                         </tr>
                         <tr>

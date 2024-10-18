@@ -21,16 +21,16 @@ export const server_request = (method, path, address, data) => {
         const theUrl = pathjoin(address, path)
         xmlHttp.open(method, theUrl, false ); // false for synchronous request
 
-        if(method == "GET")
+        if(method === "GET")
             xmlHttp.send(null);
-        else if(method == "POST")
+        else if(method === "POST")
             xmlHttp.send(data);
 
         // javascript receives json string from python with single quotes which have to be transferred to double quotes
-        var stat = xmlHttp.responseText.replaceAll("\'", "\"");
-        var stat = stat.replaceAll("True", "true");
-        var stat = stat.replaceAll("False", "false");
-        var stat = stat.replaceAll("None", "null");
+        let stat = xmlHttp.responseText.replaceAll("'", "\"");
+        stat = stat.replaceAll("True", "true");
+        stat = stat.replaceAll("False", "false");
+        stat = stat.replaceAll("None", "null");
 
         // necessary for the server to return a string without html tags
         var parser = new DOMParser();
@@ -61,11 +61,11 @@ export const server_post_request = (address, path, data, method, parameters) => 
         // TEMP: Shouldn't be inside of this method
         var settings_voxellevel = document.getElementById('settings_voxellevel')
         var voxellevel = 0.02
-        if(settings_voxellevel.value == 1)
+        if(settings_voxellevel.value === 1)
             voxellevel = 0.02
-        if(settings_voxellevel.value == 2)
+        if(settings_voxellevel.value === 2)
             voxellevel = 0.09
-        if(settings_voxellevel.value == 3)
+        if(settings_voxellevel.value === 3)
             voxellevel = 0.15
 
         var out_dat = { "object_path": data,
@@ -77,10 +77,10 @@ export const server_post_request = (address, path, data, method, parameters) => 
         xmlHttp.onload = function (e) {
             if (xmlHttp.readyState === 4) {
                 if (xmlHttp.status === 200) {
-                    var stat = xmlHttp.responseText.replaceAll("\'", "\"");
-                    var stat = stat.replaceAll("True", "true");
-                    var stat = stat.replaceAll("False", "false");
-                    var stat = stat.replaceAll("None", "null");
+                    let stat = xmlHttp.responseText.replaceAll("'", "\"");
+                    stat = stat.replaceAll("True", "true");
+                    stat = stat.replaceAll("False", "false");
+                    stat = stat.replaceAll("None", "null");
 
                     // necessary for the server to return a string without html tags
                     var parser = new DOMParser();
@@ -123,7 +123,7 @@ export const server_post_request2 = (address, path, data, method, parameters) =>
     xmlHttp.onload = function (e) {
         if (xmlHttp.readyState === 4) {
             if (xmlHttp.status === 200) {
-                let stat = xmlHttp.responseText.replaceAll("\'", "\"");
+                let stat = xmlHttp.responseText.replaceAll("'", "\"");
                 stat = stat.replaceAll("True", "true");
                 stat = stat.replaceAll("False", "false");
                 stat = stat.replaceAll("None", "null");
@@ -160,7 +160,7 @@ export const server_post_feedback = (address, path, data) => {
     xmlHttp.onload = function (e) {
         if (xmlHttp.readyState === 4) {
             if (xmlHttp.status === 200) {
-                let stat = xmlHttp.responseText.replaceAll("\'", "\"");
+                let stat = xmlHttp.responseText.replaceAll("'", "\"");
                 stat = stat.replaceAll("True", "true");
                 stat = stat.replaceAll("False", "false");
                 stat = stat.replaceAll("None", "null");
@@ -169,8 +169,6 @@ export const server_post_feedback = (address, path, data) => {
                 let parser = new DOMParser();
                 let doc = parser.parseFromString(stat, "text/html");
                 stat = doc.body.textContent || "";
-
-                let stat_obj = JSON.parse(stat);
             } else {
                 console.error(xmlHttp.statusText);
             }

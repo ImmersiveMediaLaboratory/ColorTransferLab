@@ -8,14 +8,13 @@ Please see the LICENSE file that should have been included as part of this packa
 */
 
 import $ from 'jquery'
-import {execution_approach} from 'pages/SideBarLeft/Algorithms'
-import {execution_params_objects} from 'Utils/System'
 import {active_server} from 'Utils/System'
 import {available_metrics} from 'Utils/System'
 import {evaluation_results} from 'Utils/System'
 import {server_request} from 'Utils/Connection'
 import * as THREE from "three";
-import {TextureLoader, BufferAttribute} from 'three';
+import {TextureLoader} from 'three';
+import {execution_data} from 'Utils/System'
 
 
 /******************************************************************************************************************
@@ -23,7 +22,7 @@ import {TextureLoader, BufferAttribute} from 'three';
  * Works only if the <comparison> and <output> objects are given.
  ******************************************************************************************************************/
 export const evalPrint = () => {
-    if(execution_params_objects["out"] == "") {
+    if(execution_data["output"] === "") {
         consolePrint("WARNING", "Source, Reference and Output images have to be given.")
         return
     }
@@ -38,13 +37,14 @@ export const evalPrint = () => {
         xmlHttp.onload = function (e) {
             if (xmlHttp.readyState === 4) {
                 if (xmlHttp.status === 200) {
-                    var stat = xmlHttp.responseText.replaceAll("\'", "\"");
+                    //var stat = xmlHttp.responseText.replaceAll("\'", "\"");
+                    var stat = xmlHttp.responseText.replaceAll("'", "\"");
                     var stat_obj = JSON.parse(stat);
                     var eval_values = stat_obj["data"]
                     console.log("EVAL")
                     console.log(stat_obj)
 
-                    if(stat_obj["enabled"] == "false")
+                    if(stat_obj["enabled"] === "false")
                     {
                         consolePrint("ERROR", "Evaluation only for images available...")
                     }
@@ -113,9 +113,9 @@ export const evalPrint = () => {
         };
 
         var out_dat = {
-            "source": execution_params_objects["src"],
-            "reference": execution_params_objects["ref"],
-            "output": execution_params_objects["out"],
+            "source": execution_data["source"],
+            "reference": execution_data["reference"],
+            "output": execution_data["output"],
         }
 
         xmlHttp.send(JSON.stringify(out_dat));
@@ -155,7 +155,7 @@ const createEmptyEvaluationResults = (data) => {
  * 
  ******************************************************************************************************************/
 export const exportMetrics = () => {
-    if(Object.keys(evaluation_results).length == 0) {
+    if(Object.keys(evaluation_results).length === 0) {
         consolePrint("WARNING", "Server has to be selected for exporting evaluation results...")
     } else {
         var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(evaluation_results, null, 4));
@@ -228,23 +228,20 @@ export const createMetricEntries = (metrics) => {
  * Available types: (1) INFO, (2) WARNING, (3) ERROR (4) UNDEFINED 
  ******************************************************************************************************************/
 export const consolePrint = (type, output) => {
-    if(type == "INFO")
-        var sClass = "server_info"
-    else if(type == "WARNING")
-        var sClass = "server_warning"
-    else if(type == "ERROR")
-        var sClass = "server_error"
-    else
-        var sClass = "server_undefined"
+    let sClass = ""
+    if(type === "INFO") sClass = "server_info"
+    else if(type === "WARNING") sClass = "server_warning"
+    else if(type === "ERROR") sClass = "server_error"
+    else sClass = "server_undefined"
 
-    var today = new Date()
-    var time = today.getHours().toString().padStart(2, '0') + ":" +
+    let today = new Date()
+    let time = today.getHours().toString().padStart(2, '0') + ":" +
                today.getMinutes().toString().padStart(2, '0') + ":" +
                today.getSeconds().toString().padStart(2, '0');
-    var output = "<span class='" + sClass + "'>[" + type + " - " + time +"]</span>" + " " + output + "...<br>"
+    let printOut = "<span class='" + sClass + "'>[" + type + " - " + time +"]</span> " + output + "...<br>"
 
-    var objDiv = document.getElementById("console_terminal")
-    objDiv.innerHTML += output 
+    let objDiv = document.getElementById("console_terminal")
+    objDiv.innerHTML += printOut 
     
     // Scroll to the bottom
     objDiv.scrollTop = objDiv.scrollHeight;
@@ -259,7 +256,7 @@ export const pathjoin = (...vals) => {
     for (let val of vals) {
         let seperator = "/"
         // ignore empty strings
-        if(val == "")
+        if(val === "")
             continue
         // prevent adding a seperator at the beginning
         if(init)
@@ -317,11 +314,11 @@ export const setConfiguration = (param) => {
 
             function set_option(event, num, type) {
                 if(type === "int" || type === "float")
-                    execution_approach["options"][num]["default"] = Number(event.currentTarget.value)
+                    execution_data["options"][num]["default"] = Number(event.currentTarget.value)
                 else if(type === "bool")
-                    execution_approach["options"][num]["default"] = (event.currentTarget.value === "true")
+                    execution_data["options"][num]["default"] = (event.currentTarget.value === "true")
                 else
-                    execution_approach["options"][num]["default"] = event.currentTarget.value
+                execution_data["options"][num]["default"] = event.currentTarget.value
             }
 
             if (optionsVal[j] === "default") {
@@ -398,7 +395,7 @@ export const setInformation = (param) => {
     // set abstract in information tab of console
     var console_info = document.getElementById("console_information")
     console_info.innerHTML = "<b>Publication</b>: " + param["publication"] + "<br>" +
-                            "<b>DOI</b>: " + "<a href='" + param["doi"] + "' target='_blank'>" + param["doi"] + "</a><br>" + 
+                            "<b>DOI</b>: <a href='" + param["doi"] + "' target='_blank'>" + param["doi"] + "</a><br>" + 
                             "<b>Year</b>: " + param["year"] + "<br>" + 
                             "<b>Scientific Venue</b>: " + param["scientificVenue"] + "<br><br>" + 
                             "<b>Abstract</b>:<br>" + param["abstract"]
@@ -409,15 +406,15 @@ export const setInformation = (param) => {
  ******************************************************************************************************************/
 export const updateHistogram_old = (stat_obj, window) => {
     const setPixel = (x, y, w, h, image, r, g, b, val) => {
-        if(val == "all") {
+        if(val === "all") {
             image[(x + (h-y) * w) * 4 + 0] = r;
             image[(x + (h-y) * w) * 4 + 1] = g;
             image[(x + (h-y) * w) * 4 + 2] = b;
-        } else if (val == "red")
+        } else if (val === "red")
             image[(x + (h-y) * w) * 4 + 0] = r; 
-        else if (val == "green")
+        else if (val === "green")
             image[(x + (h-y) * w) * 4 + 1] = r; 
-        else if (val == "blue")
+        else if (val === "blue")
             image[(x + (h-y) * w) * 4 + 2] = r;
     
         image[(x + (h-y) * w) * 4 + 3] = 255;
@@ -442,7 +439,7 @@ export const updateHistogram_old = (stat_obj, window) => {
 
     var imageData = ctx.createImageData(256, 100);
     for (let x = 0; x < 256; x++) {
-        if(x % 64 == 0 && x != 0){
+        if(x % 64 === 0 && x !== 0){
             for (let y=0; y < 100; y++){
                 setPixel(x, y, 256, 100, imageData.data, 128, 128, 128, "all")
             }
@@ -467,15 +464,15 @@ export const updateHistogram_old = (stat_obj, window) => {
  ******************************************************************************************************************/
 export const updateHistogram = (stat_obj, mean, std, window) => {
     const setPixel = (x, y, w, h, image, r, g, b, val) => {
-        if(val == "all") {
+        if(val === "all") {
             image[(x + (h-y) * w) * 4 + 0] = r;
             image[(x + (h-y) * w) * 4 + 1] = g;
             image[(x + (h-y) * w) * 4 + 2] = b;
-        } else if (val == "red")
+        } else if (val === "red")
             image[(x + (h-y) * w) * 4 + 0] = r; 
-        else if (val == "green")
+        else if (val === "green")
             image[(x + (h-y) * w) * 4 + 1] = r; 
-        else if (val == "blue")
+        else if (val === "blue")
             image[(x + (h-y) * w) * 4 + 2] = r;
     
         image[(x + (h-y) * w) * 4 + 3] = 255;
@@ -514,7 +511,7 @@ export const updateHistogram = (stat_obj, mean, std, window) => {
 
     var imageData = ctx.createImageData(256, 100);
     for (let x = 0; x < 256; x++) {
-        if(x % 64 == 0 && x != 0){
+        if(x % 64 === 0 && x !== 0){
             for (let y=0; y < 100; y++){
                 setPixel(x, y, 256, 100, imageData.data, 128, 128, 128, "all")
             }

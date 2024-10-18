@@ -11,35 +11,12 @@ import React from "react";
 import { useState, useEffect } from "react";
 import $ from 'jquery';
 import {consolePrint} from 'Utils/Utils'
-import {setConfiguration} from "Utils/Utils"
+//import {setConfiguration} from "Utils/Utils"
 import {setInformation} from "Utils/Utils"
 import {server_request} from 'Utils/Connection'
+import {execution_data} from 'Utils/System'
 import './Algorithms.scss';
 
-
-let icon_availability_yes = "assets/icons/icon_availability_yes.png";
-let icon_availability_no = "assets/icons/icon_availability_no.png";
-
-const icon_availability_image_yes = "assets/icons/icon_image_available.png";
-const icon_availability_image_no = "assets/icons/icon_image_available_no.png";
-const icon_availability_cloud_yes = "assets/icons/icon_cloud_available_yes.png";
-const icon_availability_cloud_no = "assets/icons/icon_cloud_available_no.png";
-const icon_availability_mesh_yes = "assets/icons/icon_mesh_available_yes.png";
-const icon_availability_mesh_no = "assets/icons/icon_mesh_available_no.png";
-const icon_availability_video_yes = "assets/icons/icon_video_available_yes.png";
-const icon_availability_video_no = "assets/icons/icon_video_available_no.png";
-const icon_availability_voluvideo_yes = "assets/icons/icon_voluvideo_available_yes.png";
-const icon_availability_voluvideo_no = "assets/icons/icon_voluvideo_available_no.png";
-const icon_availability_lightfield_yes = "assets/icons/icon_lightfield_available_yes.png";
-const icon_availability_lightfield_no = "assets/icons/icon_lightfield_available_no.png";
-const icon_availability_gaussian_yes = "assets/icons/icon_gaussian_available_yes.png";
-const icon_availability_gaussian_no = "assets/icons/icon_gaussian_available_no.png";
-
-
-export let execution_approach = {
-    "method": "",
-    "options": ""
-}
 
 /*-------------------------------------------------------------------------------------------------------------
 -- Request available color transfer methods and create buttons to apply these algorithms
@@ -83,34 +60,36 @@ export const createCTButtons = (stat_obj) => {
         let icon_pos_right = 5;
         for(let type of ["Image", "Mesh", "PointCloud", "Video", "VolumetricVideo", "LightField", "GaussianSplatting"]){
             let icon_available;
+            var icon_availability_yes;
+            var icon_availability_no;
 
             if(type === "Image") {
-                icon_availability_yes = icon_availability_image_yes
-                icon_availability_no = icon_availability_image_no
+                icon_availability_yes = "assets/icons/icon_image_available.png"
+                icon_availability_no = "assets/icons/icon_image_available_no.png"
             }
             else if (type === "PointCloud") {
-                icon_availability_yes = icon_availability_cloud_yes
-                icon_availability_no = icon_availability_cloud_no
+                icon_availability_yes = "assets/icons/icon_cloud_available_yes.png"
+                icon_availability_no = "assets/icons/icon_cloud_available_no.png"
             }
             else if (type === "Mesh") {
-                icon_availability_yes = icon_availability_mesh_yes
-                icon_availability_no = icon_availability_mesh_no
+                icon_availability_yes = "assets/icons/icon_mesh_available_yes.png"
+                icon_availability_no = "assets/icons/icon_mesh_available_no.png"
             }
             else if (type === "Video") {
-                icon_availability_yes = icon_availability_video_yes
-                icon_availability_no = icon_availability_video_no
+                icon_availability_yes = "assets/icons/icon_video_available_yes.png"
+                icon_availability_no = "assets/icons/icon_video_available_no.png"
             }
             else if (type === "VolumetricVideo") {
-                icon_availability_yes = icon_availability_voluvideo_yes
-                icon_availability_no = icon_availability_voluvideo_no
+                icon_availability_yes = "assets/icons/icon_voluvideo_available_yes.png"
+                icon_availability_no = "assets/icons/icon_voluvideo_available_no.png"
             }
             else if (type === "LightField") {
-                icon_availability_yes = icon_availability_lightfield_yes
-                icon_availability_no = icon_availability_lightfield_no
+                icon_availability_yes = "assets/icons/icon_lightfield_available_yes.png"
+                icon_availability_no = "assets/icons/icon_lightfield_available_no.png"
             }
             else if (type === "GaussianSplatting") {
-                icon_availability_yes = icon_availability_gaussian_yes
-                icon_availability_no = icon_availability_gaussian_no
+                icon_availability_yes = "assets/icons/icon_gaussian_available_yes.png"
+                icon_availability_no = "assets/icons/icon_gaussian_available_no.png"
             }
             else {
                 icon_availability_yes = "assets/icons/icon_availability_yes.png"
@@ -128,7 +107,7 @@ export const createCTButtons = (stat_obj) => {
         }
 
         var d_text = document.createElement('div');
-        $(d_text).addClass("algorithms_item_text").html(elem["key"]).appendTo($(d))
+        $(d_text).addClass("algorithms_item_text").html(elem["key"]).css("color", "red").appendTo($(d))
     }
 }
 
@@ -137,8 +116,8 @@ export const createCTButtons = (stat_obj) => {
 -- #activate_color_transfer()-method
 -------------------------------------------------------------------------------------------------------------*/
 export const activate_color_transfer = (param) => {
-    execution_approach["method"] = param["name"]
-    execution_approach["options"] = param["options"]
+    execution_data["approach"] = param["name"]
+    execution_data["options"] = param["options"]
     consolePrint("INFO", "Set Color Transfer Algorithm to: " + param["name"] )
 
     setInformation(param);
@@ -193,7 +172,6 @@ function Algorithms(props) {
             try {
                 const response = await fetch('methods.json');
                 const jsonData = await response.json();
-                console.log(jsonData)
                 createCTButtons(jsonData)
             } catch (error) {
                 console.error('Error fetching JSON data:', error);

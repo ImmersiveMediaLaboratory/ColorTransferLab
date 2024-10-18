@@ -9,7 +9,7 @@ Please see the LICENSE file that should have been included as part of this packa
 
 
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { createBrowserHistory } from 'history';
 import Main from './pages/Main/Main'
 import './settings/Global.scss';

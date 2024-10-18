@@ -24,7 +24,6 @@ function Evaluation(props) {
             try {
                 const response = await fetch('metrics.json');
                 const jsonData = await response.json();
-                console.log(jsonData);
                 createMetricEntries(jsonData["data"])
                 //createEmptyEvaluationResults(jsonData["data"])
             } catch (error) {

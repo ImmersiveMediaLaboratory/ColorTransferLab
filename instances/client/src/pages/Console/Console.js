@@ -16,18 +16,17 @@ import Configuration from './Configuration';
 import Information from './Information';
 import {consolePrint} from 'Utils/Utils'
 import {evalPrint, exportMetrics} from 'Utils/Utils'
-import {execution_approach} from 'pages/SideBarLeft/Algorithms'
 import {server_post_request2} from 'Utils/Connection';
 import {pathjoin, getRandomID} from 'Utils/Utils';
 import {active_server} from 'Utils/System'
 import {showView} from 'pages/Body/Renderer'
 import {active_reference} from "pages/Body/Body"
 import {color_palette} from "pages/Body/ColorTheme"
-import {request_database_content} from "pages/SideBarRight/Database"
+//import {request_database_content} from "pages/SideBarRight/Database"
 import TabButton from './TabButton';
 import './Console.scss';
 import ExecutionButton from "./ExecutionButton";
-import {execution_params_objects} from 'Utils/System'
+import {execution_data} from 'Utils/System'
 
 
 /******************************************************************************************************************
@@ -46,7 +45,6 @@ function Console() {
 
     const icon_play_button = "assets/icons/icon_play.png";
     const icon_eval_button = "assets/icons/icon_eval.png";
-    const icon_camera_button = "assets/icons/icon_camera.png";
     const icon_export_metric_button = "assets/icons/icon_export_metric.png";
     const icon_terminal_button = "assets/icons/icon_terminal.png";
     const icon_evaluation_button = "assets/icons/icon_evaluation.png";
@@ -126,13 +124,13 @@ function Console() {
         // check if a Single Input Reference or a Color Theme Reference is selected
         let ref_val
         if(active_reference === "Single Input")
-            ref_val = execution_params_objects["ref"]
+            ref_val = execution_data["reference"]
         else if(active_reference === "Color Theme")
             ref_val = color_palette
 
         // check if source object, reference object and approach are selected
-        if(execution_params_objects["src"] !== "" && ref_val !== "" && execution_approach["method"] !== "") {
-            consolePrint("INFO", "Apply " + execution_approach["method"])
+        if(execution_data["source"] !== "" && ref_val !== "" && execution_data["approach"] !== "") {
+            consolePrint("INFO", "Apply " + execution_data["approach"])
 
             // shows a loading screen while executing the selected algorithm
             var renderer_image_inner = document.getElementById("renderer_image_innerrenderer_out")
@@ -143,14 +141,14 @@ function Console() {
             // output file has to be saved with a random name, otherwise the browser loads the cached object
             var rankey = getRandomID()
             // uses the generated key as output name
-            execution_params_objects["out"] = pathjoin("Output", rankey)
+            execution_data["output"] = pathjoin("Output", rankey)
 
             var out_dat = {
-                "source": execution_params_objects["src"],
+                "source": execution_data["source"],
                 "reference": ref_val,
-                "output": execution_params_objects["out"],
-                "approach": execution_approach["method"],
-                "options": execution_approach["options"]
+                "output": execution_data["output"],
+                "approach": execution_data["approach"],
+                "options": execution_data["options"]
             }
             server_post_request2(active_server, "color_transfer", out_dat, apply_color_transfer, rankey)
         } else {

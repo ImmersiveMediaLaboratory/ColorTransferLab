@@ -7,20 +7,11 @@ This file is released under the "MIT License Agreement".
 Please see the LICENSE file that should have been included as part of this package.
 */
 
-import React, { useState, useEffect, Suspense, useRef} from 'react';
+import React, { useState, useEffect, useRef} from 'react';
 import $ from 'jquery';
-import PointCloud from "rendering/PointCloud"
-import ColorDistribution from "rendering/ColorDistribution"
-import ColorDistribution2 from "rendering/ColorDistribution2"
-import VoxelGrid from "rendering/VoxelGrid"
-import ColorHistogram from "rendering/ColorHistogram"
-import TriangleMesh from "rendering/TriangleMesh"
-import Terminal from 'pages/Console/Terminal';
 import {active_server} from 'Utils/System'
-import {updateHistogram} from 'Utils/Utils'
-import {pathjoin, request_file_existence, consolePrint} from 'Utils/Utils';
-import {execution_params_objects} from 'Utils/System'
-
+import {pathjoin, consolePrint} from 'Utils/Utils';
+import {execution_data} from 'Utils/System'
 import ImageRenderer from 'pages/Body/ImageRenderer'
 import VideoRenderer from 'pages/Body/VideoRenderer'
 import MeshRenderer from 'pages/Body/MeshRenderer'
@@ -28,17 +19,10 @@ import LightFieldRenderer from 'pages/Body/LightFieldRenderer'
 import RenderBar from './RenderBar';
 import LoadingView from './LoadingView';
 import GaussianSplatRenderer from './GaussianSplatRenderer';
-import PointCloudVoxelGrid from 'rendering/PointCloud';
-
 import RendererButton from 'pages/Body/RendererButton';
-
-import * as THREE from 'three';
-
 import './Renderer.scss';
-import { useRouteError } from 'react-router-dom';
 
 
-let canv = null;
 export const active_reference = "Single Input"
 
 // Description of the <data_config> object
@@ -106,6 +90,11 @@ export const showView = (imageID, videoID, renderCanvasID, view_lightfieldID, vi
  ******************************************************************************************************************
  ******************************************************************************************************************/
 const Renderer = (props) =>  {
+    /**************************************************************************************************************
+     **************************************************************************************************************
+     ** STATES & REFERENCES & VARIABLES
+     **************************************************************************************************************
+     **************************************************************************************************************/
     /* ------------------------------------------------------------------------------------------------------------
     -- IMPORTANT:
     -- This identifier can be either "src", "ref" or "out" and will be concatenated with ids of other
@@ -116,17 +105,14 @@ const Renderer = (props) =>  {
     -- STATE VARIABLES
     -------------------------------------------------------------------------------------------------------------*/
     const [enableUpdate, changeEnableupdate] = useState(0)
-    const [fieldTexture, setFieldTexture] = useState(null);
-    const [init, setInit] = useState(false)
-    const [view, setView] = useState(null)
-
-    const [defaultView, setDefaultView] = useState(true)
-
-    const [gaussianRendererEnabled, setGaussianRendererEnabled] = useState(false)
-
     // stores if the object is completely loaded
     const [complete, setComplete] = useState(false)
 
+    let [filePath_LightField, setFilePath_LightField] = useState(null)
+    let [filePath_GaussianSplat, setFilePath_GaussianSplat] = useState(null)
+    let [filePath_Image, setFilePath_Image] = useState(null)
+    let [filePath_Video, setFilePath_Video] = useState(null)
+    let [filePath_Mesh, setFilePath_Mesh] = useState(null)
     /* ------------------------------------------------------------------------------------------------------------
     -- REFERENCED VARIABLES
     -------------------------------------------------------------------------------------------------------------*/
@@ -135,30 +121,21 @@ const Renderer = (props) =>  {
     const mode = useRef("")
     // stores object information like: width, height, etc. 
     const objInfo = useRef(null)
-    const data = useRef("")
     // stores the current mesh or pointcloud
     const mesh = useRef([])
     // stores the mesh for the 3D color histogram
     const histogram3D = useRef(null)
     const colorDistribution3D = useRef(null)
     const object3D = useRef(null)
-    const voxel3D = useRef(null)
-    // stores pointcloud information for voxel rendering
-    const ref_pc_center = useRef(null)
-    const ref_pc_scale = useRef(null)
-
-    const objArray = useRef([])
-
-    // stores the current lightfield
-    const lightfield = useRef([])
 
     const obj_path = useRef("xxx")
     const infoBoxEnabled = useRef(false)
 
+    /* ------------------------------------------------------------------------------------------------------------
+    -- VARIABLES
+    -------------------------------------------------------------------------------------------------------------*/
     const ID = props.id;
     const window = props.window;
-    // Only Source, Reference and Comparison are droppable
-    const DROPPABLE = props.droppable;
     const TITLE = props.title
 
     const imageID = "renderer_image" + ID
@@ -171,37 +148,59 @@ const Renderer = (props) =>  {
     const infoboxID = "renderer_info" + ID
     const renderBarID = "renderer_bar" + ID
     const view_loadingID = "view_loading_" + ID
-
-
     const view_emptyID = "view_empty_" + RID
  
     const initPath = "data"
 
-    // store an identifier for the MeshRenderer which object type is currently displayed
-    // Values: (1) Mesh (2) PointCloud (3) VolumetricVideo
-    let meshRendererMode = useRef("Mesh")
 
-    let [filePath_LightField, setFilePath_LightField] = useState(null)
-    let [filePath_GaussianSplat, setFilePath_GaussianSplat] = useState(null)
-    let [filePath_Image, setFilePath_Image] = useState(null)
-    let [filePath_Video, setFilePath_Video] = useState(null)
-    let [filePath_Mesh, setFilePath_Mesh] = useState(null)
+    /**************************************************************************************************************
+     **************************************************************************************************************
+     ** HOOKS
+     **************************************************************************************************************
+     **************************************************************************************************************/
 
-    /* ------------------------------------------------------------------------------------------------------------
-    -- Remove the loading screen after the object is loaded.
-    -------------------------------------------------------------------------------------------------------------*/
+    /**************************************************************************************************************
+     * Remove the loading screen after the object is loaded.
+     **************************************************************************************************************/
     useEffect(() => {
         let loadingRenderer = $("#" + view_loadingID)
         loadingRenderer.css("display", "none")
     }, [complete])
 
-    /* ------------------------------------------------------------------------------------------------------------
-    -- This method is called when the user drops a file from the Items-Menu on the renderer.
-    -- Note:
-    --   Content of data:
-    --   E.g. data = /Meshes/GameBoy_medium:GameBoy_medium.obj
-    --   I.e. <path_to_file>:<file>
-    -------------------------------------------------------------------------------------------------------------*/
+    /**************************************************************************************************************
+     * Registration of EventListener
+     **************************************************************************************************************/
+    useEffect(() => {
+        if(props.droppable) {
+            $("#" + ID).on("dragover", function(e) {e.preventDefault();})
+            $("#" + ID).on("drop", (e) => {drop_method(e.originalEvent)})
+            $("#" + ID).on("itemClicked", function(e, data){click_method(data)});
+        } else {
+            let out_renderer_id = "renderer_image_innerrenderer_out"
+            let out_renderer = document.getElementById(out_renderer_id)
+            let observer = new MutationObserver(observer_updateOutputRenderer);
+            let options = {
+                attributes: true,
+                attributeFilter: ["data-update"]
+            };
+            observer.observe(out_renderer, options);
+        }
+    }, []);
+
+
+    /**************************************************************************************************************
+     **************************************************************************************************************
+     ** FUNCTIONS
+     **************************************************************************************************************
+     **************************************************************************************************************/
+
+    /**************************************************************************************************************
+     * This method is called when the user drops a file from the Items-Menu on the renderer.
+     * Note:
+     * Content of data:
+     * E.g. data = /Meshes/GameBoy_medium:GameBoy_medium.obj
+     * I.e. <path_to_file>:<file>
+     **************************************************************************************************************/
     function drop_method(event) {
         event.preventDefault();
         var data = event.dataTransfer.getData('text');
@@ -217,6 +216,9 @@ const Renderer = (props) =>  {
     --   E.g. data = /Meshes/GameBoy_medium:GameBoy_medium.obj
     --   I.e. <path_to_file>:<file>
     -------------------------------------------------------------------------------------------------------------*/
+    /**************************************************************************************************************
+     * 
+     **************************************************************************************************************/
     function click_method(data) {
         var [file_path, file_name_with_ext] = data.split(":")
         var [file_name, file_ext] = file_name_with_ext.split(".")
@@ -224,9 +226,9 @@ const Renderer = (props) =>  {
         updateRenderer(file_path, file_name, file_name_with_ext, file_ext)
     }
 
-    /* ------------------------------------------------------------------------------------------------------------
-    -- 
-    -------------------------------------------------------------------------------------------------------------*/
+    /**************************************************************************************************************
+     * 
+     **************************************************************************************************************/
     function updateRenderer(file_path, file_name, file_name_with_ext, file_ext) {
         console.log("INFO", "Loading object: " + file_path)
         console.log("INFO", "Loading object: " + file_name)
@@ -260,47 +262,40 @@ const Renderer = (props) =>  {
  
             obj_path.current = pathjoin(file_path, file_name_with_ext)
 
-        } else if(file_ext == "obj" || file_ext == "ply") {
+        } else if(file_ext === "obj" || file_ext === "ply") {
             mode.current = "PointCloud"
             var filepath = pathjoin(active_server, initPath, file_path, file_name_with_ext)
             setFilePath_Mesh(filepath)
             obj_path.current = pathjoin(file_path, file_name_with_ext)
             switchView("Mesh")
-        } else if(file_ext == "mesh") {
+        } else if(file_ext === "mesh") {
             console.log("INFO", "Loading mesh: " + file_path)
             mode.current = "Mesh"
             var filepath = pathjoin(active_server, initPath, file_path, file_name)
             setFilePath_Mesh(filepath)
-            meshRendererMode.current = "Mesh"
+            //meshRendererMode.current = "Mesh"
             changeRendering(object3D.current)
             switchView("Mesh")
-        } else if(file_ext == "gsp") {
+        } else if(file_ext === "gsp") {
             console.log("INFO", "Loading gaussian splatting: " + file_path)
             const gaussiansplat_path = pathjoin(active_server, initPath, file_path, file_name_with_ext)
             setFilePath_GaussianSplat(gaussiansplat_path)
             switchView("GaussianSplat")
-        } else if(file_ext == "volu") {
+        } else if(file_ext === "volu") {
             console.log("INFO", "Loading volumetric video: " + file_path)
             let volumetricvideo_path = pathjoin(active_server, initPath, file_path, file_name)
             mode.current = "VolumetricVideo"
             setFilePath_Mesh(volumetricvideo_path)
 
             obj_path.current = pathjoin(file_path, file_name_with_ext)
-            //changeRendering2(objArray.current)
             switchView("Mesh")
-        } else if(file_ext == "lf") {
+        } else if(file_ext === "lf") {
             console.log("INFO", "Loading lightfield: " + file_path)
             mode.current = "LightField"
             let lightfield_path = pathjoin(active_server, initPath, file_path, file_name + ".mp4");
             setFilePath_LightField(lightfield_path)
             switchView("LightField")
         }
-
-        
-
-        //server_post_request(active_server, "color_distribution", pathjoin(initPath, file_path, file_name_with_ext), updateColorDistribution, window)
-        //server_post_request(active_server, "color_histogram", pathjoin(initPath, file_path, file_name_with_ext), updateHistogram, window)
-        //server_post_request(active_server, "object_info", pathjoin(initPath, file_path, file_name_with_ext), updateObjectInfo, null)
  
         // if the infobox is visible, disable and rerender it if a new object is loaded
         if(infoBoxEnabled.current) {
@@ -309,11 +304,15 @@ const Renderer = (props) =>  {
         }
 
         // set the execution parameters
-        execution_params_objects[window] = obj_path.current
+        if(window === "src")
+            execution_data["source"] = obj_path.current
+        else if(window === "ref")
+            execution_data["reference"] = obj_path.current
     }
-    /* ------------------------------------------------------------------------------------------------------------
-    -- 
-    -------------------------------------------------------------------------------------------------------------*/
+
+    /**************************************************************************************************************
+     * 
+     **************************************************************************************************************/
     const switchView = (view) => {
         let loadingRenderer = $("#" + view_loadingID)
         let emptyRenderer = $("#" + view_emptyID)
@@ -335,61 +334,31 @@ const Renderer = (props) =>  {
         try {  videoRenderer.children("video").get(0).pause(); }
         catch (error) {}
 
-        if(view == "Image") {imageRenderer.css("visibility", "visible")}
-        else if(view == "Video") {videoRenderer.css("visibility", "visible")}
-        else if(view == "LightField") {lightFieldRenderer.css("display", "block")}
-        else if(view == "Mesh") {meshRenderer.css("display", "block")}
-        else if(view == "GaussianSplat") {
-            gaussianSplatRenderer.css("display", "block")
-        }
-    }
-    /* ------------------------------------------------------------------------------------------------------------
-    -- 
-    -------------------------------------------------------------------------------------------------------------*/
-    const updateColorDistribution = (data, parameters) => {
-        var dist_vals = data["data"]["distribution"]
-        let scaled_dist_vals = (dist_vals.flat()).map(function(x) { return x / 255.0; })
-        colorDistribution3D.current = <ColorDistribution2 key={Math.random()} file_path={pathjoin(active_server, initPath, "PointClouds/template.ply")} dist_vals={scaled_dist_vals} id={TITLE}/>
-    }
-    /* ------------------------------------------------------------------------------------------------------------
-    -- 
-    -------------------------------------------------------------------------------------------------------------*/
-    const updateObjectInfo = (data, parameters) => {
-        objInfo.current = data
-
-        // set 3D color histogram
-        var eval_values = data["data"]["histogram"]
-        var eval_values = {}
-        histogram3D.current = <ColorHistogram key={Math.random()} histogram={eval_values} />
-
-        // set 3D voxel grid
-        var voxelgrid_centers = data["data"]["voxelgrid_centers"]
-        var voxelgrid_colors = data["data"]["voxelgrid_colors"]
-        var voxelgrid_scale = data["data"]["scale"]
-        voxel3D.current = <VoxelGrid key={Math.random()} 
-                            voxelgrid_centers={voxelgrid_centers}  
-                            voxelgrid_colors={voxelgrid_colors} 
-                            voxelgrid_scale={voxelgrid_scale}
-                            center={ref_pc_center}
-                            scale={ref_pc_scale}/>
+        if(view === "Image") {imageRenderer.css("visibility", "visible")}
+        else if(view === "Video") {videoRenderer.css("visibility", "visible")}
+        else if(view === "LightField") {lightFieldRenderer.css("display", "block")}
+        else if(view === "Mesh") {meshRenderer.css("display", "block")}
+        else if(view === "GaussianSplat") {gaussianSplatRenderer.css("display", "block")}
+        
+        //filePath_Mesh = null
     }
 
-    /* ------------------------------------------------------------------------------------------------------------
-    -- 
-    -------------------------------------------------------------------------------------------------------------*/
+    /**************************************************************************************************************
+     * 
+     **************************************************************************************************************/
     function show3DColorDistribution(e){
         // if this method is called via the EventListener, <e> describes the event otherwise
         // <e> describes the checkbox
+        let button_enabled;
         if (typeof e.target !== 'undefined')
-            var button_enabled = e.target.checked
+            button_enabled = e.target.checked
         else
-            var button_enabled = e.checked
+            button_enabled = e.checked
 
-        if(mode.current == "Image") {
+        if(mode.current === "Image") {
             if(button_enabled) {
                 // disable all the other checkboxes
                 disableCheckbox("settings_3dcolorhistogram", show3DColorHistogram)
-                disableCheckbox("settings_voxelgrid", showVoxelGrid)
                 showView(imageID, videoID, renderCanvasID, view_lightfieldID, view_emptyID, "3D")
                 changeRendering(colorDistribution3D.current)
             } else {
@@ -399,7 +368,6 @@ const Renderer = (props) =>  {
             if(button_enabled) {
                 // disable all the other checkboxes
                 disableCheckbox("settings_3dcolorhistogram", show3DColorHistogram)
-                disableCheckbox("settings_voxelgrid", showVoxelGrid)
                 changeRendering(colorDistribution3D.current)
             } else {
                 changeRendering(object3D.current)
@@ -407,22 +375,20 @@ const Renderer = (props) =>  {
         }
     }
 
-    /* ------------------------------------------------------------------------------------------------------------
-    -- 
-    -------------------------------------------------------------------------------------------------------------*/
+    /**************************************************************************************************************
+     * 
+     **************************************************************************************************************/
     function show3DColorHistogram(e){
         // if this method is called via the EventListener, <e> describes the event otherwise
         // <e> describes the checkbox
-        if (typeof e.target !== 'undefined')
-            var button_enabled = e.target.checked
-        else
-            var button_enabled = e.checked
+        let button_enabled;
+        if (typeof e.target !== 'undefined') button_enabled = e.target.checked
+        else button_enabled = e.checked
 
-        if(mode.current == "Image") {
+        if(mode.current === "Image") {
             if(button_enabled) {
                 // disable all the other checkboxes
                 disableCheckbox("settings_rgbcolorspace", show3DColorDistribution)
-                disableCheckbox("settings_voxelgrid", showVoxelGrid)
                 showView(imageID, videoID, renderCanvasID, view_lightfieldID, view_emptyID, "3D")
                 changeRendering(histogram3D.current)
             } else {
@@ -430,46 +396,16 @@ const Renderer = (props) =>  {
             }
         }
 
-        if(mode.current == "PointCloud" || mode.current == "Mesh") {
+        if(mode.current === "PointCloud" || mode.current === "Mesh") {
             if(button_enabled) {
                 // disable all the other checkboxes
                 disableCheckbox("settings_rgbcolorspace", show3DColorDistribution)
-                disableCheckbox("settings_voxelgrid", showVoxelGrid)
                 changeRendering(histogram3D.current)
             }               
             else
                 changeRendering(object3D.current)
         }
     }
-
-    /* ------------------------------------------------------------------------------------------------------------
-    -- 
-    -------------------------------------------------------------------------------------------------------------*/
-    function showVoxelGrid(e){
-        // if this method is called via the EventListener, <e> describes the event otherwise
-        // <e> describes the checkbox
-        if (typeof e.target !== 'undefined')
-            var button_enabled = e.target.checked
-        else
-            var button_enabled = e.checked
-
-        if(mode.current == "PointCloud") {
-            if(button_enabled) {
-                // disable all the other checkboxes
-                disableCheckbox("settings_rgbcolorspace", show3DColorHistogram)
-                disableCheckbox("settings_3dcolorhistogram", showVoxelGrid)
-                changeRendering(voxel3D.current)
-            }
-            else
-                changeRendering(object3D.current)
-        }
-    }
-
-    /* ------------------------------------------------------------------------------------------------------------
-    ---------------------------------------------------------------------------------------------------------------
-    -- HELPER METHODS
-    ---------------------------------------------------------------------------------------------------------------
-    -------------------------------------------------------------------------------------------------------------*/
 
     /* ------------------------------------------------------------------------------------------------------------
     -- Enables a given output type. Supported types are:
@@ -479,6 +415,9 @@ const Renderer = (props) =>  {
     -- (4) 3D_color_histogram
     -------------------------------------------------------------------------------------------------------------*/
     // TODO: Reduce to one method
+    /**************************************************************************************************************
+     * 
+     **************************************************************************************************************/
     function changeRendering(obj) {
         //mesh.current.pop()
         mesh.current.length = 0;
@@ -487,30 +426,18 @@ const Renderer = (props) =>  {
         console.log(mesh.current[0])
     }
 
-    function changeRendering2(objs) {
-        //mesh.current.pop()
-        mesh.current.length = 0;
-        objs.forEach((obj) => {
-            mesh.current.push(obj);
-        });
-        //mesh.current.push(obj)
-        changeEnableupdate(Math.random())
-        //console.log(mesh.current[0])
-    }
-
-
-    /* ------------------------------------------------------------------------------------------------------------
-    -- Disables the checkbox with the given ID
-    -------------------------------------------------------------------------------------------------------------*/
+    /**************************************************************************************************************
+     * Disables the checkbox with the given ID
+     **************************************************************************************************************/
     function disableCheckbox(id, method) {
         let checkbox = $("#" + id)
         if(checkbox.prop("checked")) method(checkbox)
         checkbox.prop("checked", false);
     }
 
-    /* ------------------------------------------------------------------------------------------------------------
-    -- Registration of EventListener
-    -------------------------------------------------------------------------------------------------------------*/
+    /**************************************************************************************************************
+     * Registration of EventListener
+     **************************************************************************************************************/
     function observer_updateOutputRenderer(mutations) {
         let out_renderer = $("#renderer_image_innerrenderer_out")
         let pat = out_renderer.attr("data-src")
@@ -529,52 +456,26 @@ const Renderer = (props) =>  {
         updateRenderer(file_path, file_name, file_name_with_ext, file_ext)
 
     }
-    /* ------------------------------------------------------------------------------------------------------------
-    -- Registration of EventListener
-    -------------------------------------------------------------------------------------------------------------*/
-    useEffect(() => {
-        if(DROPPABLE) {
-            $("#" + ID).on("dragover", function(e) {e.preventDefault();})
-            $("#" + ID).on("drop", (e) => {drop_method(e.originalEvent)})
-            $("#" + ID).on("itemClicked", function(e, data){click_method(data)});
-        } else {
-            let out_renderer_id = "renderer_image_inner" + "renderer_out"
-            let out_renderer = document.getElementById(out_renderer_id)
-            var observer = new MutationObserver(observer_updateOutputRenderer);
-            let options = {
-            attributes: true,
-            attributeFilter: ["data-update"]
-            };
-            observer.observe(out_renderer, options);
-        }
 
-        $("#settings_rgbcolorspace").on("change", show3DColorDistribution)
-        $("#settings_3dcolorhistogram").on("change", show3DColorHistogram)
-        $("#settings_voxelgrid").on("change", showVoxelGrid)
-    }, []);
-
-
-
-
-    /* ------------------------------------------------------------------------------------------------------------
-    -- ...
-    -------------------------------------------------------------------------------------------------------------*/
+    /**************************************************************************************************************
+     * 
+     **************************************************************************************************************/
     function showObjectInfo() {
         let curinfo = objInfo.current["data"]
         let infos;
-        if(mode.current == "Image")
+        if(mode.current === "Image")
             infos = {
                 "height": curinfo["height"],
                 "width": curinfo["width"],
                 "channels": curinfo["channels"],
             }
-        else if(mode.current == "PointCloud")
+        else if(mode.current === "PointCloud")
             infos = {
                 "num_vertices": curinfo["num_vertices"],
                 "vertexcolors": curinfo["vertexcolors"],
                 "vertexnormals": curinfo["vertexnormals"],
             }
-        else if(mode.current == "Mesh")
+        else if(mode.current === "Mesh")
             infos = {
                 "num_vertices": curinfo["num_vertices"],
                 "num_faces": curinfo["num_faces"],
@@ -597,7 +498,7 @@ const Renderer = (props) =>  {
             infoBoxEnabled.current = !infoBoxEnabled.current
             let output_text = ""
             for (let k in infos){
-                output_text += "<b>"+k+"</b>" + ": " + infos[k] + "<br />"
+                output_text += "<b>"+k+"</b>: " + infos[k] + "<br />"
             }
 
             $("#" + infoboxID).html(output_text)
@@ -642,6 +543,9 @@ const Renderer = (props) =>  {
         input.click();
     }
 
+    /**************************************************************************************************************
+     * 
+     **************************************************************************************************************/
     const switchDefault = () => {
         $("#" + view_emptyID).css("display", "flex")
         $("#" + imageID).css("visibility", "hidden")
@@ -651,6 +555,11 @@ const Renderer = (props) =>  {
         $("#" + view_gaussianSplat_ID).css("display", "none")
     }
 
+    /**************************************************************************************************************
+     **************************************************************************************************************
+     ** RENDERING
+     **************************************************************************************************************
+     **************************************************************************************************************/
     return(
         <div id={ID} style={props.style} className='renderer_container'>
             <div className="renderer_title">

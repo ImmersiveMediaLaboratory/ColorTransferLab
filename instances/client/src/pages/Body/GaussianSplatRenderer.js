@@ -12,8 +12,7 @@ import * as GaussianSplats3D from '@mkkellogg/gaussian-splats-3d';
 import * as THREE from 'three';
 import React, { useRef, useEffect, useState } from 'react';
 import $ from 'jquery';
-import {updateHistogram, calculateColorHistograms, calculateMeanAndStdDev,loadTextureAndConvertToArray} from 'Utils/Utils';
-import { OrbitControls, PerspectiveCamera, OrthographicCamera, Plane } from "@react-three/drei";
+import {updateHistogram, calculateColorHistograms, calculateMeanAndStdDev} from 'Utils/Utils';
 import OrbitControlNew from "rendering/OrbitControlNew";
 
 /******************************************************************************************************************
@@ -144,30 +143,25 @@ const GaussianSplatRenderer = (props) => {
     }, [props.filePath]);
 
     useEffect(() => {
-        if (viewer.current !== null && viewer.current.splatMesh != undefined) {
+        if (viewer.current !== null && viewer.current.splatMesh !== undefined) {
             // the initial execution of this function will fail because the splatMesh is not yet created
-            try {
-                viewer.current.splatMesh.setSplatScale(splatScale / 100.0);
-            }
+            try {viewer.current.splatMesh.setSplatScale(splatScale / 100.0);}
             catch (e) {}
         }
     }, [splatScale]);
 
-
-
-    function myFunction() {
-        console.log('Display style has changed from none!');
-        // Weitere Aktionen hier
-    }
-    
-
+    /**************************************************************************************************************
+     **************************************************************************************************************
+     ** RENDERING
+     **************************************************************************************************************
+     **************************************************************************************************************/
     return(
         <div id={props.id} className="gaussianSplatRenderer">
             <div className="gaussiansplat" ref={containerRef}/>
 
                         {/* Button for showing the settings for the mesh view */}
             <div className='gs_button_settings' onClick={showSettings}>
-                <img className="gs_button_settings_texture_icon" src={button_settings_texture_icon}/>
+                <img className="gs_button_settings_texture_icon" src={button_settings_texture_icon} alt=""/>
             </div>     
 
             {/* Settings field */}

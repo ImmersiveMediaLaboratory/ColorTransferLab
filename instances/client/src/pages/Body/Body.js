@@ -7,12 +7,11 @@ This file is released under the "MIT License Agreement".
 Please see the LICENSE file that should have been included as part of this package.
 */
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import $ from 'jquery';
 import Renderer from './Renderer';
 import ColorTheme from './ColorTheme';
 import PreviewBoard from './PreviewBoard';
-import {consolePrint} from 'Utils/Utils'
 import 'settings/Global.scss';
 import './Body.scss';
 
@@ -31,14 +30,10 @@ export const setReferenceWindow = (tab) => {
 -----------------------------------------------------------------------------------------------------------------*/
 function Body(props) {
     const [mobileMaxWidth, setMobileMaxWidth] = useState(null);
-    const [darkmode, setDarkmode] = useState(true)
-
 
     const icon_body_source_button = "assets/icons/icon_source.png";
     const icon_body_reference_button = "assets/icons/icon_reference.png";
     const icon_body_output_button = "assets/icons/icon_output.png";
-
-    const didMount = useRef(false)
 
     useEffect(() => {
         const styles = getComputedStyle(document.documentElement);
@@ -48,21 +43,21 @@ function Body(props) {
     /*-------------------------------------------------------------------------------------------------------------
     -- ...
     -------------------------------------------------------------------------------------------------------------*/
-    useEffect(() => {
-        if (didMount.current) {
-            if(darkmode) {
-                document.body.style.setProperty('--backgroundcolor', "#2B2C34");
-                document.body.style.setProperty('--headercolor', "#1F2124");
-                document.body.style.setProperty('--fontcolor', "#B4B4B8");
-            } else {
-                document.body.style.setProperty('--backgroundcolor', "#FFFFFF");
-                document.body.style.setProperty('--headercolor', "#B4B4B8");
-                document.body.style.setProperty('--fontcolor', "#2B2C34");
-            }
-        } else {
-            didMount.current = true;
-        }
-    }, [darkmode]);
+    // useEffect(() => {
+    //     if (didMount.current) {
+    //         if(darkmode) {
+    //             document.body.style.setProperty('--backgroundcolor', "#2B2C34");
+    //             document.body.style.setProperty('--headercolor', "#1F2124");
+    //             document.body.style.setProperty('--fontcolor', "#B4B4B8");
+    //         } else {
+    //             document.body.style.setProperty('--backgroundcolor', "#FFFFFF");
+    //             document.body.style.setProperty('--headercolor', "#B4B4B8");
+    //             document.body.style.setProperty('--fontcolor', "#2B2C34");
+    //         }
+    //     } else {
+    //         didMount.current = true;
+    //     }
+    // }, [darkmode]);
 
     let bodyStyle = {};
     let bodyMainStyle = {};
@@ -85,7 +80,7 @@ function Body(props) {
         
         if(props.singleView) {
             renderSelectionStyle = { display: "block"};
-            bodyStyle = { left: "0px", width: "calc(100% - 406px)", left:"200px", height: "calc(100% - 306px)", margin: "2px"}
+            bodyStyle = {width: "calc(100% - 406px)", left:"200px", height: "calc(100% - 306px)", margin: "2px"}
             bodyMainStyle = { margin: "0px", width: "calc(100%)", height: "calc(100%)"};
             sourceStyle = {width:"calc(100%)", height:"calc(100%)", display: "block"};
             referenceMainStyle = {top:"0px", width:"calc(100%)", height:"calc(100%)", display: "none"};
@@ -123,12 +118,6 @@ function Body(props) {
             $(menu_list[i]).css("display", "none")
         for(let i = 0; i < active_menus.length; i++)
             $(active_menus[i]).css("display", "block")
-    }
-
-    const toggleDarkmode = () => {
-        consolePrint("WARNING", "Darkmode not supported ...")
-        //setDarkmode(darkmode => !darkmode)
-        //$("#body_menu").css("display", "none")
     }
 
     function showMenusRef(active_menus, tab, event) {

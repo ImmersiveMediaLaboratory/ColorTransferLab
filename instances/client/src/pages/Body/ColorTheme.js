@@ -7,7 +7,7 @@ This file is released under the "MIT License Agreement".
 Please see the LICENSE file that should have been included as part of this package.
 */
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import $ from 'jquery';
 import './ColorTheme.scss';
 
@@ -82,7 +82,7 @@ function ColorTheme(props) {
      * 
      **************************************************************************************************************/
     function removeButton(cp_btn, ID) {
-        if($(cp_btn).data("active") != "no"){
+        if($(cp_btn).data("active") !== "no"){
             $(cp_btn).remove()
             // remove element from array
             let new_color_palette = []
@@ -91,9 +91,9 @@ function ColorTheme(props) {
             // if an element has the same value as the deleted one, the element will be kept
             let deletedOnce = false
             while (i < color_palette.length) {
-                if(color_palette[i] != $(cp_btn).html() || deletedOnce == true)
+                if(color_palette[i] !== $(cp_btn).html() || deletedOnce === true)
                     new_color_palette.push(color_palette[i])
-                else if (color_palette[i] == $(cp_btn).html())
+                else if (color_palette[i] === $(cp_btn).html())
                     deletedOnce = true
                 i++;
             }
