@@ -4,7 +4,7 @@ This repository is part of a collection of three repositories. See the links bel
 [![Button 2](https://img.shields.io/badge/ColorTransferLib-green)](https://github.com/hpotechius/ColorTransferLib)
 [![Button 3](https://img.shields.io/badge/ColorTransferAlg-red)](https://github.com/hpotechius/ColorTransferAlg)
 
-<img width="1708" alt="infographic" src="https://github.com/user-attachments/assets/d1675913-75dd-4471-bc0b-134931abab13">
+<img width="1920" height="1057" alt="03_CTL_interface2" src="https://github.com/user-attachments/assets/4c961333-0f20-44eb-8031-5066b5ed03c7" />
 
 # ColorTransferLab
 ![](https://img.shields.io/badge/ColorTransferLib-2.1.0-purple) ![python3.12.6](https://img.shields.io/badge/build-3.12.6-blue?logo=python&label=Python) ![](https://img.shields.io/badge/build-24.04.3%20LTS-orange?logo=ubuntu&label=Ubuntu) ![](https://img.shields.io/badge/build-MIT-purple?label=License) ![](https://img.shields.io/badge/build-GeForce%20RTX%204060%20Ti-white?logo=nvidia&label=GPU) ![](https://img.shields.io/badge/build-intel%20Core%20i7--14700KF-white?logo=intel&label=CPU) ![](https://img.shields.io/badge/npm-11.6.2-red?logo=npm) ![](https://img.shields.io/badge/Node.js-24.11.1-green?logo=node.js)
@@ -14,7 +14,8 @@ ColorTransferLab is a web-based user interface for the application of **color tr
 This tool is based on WebRTC communication between the client, which is the [User Interface](https://potechius.com/ColorTransferLab), and the compute node, which applies computations using the Python library [ColorTransferLib](https://github.com/hpotechius/ColorTransferLib). This library contains available algorithms and image quality assessment metrics.
 
 ## 1. System Architecture
-![ColorTransferLabV2-Simple](https://github.com/user-attachments/assets/311b9e51-e59b-479e-8752-8e89fe8fecef)
+<img width="2084" height="686" alt="ColorTransferLabV3" src="https://github.com/user-attachments/assets/03b9bd5d-af33-4850-b6ab-47d6a1dfe060" />
+
 This system consists of four components: **Client**, **Web Server**, **Signaling Server**, and **Compute Node**, which will be explained in the following sections.
 
 ### 1.1 Client and Web Server
@@ -44,18 +45,18 @@ In this setup, the signaling server is provided via https://signal.potechius.com
    git clone git@github.com:hpotechius/ColorTransferLab.git
    cd ColorTransferLab
    ```
-2. Create and activate an environment **env** using Python3.10
+2. Create and activate an environment **env** using Python3.12
    ```
-   python3.10 -m venv env
+   python3.12 -m venv env
    source env/bin/activate
    ```
 3. Install the necessary packages
    ```
-   pip install -r ressources/requirements/requirements.txt
+   pip install -r ComputeNode/requirements/requirements.txt
    ```
 4. Run the Compute Node
    ```
-   cd instances/ComputeNode
+   cd ComputeNode
    python main_computenode.py
    ```
    - During the first run, the Compute Node will download the dataset from https://potechius.com/Downloads/Datasets/ColorTransferLab_Database.zip.
