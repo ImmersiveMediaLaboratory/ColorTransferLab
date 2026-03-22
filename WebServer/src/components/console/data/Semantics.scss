@@ -1,0 +1,79 @@
+/*
+Copyright 2026 by Herbert Potechius,
+Technical University of Berlin
+Faculty IV - Electrical Engineering and Computer Science - Institute of Telecommunication Systems - Communication Systems Group
+All rights reserved.
+This file is released under the "MIT License Agreement".
+Please see the LICENSE file that should have been included as part of this package.
+*/
+
+.semanticsX {
+    position: relative;
+    display: flex;
+    font-family: monospace;
+    font-size: 10px;
+    height: calc(100% - 8px);
+    width: calc(100% - 8px);
+    gap: 5px;
+    padding: 4px;
+}
+
+.sub_semantics_content {
+    position: relative;
+    background-color: rgb(32, 32, 32);
+    height: calc(100% - 8px);
+    width: calc(100% - 8px);
+    flex: 1 1 0;
+    margin: 0;
+    padding: 4px;
+    overflow-y: auto;
+}
+
+.semantics_table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.semantics_table td {
+    padding: 2px 4px;
+    vertical-align: top;
+    word-break: break-word;
+}
+
+.semantics_texture {
+    width: 100%; 
+    height: 100%; 
+    object-fit: contain; 
+    display: block;
+}
+
+.semantics-texture-container {
+    position: absolute;
+    width: calc(100% - 8px); 
+    height: calc(100% - 38px); 
+    background-color: black;
+}
+
+.semantics_button {
+    display: inline-block;
+    padding: 6px;
+    background: #444;
+    color: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 12px;
+    text-align: center;
+    user-select: none;
+    height: 15px;
+    margin-top: 4px;
+    margin-left: 0;
+    margin-right: 0;
+    width: calc(100% - 12px);
+    transition: background 0.2s;
+}
+
+.semantics_button:hover {
+    background: #666;
+}

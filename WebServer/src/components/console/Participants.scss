@@ -1,0 +1,82 @@
+/*
+Copyright 2026 by Herbert Potechius,
+Technical University of Berlin
+Faculty IV - Electrical Engineering and Computer Science - Institute of Telecommunication Systems - Communication Systems Group
+All rights reserved.
+This file is released under the "MIT License Agreement".
+Please see the LICENSE file that should have been included as part of this package.
+*/
+
+.participants {
+    display: flex;
+    flex-direction: column;
+    height: calc(100%);
+    width: calc(100%);
+    font-size: 10px;
+    background-color: #1e1e1e;
+    font-family: monospace;
+    position: relative;
+}
+
+.participants-content {
+    position: absolute;
+    font-family: monospace;
+    overflow-y: auto;
+    overflow-x: auto;
+    color: #eee;
+    font-size: 10px;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.4;
+    background-color: #1e1e1e;
+    min-height: 0;
+    height: calc(100%);
+    width: calc(100%);
+    flex: 1;
+    gap: 10px;
+}
+
+.participants-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.participants-cell-config {
+    width: calc(100% / 15);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    padding: 2px 4px;
+}
+
+.participants-cell-config.center {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.participants-icon:hover {
+    color: rgb(134, 119, 188);
+    cursor: pointer;
+}
+
+.participants-cell-config.new {
+    font-weight: bold;
+    background-color: #333;
+    color: #656565;
+    text-align: center;
+}
+
+.participants-cell-config.link a {
+    color: #6069e3;
+}
+
+.participants-cell-config.yellow {
+    color: rgb(121, 121, 33);
+}
+
+.participants-cell-config.red {
+    color: rgb(122, 34, 34);
+}
+
+.participants-cell-config.green {
+    color: rgb(34, 122, 34);
+}

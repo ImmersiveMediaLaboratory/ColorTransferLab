@@ -1,0 +1,104 @@
+/*
+Copyright 2026 by Herbert Potechius,
+Technical University of Berlin
+Faculty IV - Electrical Engineering and Computer Science - Institute of Telecommunication Systems - Communication Systems Group
+All rights reserved.
+This file is released under the "MIT License Agreement".
+Please see the LICENSE file that should have been included as part of this package.
+*/
+
+.server {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+
+.server_title {
+    font-size: 13px;
+    padding: 4px;
+    background-color: #262626;
+    display: flex;
+    align-items: center;
+}
+
+.server-password-input {
+    margin-left: 10px; 
+    padding: 4px;
+    font-size: 14px;
+}
+
+.server-icon {
+    margin-right: 8px;
+    font-size: 18px;
+}
+
+.server-button-icon {
+    font-size: 18px;
+    margin-right: 8px,
+}
+
+.server-close-button {
+    color: "#fff";
+    font-size: 18px;
+}
+
+.server_content {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 5px;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.server_entry_row {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    gap: 0;
+}
+
+.server_entry_button {
+    height: 40px;
+    border-radius: 6px;
+    background: #2b2f36;
+    color: #e2e2e2;
+    border: 1px solid #3a3f47;
+    font-size: 12px;
+    cursor: pointer;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    transition: all 0.15s ease;
+    overflow: hidden;
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
+}
+
+.server_entry_button:hover {
+    background: #3b414a;
+    border-color: #4c535d;
+    box-shadow: 0 0 6px rgba(150, 150, 250, 0.3);
+}
+
+.server_entry_button:active {
+    transform: scale(0.97);
+    background: #32363d;
+}
+
+.server_exit_button {
+    margin-left: 8px;
+    background: #631e1eff;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 1px solid #3a3f47;
+    height: 40px;
+    width: 40px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

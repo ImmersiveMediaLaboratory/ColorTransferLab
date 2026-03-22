@@ -1,0 +1,98 @@
+/*
+Copyright 2026 by Herbert Potechius,
+Technical University of Berlin
+Faculty IV - Electrical Engineering and Computer Science - Institute of Telecommunication Systems - Communication Systems Group
+All rights reserved.
+This file is released under the "MIT License Agreement".
+Please see the LICENSE file that should have been included as part of this package.
+*/
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: black;
+    margin: 10px 100px 10px;
+    padding: 0;
+}
+
+h1 {
+    color: white;
+    text-align: center;
+    margin-top: 20px;
+}
+
+p {
+    color: white;
+    margin-top: 20px;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    background-color: white;
+    opacity: 0.8;
+    border-radius: 10px;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-top: 1px solid #ddd;
+}
+
+th {
+    background-color: #2E2E2E;
+    color: white;
+    cursor: pointer;
+}
+
+li {
+    background-color: #FF0000;
+    margin: 10px auto;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 80%;
+    max-width: 600px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.status-box {
+    background-color: red;
+    color: black;
+    border-radius: 5px;
+    padding: 5px;
+    display: inline-block;
+}
+
+.status-Idle {
+    background-color: rgb(0, 128, 111);
+}
+
+.status-Busy {
+    background-color: red;
+}
+
+.status-Connected {
+    background-color: green;
+}
+
+.type-box {
+    background-color: gray;
+    color: black;
+    border-radius: 5px;
+    padding: 5px;
+    display: inline-block;
+}
+
+.type-ComputeNode {
+    background-color: orange;
+}
+
+.type-Participant {
+    background-color: rgb(43, 119, 116);
+}

@@ -1,0 +1,103 @@
+/*
+Copyright 2026 by Herbert Potechius,
+Technical University of Berlin
+Faculty IV - Electrical Engineering and Computer Science - Institute of Telecommunication Systems - Communication Systems Group
+All rights reserved.
+This file is released under the "MIT License Agreement".
+Please see the LICENSE file that should have been included as part of this package.
+*/
+
+.outputadjustment {
+    position: relative;
+    display: flex;
+    font-family: monospace;
+    font-size: 10px;
+    height: calc(100% - 8px);
+    width: calc(100% - 8px);
+    gap: 5px;
+    padding: 4px;
+}
+
+.outputadjustment-semanticlist{
+    position: relative;
+    background-color: black;
+    height: calc(100% - 8px);
+    width: calc(100% - 8px);
+    flex: 0 0 150px;
+    width: 150px;
+    margin: 0;
+    padding: 4px;
+    overflow-y: auto;
+}
+
+.outputadjustment-semanticlist-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.outputadjustment-row {
+    cursor: "pointer";
+}
+
+.outputadjustment-row.active {
+    background: #1976d2;
+}
+
+.outputadjustment-color {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    border: 1px solid #888;
+    vertical-align: middle;
+}
+
+.outputadjustment-sliders {
+    flex: 1 1 0;
+    min-width: 0;
+    width: 100%;
+    margin: 0 auto;
+    padding: 12px 20px 0px 20px;
+    overflow-y: auto;
+}
+
+.outputadjustment-sliders label {
+    font-size: 12px;
+}
+
+.outputadjustment-HSB-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.outputadjustment-HSB-adjust {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.outputadjustment-HSB-reset {
+    margin-left: 8px;
+    cursor: pointer;
+}
+
+.outputadjustment-button-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.outputadjustment-button {
+    background-color: #2B2C34;
+    color: white;
+    font-weight: bold;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.outputadjustment-button:hover {
+    background-color:  rgb(43, 39, 58);
+}

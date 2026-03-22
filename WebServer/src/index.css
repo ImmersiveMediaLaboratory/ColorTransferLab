@@ -1,0 +1,241 @@
+/*
+Copyright 2026 by Herbert Potechius,
+Technical University of Berlin
+Faculty IV - Electrical Engineering and Computer Science - Institute of Telecommunication Systems - Communication Systems Group
+All rights reserved.
+This file is released under the "MIT License Agreement".
+Please see the LICENSE file that should have been included as part of this package.
+*/
+
+:root {
+    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+
+    color-scheme: light dark;
+    color: rgba(255, 255, 255, 0.87);
+    background-color: #242424;
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  align-items: center;
+}
+
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
+
+/******************************************************************************************************************
+ ******************************************************************************************************************
+ ** Changes the style of scrollbars
+ ******************************************************************************************************************
+ ******************************************************************************************************************/
+::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+    /* background-color: #525a9b; */
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #666;
+    border-radius: 0px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #888;
+}
+
+
+:root {
+    --backgroundcolor: #2B2C34;
+    --headercolor: #1F2124;
+    --fontcolor: #B4B4B8;
+
+    font-size: 13px;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    --mobile-max-width: #{$mobile_max_width};
+    --window-width: #{$window_width};
+}
+
+img { 
+    -webkit-user-drag: none; 
+    -khtml-user-drag: none; 
+    -moz-user-drag: none; 
+    -o-user-drag: none; 
+    user-drag: none; 
+  }
+
+select {
+    background-color: #2B2C34;
+    color: #B4B4B8;
+    border: 0px;
+    width: 100%;
+}
+
+input {
+    background-color: #2B2C34;
+    color: #B4B4B8;
+    width: calc(100% - 4px);
+}
+
+/* Firefox */
+input[type=number] {
+    border: 0;
+  }
+
+/* Tooltip container */
+.tooltip {
+    position: relative;
+    display: inline-block;
+    z-index: 99999999;
+    border-bottom: 1px dotted black;
+}
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+  
+    /* Position the tooltip text */
+    position: absolute;
+    z-index: 99999999;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+  
+    /* Fade in tooltip */
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+  
+/* Tooltip arrow */
+.tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+    z-index: 99999999;
+}
+  
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+    transition-delay:0.5s;
+    visibility: visible;
+    opacity: 1;
+    z-index: 99999999;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+table td {
+    border: 1px solid #B4B4B8; 
+    padding: 4px;
+}
+table tr {
+    border: 1px solid #2B2C34; 
+    padding: 4px;
+}
+table tr:first-child td {
+    border-top: 0;
+}
+table tr td:first-child {
+    border-left: 0;
+}
+table tr:last-child td {
+    border-bottom: 0;
+}
+table tr td:last-child {
+    border-right: 0;
+}
+
+table th {
+    border: 1px solid #B4B4B8; 
+}
+table tr:first-child th {
+    border-top: 0;
+}
+table tr th:first-child {
+    border-left: 0;
+}
+table tr:last-child th {
+    border-bottom: 0;
+}
+table tr th:last-child {
+    border-right: 0;
+}

@@ -1,13 +1,15 @@
-![](https://img.shields.io/badge/Also%2C%20check%20out%20the%20Python%20library%20ColorTransferLib%20at-red?style=flat-square) 
+This repository is part of a collection of three repositories. See the links below for the related projects.
 
-https://github.com/hpotechius/ColorTransferLib
+[![Button 1](https://img.shields.io/badge/ColorTransferLab-blue)](https://github.com/hpotechius/ColorTransferLab)
+[![Button 2](https://img.shields.io/badge/ColorTransferLib-green)](https://github.com/hpotechius/ColorTransferLib)
+[![Button 3](https://img.shields.io/badge/ColorTransferAlg-red)](https://github.com/hpotechius/ColorTransferAlg)
 
 <img width="1708" alt="infographic" src="https://github.com/user-attachments/assets/d1675913-75dd-4471-bc0b-134931abab13">
 
-# ColorTransferLabV2
-![](https://img.shields.io/badge/ColorTransferLib-2.0.1--2-purple) ![python3.10.12](https://img.shields.io/badge/build-3.10.12-blue?logo=python&label=Python) ![](https://img.shields.io/badge/build-24.04.1%20LTS-orange?logo=ubuntu&label=Ubuntu) ![](https://img.shields.io/badge/build-MIT-purple?label=License) ![](https://img.shields.io/badge/build-6.4.0-brown?logo=octave&label=Octave) ![](https://img.shields.io/badge/build-GeForce%20RTX%204060%20Ti-white?logo=nvidia&label=GPU) ![](https://img.shields.io/badge/build-intel%20Core%20i7--14700KF-white?logo=intel&label=CPU) ![](https://img.shields.io/badge/npm-8.9.0-red?logo=npm) ![](https://img.shields.io/badge/Node.js-16.15.0-green?logo=node.js)
+# ColorTransferLab
+![](https://img.shields.io/badge/ColorTransferLib-2.1.0-purple) ![python3.12.6](https://img.shields.io/badge/build-3.12.6-blue?logo=python&label=Python) ![](https://img.shields.io/badge/build-24.04.3%20LTS-orange?logo=ubuntu&label=Ubuntu) ![](https://img.shields.io/badge/build-MIT-purple?label=License) ![](https://img.shields.io/badge/build-GeForce%20RTX%204060%20Ti-white?logo=nvidia&label=GPU) ![](https://img.shields.io/badge/build-intel%20Core%20i7--14700KF-white?logo=intel&label=CPU) ![](https://img.shields.io/badge/npm-11.6.2-red?logo=npm) ![](https://img.shields.io/badge/Node.js-24.11.1-green?logo=node.js)
 
-ColorTransferLabV2 is a web-based user interface for the application of **color transfer**, **style transfer**, and **colorization** algorithms on different data types, including **Images**, **Videos**, **Point Clouds**, **Meshes**, **Light Fields**, **Volumetric Videos**, and **Gaussian Splattings**, with the possibility to visualize these data types. Additionally, 20 evaluation metrics are included to assess color transfer results. It is based on our previous tool ColorTransferLab.
+ColorTransferLab is a web-based user interface for the application of **color transfer**, **style transfer**, and **colorization** algorithms on different data types, including **Images**, **Videos**, **Point Clouds**, **Meshes**, **Light Fields**, **Volumetric Videos**, and **Gaussian Splattings**, with the possibility to visualize these data types. Additionally, 20 evaluation metrics are included to assess color transfer results. It is based on our previous tool ColorTransferLab.
 
 This tool is based on WebRTC communication between the client, which is the [User Interface](https://potechius.com/ColorTransferLab), and the compute node, which applies computations using the Python library [ColorTransferLib](https://github.com/hpotechius/ColorTransferLib). This library contains available algorithms and image quality assessment metrics.
 
@@ -77,7 +79,47 @@ In this setup, the signaling server is provided via https://signal.potechius.com
    ./runComputeNode.sh --run
    ```
 
-### 2.3 Notes
+### 2.4 Local Setup
+If you want to run ColorTransferLab completely locally, you have to run also the Signal Server and the Webserver.
+   ```
+   git clone https://github.com/hpotechius/ColorTransferLab
+   ```
+#### Signal Server
+   ```
+   cd SignalServer
+   python3.12 -m venv env
+   pip install -r requirements.txt
+   ```
+   The signal server will be available at http://localhost:8071.
+#### WebServer
+   ```
+   cd WebServer
+   npm install
+   npm run dev
+   ```
+   The tool will be available at http://localhost:5173.
+#### Compute Node   
+In the main_computenode.py change the Variable SIGNAL_SERVER from https://signal.potechius.com to http://localhost:8071.
+```
+SIGNAL_SERVER = "http://localhost:8071"
+# SIGNAL_SERVER = "https://signal.potechius.com"
+```
+
+```
+  cd ComputeNode
+  python3.12 -m venv env
+  source env/bin/activate
+  pip install -r requirements.txt
+  pip install git+https://github.com/facebookresearch/detectron2.git@main
+  pip install git+https://github.com/facebookresearch/sam3.git
+  pip install "torch==2.9.1" "torchvision==0.24.1" "torchaudio==2.9.1" --index-url https://download.pytorch.org/whl/cu130
+
+
+  hf auth login
+  # Enter your Access Token
+   ```
+
+### 2.5 Notes
 - Due to the WebRTC-based system architecture, the client and compute node do not need to run on the same system.
 - Depending on the network environment, a connection may not always be established using a STUN server. TURN servers are not provided.
 
@@ -314,10 +356,25 @@ DESCRIPTION
 If you utilize this code in your research, kindly provide a citation:
 ```
 @inproceeding{potechius2023,
-  title={A software test bed for sharing and evaluating color transfer algorithms for images and 3D objects},
   author={Herbert Potechius, Thomas Sikora, Gunasekaran Raja, Sebastian Knorr},
+  title={A software test bed for sharing and evaluating color transfer algorithms for images and 3D objects},
   year={2023},
   booktitle={European Conference on Visual Media Production (CVMP)},
   doi={10.1145/3626495.3626509}
+}
+```
+
+```
+@article{potechius2025,
+  author = {Herbert Potechius, Thomas Sikora, Sebastian Knorr},
+  title = {ColorTransferLabV2: a software testbed for multi-modal color transfer, colorization, and style transfer},
+  journal = {Journal of Electronic Imaging},
+  editor = {SPIE},
+  year = {2025},
+  volume = {34},
+  issue = {5},
+  pages = {1-31},
+  doi = {10.1117/1.JEI.34.5.051002},
+  url = {https://doi.org/10.1117/1.JEI.34.5.051002}
 }
 ```

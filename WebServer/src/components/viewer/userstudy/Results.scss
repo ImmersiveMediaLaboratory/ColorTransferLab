@@ -1,0 +1,158 @@
+/*
+Copyright 2026 by Herbert Potechius,
+Technical University of Berlin
+Faculty IV - Electrical Engineering and Computer Science - Institute of Telecommunication Systems - Communication Systems Group
+All rights reserved.
+This file is released under the "MIT License Agreement".
+Please see the LICENSE file that should have been included as part of this package.
+*/
+
+.results {
+    width: 100%;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    user-select: none;
+    position: relative;
+    height: 100%;
+}
+
+.results-main {
+    position: relative;
+    flex-grow: 1;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #1e1e1e;
+    color: white;
+    font-family: monospace;
+    max-width: 100%;
+}
+
+.results-cell {
+    border: 1px solid #333;
+    padding: 4px;
+    text-align: center;
+}
+
+.results-cell img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+.results-cell.img {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+}
+
+.results-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-color: #1e1e1e;
+    color: white;
+    font-family: monospace;
+    overflow-y: scroll;
+}
+
+.results-table-body {
+    position: absolute;
+    width: 100%;
+}
+
+.results-tbody {
+    display: flex;
+    flex-direction: column;
+}
+
+.results-tr {
+    display: flex;
+    flex-direction: row;
+}
+
+.results-cell.meta {
+    position: relative;
+    min-width: 200px;
+    max-width: 200px;
+    font-size: 8pt;
+    text-align: left;
+    vertical-align: top;
+}
+
+.results-table-header {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+.results-cell-header {
+    flex: 1;
+    border: 1px solid #333;
+    padding-top: 4px;
+    text-align: center;
+    overflow: hidden;
+}
+
+.results-cell-header-meta {
+    min-width: 204px;
+    max-width: 204px;
+    border: 1px solid #333;
+    padding: 4px;
+    text-align: center;
+}
+
+.results-cell-header-meta-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    margin-top: 4px;
+}
+
+.results-meta-remove-button {
+    border: 1px solid #333;
+    width: 200px;
+    padding: 2px 4px;
+    font-size: 8pt;
+    cursor: pointer;
+}
+
+.results-meta-remove-button:hover {
+    background-color: rgb(134, 119, 188);
+}
+
+.results-cell-header-empty {
+    min-width: 20px;
+    max-width: 20px;
+    border: 1px solid #333;
+    padding: 4px;
+}
+
+.results-cell-button {
+    border: 1px solid #333;
+    padding: 4px;
+    text-align: center;
+    min-width: 20px;
+    max-width: 20px;
+    align-items: center;
+    justify-content: center;
+}
+
+.results-close-button:hover {
+    color: rgb(134, 119, 188);
+    cursor: pointer;
+}
+
+.meta-scroll {
+    position: absolute;
+    height: calc(100% - 8px);
+    width: calc(100% - 8px);
+    display: block;
+    max-width: 203px;
+    overflow-x: auto;
+    overflow-y: visible;
+    white-space: nowrap;
+}

@@ -1,0 +1,24 @@
+/*
+Copyright 2026 by Herbert Potechius,
+Technical University of Berlin
+Faculty IV - Electrical Engineering and Computer Science - Institute of Telecommunication Systems - Communication Systems Group
+All rights reserved.
+This file is released under the "MIT License Agreement".
+Please see the LICENSE file that should have been included as part of this package.
+*/
+
+.colorpalette {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+}
+
+.colorpalette-content {
+    position: absolute;
+    top: 25px;
+    width: 100%;
+    height: calc(100% - 25px);
+    background-color: black;
+    margin: 4px;
+}

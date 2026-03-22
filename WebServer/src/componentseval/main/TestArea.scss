@@ -1,0 +1,185 @@
+/*
+Copyright 2026 by Herbert Potechius,
+Technical University of Berlin
+Faculty IV - Electrical Engineering and Computer Science - Institute of Telecommunication Systems - Communication Systems Group
+All rights reserved.
+This file is released under the "MIT License Agreement".
+Please see the LICENSE file that should have been included as part of this package.
+*/
+
+.testarea {
+    position: relative;
+    background-color: #EEEEEE;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.testarea-likert-container {
+    display: flex;
+    flex-direction: row;
+    height: 200px;
+	background-color: #e1e1e1;
+    padding: 30px 200px 30px 200px;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    margin-top: 3.5rem !important;
+	color: #333;
+}
+
+.testarea-likert-table,
+.testarea-likert-table th,
+.testarea-likert-table td {
+	border-collapse: collapse;
+    border: 1px solid transparent !important;
+	box-shadow: none;
+}
+
+.testarea-likert-radio-row {
+	display: flex;
+	padding: 2px;
+	gap: 8px;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+}
+
+.testarea-likert-grid {
+    display: grid;
+    grid-template-columns: 200px repeat(var(--likert-scale, 5), 1fr) 80px;
+    grid-auto-rows: min-content;
+    column-gap: 12px;
+    row-gap: 16px;
+    align-items: center;
+    background-color: #ffe4e1;
+}
+
+.testarea-likert-label {
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+    color: #333;
+}
+
+.testarea-tooltip{
+    cursor: help;
+    color: #1976d2;
+    font-size: 1em;
+    user-select: none;
+    margin-right: 0.5em;
+}
+
+.testarea-image-container {
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    gap: 26px;
+    overflow: hidden;
+    flex-direction: row;
+    margin: auto;
+    max-height: calc(100% - 450px);
+    width: calc(100% - 64px);
+    padding-left: 32px;
+    padding-right: 32px;
+}
+
+.testarea-single-image-container {
+    aspect-ratio: 1 / 1;
+    position: relative;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+}
+
+.testarea-image-caption {
+    display: flex;
+    margin-top: 8px;
+    text-align: center;
+    font-size: 1rem;
+    color: #444;
+    font-weight: bold;
+    margin-top: 8px;
+}
+
+.testarea-image-wrapper {
+    display: flex;
+    position: relative;
+    flex-grow: 1;
+    height: calc(100% - 32px);
+}
+
+.testarea-image-wrapper img {
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    object-fit: contain;
+    background-color: rgb(0, 0, 0);
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.testarea-prev-next-container {
+    display: flex;
+    background-color: white;
+    height: 50px;
+    padding: 10px;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.testarea-prev-button, .testarea-next-button {
+    margin: 0 10px;
+    padding: 5px 10px;
+    background-color: white;
+    color: black;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+}
+
+.testarea-prev-button:hover, .testarea-next-button:hover {
+    background-color: lightgrey;
+}
+
+.testarea-next-button:disabled, .testarea-prev-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  background: #eee;
+  color: #888;
+  border: 1px solid #ddd;
+  box-shadow: none;
+}
+
+.testarea-next-button:disabled:hover {
+  background: #eee;
+  color: #888;
+}
+
+.testarea-likert-pole-row {
+	color: #888;
+	font-size: 0.95em;
+	padding-left: 8px;
+	padding-right: 8px;
+}
+
+.testarea-likert-pole-row.left {
+	text-align: right;
+}
+
+.testarea-likert-pole-right {
+  grid-column: 6;
+  text-align: center;
+  font-size: 0.85em;
+  color: #888;
+}
+
+.testarea-tooltip {
+    margin-left: 8px;
+}

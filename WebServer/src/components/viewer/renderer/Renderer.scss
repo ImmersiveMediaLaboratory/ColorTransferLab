@@ -1,0 +1,141 @@
+/*
+Copyright 2026 by Herbert Potechius,
+Technical University of Berlin
+Faculty IV - Electrical Engineering and Computer Science - Institute of Telecommunication Systems - Communication Systems Group
+All rights reserved.
+This file is released under the "MIT License Agreement".
+Please see the LICENSE file that should have been included as part of this package.
+*/
+
+
+.renderer{
+    position: relative;
+    height: 100%;
+    width: 100%;
+    top: 0px;
+    background-color: #2B2C34;
+}
+
+.emptyRenderer{
+    background-color: #2B2C34 ;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.emptyRendererInner{
+    position: absolute;
+    top: 25px;
+    height: calc((100% - 127px));
+    width: calc(100% - 100px);
+    display: flex;
+    justify-content: center;
+    align-items: center;    
+    word-wrap: break-word;
+    flex-direction: column;
+    text-align: center; 
+    padding: 25px;
+    margin: 25px;
+    background-color: #2B2C34;
+    border: 1px dashed #B4B4B8;
+    border-radius: 15px;
+}
+
+.renderer-title{
+    padding: 3px;
+    height: 19px;
+    position: absolute;
+    width: calc(100% - 2 * 3px);
+    font-family: "Arial", Helvetica, sans-serif;
+    background-color: #1F2124;
+    color: #B4B4B8;
+    font-size: 10pt;
+    z-index: 998;
+    opacity: 0.9;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.renderer-close-button {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 4px;
+    background: #222;
+    margin-right: 6px;
+    color: #fff;
+}
+
+.renderer-close-button:hover {
+    color: rgb(134, 119, 188);
+}
+
+.uploadButton{
+    border: 2px solid #1F2124;
+    background-color: #1F2124;
+    border-radius: 5px;
+    width: calc(100% - 10px);
+    padding: 5px;
+    margin-top: 20px;
+    font-size: 12pt;
+}
+
+.uploadButton:hover,
+.renderer_mesh_texture_button:hover,
+.renderer_info_button:hover{
+    filter: brightness(1.5);
+}
+
+.renderer_mesh_texture_button {
+    position: absolute;
+    width: 15px;
+    padding: 5px;
+    height: 15px;
+    z-index: 9998;
+    right: 0px;
+}
+
+.renderer_mesh_texture_icon {
+    height: 100%;
+}
+
+.renderer_info_button {
+    position: absolute;
+    width: 15px;
+    padding: 5px;
+    height: 15px;
+    z-index: 9998;
+    right: 25px;
+}
+
+.renderer_info_icon {
+    height: 100%;
+}
+
+.renderer_info_box{
+    padding: 5px;
+    position: absolute;
+    z-index: 9998;
+    background-color: #1F2124;
+    opacity: 0.0;
+    height: 80px;
+    bottom: 0px;
+    width: calc(100% - 10px);
+    pointer-events: none;
+}
+
+.renderer-color-palette-icon {
+    position: absolute;
+    width: 15px;
+    padding: 2px;
+    height: 15px;
+    z-index: 9998;
+    right: 25px;
+    color: #B4B4B8;
+    cursor: pointer;
+}
+
+.renderer-color-palette-icon:hover {
+    color: rgb(134, 119, 188);
+}

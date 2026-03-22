@@ -1,0 +1,74 @@
+/*
+Copyright 2026 by Herbert Potechius,
+Technical University of Berlin
+Faculty IV - Electrical Engineering and Computer Science - Institute of Telecommunication Systems - Communication Systems Group
+All rights reserved.
+This file is released under the "MIT License Agreement".
+Please see the LICENSE file that should have been included as part of this package.
+*/
+
+.semanticslist {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
+
+.semantics_title {
+    font-size: 13px;
+    padding: 4px;
+    background-color: #262626;
+    display: flex;
+    align-items: center;
+}
+
+.semantics_list_content {
+    position: relative;
+    flex: 1;
+    width: 100%;
+    overflow: auto;
+}
+
+.semanticslist-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border-bottom: 1px solid #333;
+    background-color: #1e1e1e;
+    flex-wrap: wrap;
+}
+
+.semanticslist-row input[type="text"] {
+    flex: 1;
+    min-width: 40px;
+    padding: 2px 4px;
+    font-size: 11px;
+    margin-right: 8px;
+}
+
+.semanticslist-row input[type="color"] {
+    width: 20px;
+    min-width: 20px;
+    height: 20px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    margin-right: 8px;
+}
+
+.semanticslist-row button {
+    font-size: 11px;
+    padding: 2px 8px;
+    cursor: pointer;
+    margin-left: 8px;
+}
+
+.semantics_list_table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.semanticslist-remove-button:hover {
+    color: rgb(80, 31, 31);
+}
