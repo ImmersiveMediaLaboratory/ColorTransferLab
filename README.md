@@ -126,7 +126,7 @@ SIGNAL_SERVER = "http://localhost:8071"
 
 ## 3. Datatypes
 
-![414768853-3852256a-8547-4a36-be63-82f064d9f9b5](https://github.com/user-attachments/assets/67b370aa-e218-4a11-a986-8c4c42c0b9c8)
+<img width="4242" height="2374" alt="ColorTransferLabV2_DataTypes_wFiles" src="https://github.com/user-attachments/assets/69fdfbc9-c64b-4866-bc2d-05399a1418a8" />
 
 ## 4. Interface
 
