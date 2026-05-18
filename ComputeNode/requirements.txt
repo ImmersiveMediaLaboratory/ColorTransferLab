@@ -10,3 +10,5 @@ decord
 pycocotools
 psutil
 psycopg[binary]
+sam3
+setuptools==80.9.0
