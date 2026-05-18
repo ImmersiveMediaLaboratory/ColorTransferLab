@@ -430,6 +430,11 @@ class WebRTC {
             iceServers: [
                 { urls: "stun:stun.l.google.com:19302" },
                 { urls: "stun:stun1.l.google.com:19302" },
+                {
+                    urls: "turn:ec2-54-164-31-23.compute-1.amazonaws.com:3478",
+                    username: "herbert",
+                    credential: "TestPW123!"
+                }
                 // {
                 //     urls: "turn:potechius.com:3478?transport=tcp",
                 //     username: "test",

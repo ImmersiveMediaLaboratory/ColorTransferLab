@@ -1,4 +1,5 @@
 {
-  "signalServerURL": "http://192.168.178.189:8071",
+  "signalServerURL_local": "http://192.168.178.189:8071",
+  "signalServerURL": "https://signal.potechius.com",
   "password": "test"
 }

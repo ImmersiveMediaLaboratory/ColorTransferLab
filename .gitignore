@@ -1,4 +1,5 @@
 WebServer/build/
+WebServer/dist/
 WebServer/node_modules/
 WebServer/package-lock.json
 WebServer/public/data/

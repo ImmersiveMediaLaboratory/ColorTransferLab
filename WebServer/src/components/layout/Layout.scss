@@ -9,12 +9,13 @@ Please see the LICENSE file that should have been included as part of this packa
 
 .layout {
     width: 100vw;
-    height: 100vh;
+    height: 100dvh;
     display: flex;
     flex-direction: column;
     user-select: none;
     background-color: #363636;
     min-width: 350px;
+    overflow: hidden;
 }
 
 .maingrid {

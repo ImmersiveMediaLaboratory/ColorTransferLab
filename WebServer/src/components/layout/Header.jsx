@@ -152,7 +152,7 @@ import BackspaceIcon from '@mui/icons-material/Backspace';
         <Box className="header">
             <img 
                 className="header-logo" 
-                src="/logo.png" 
+                src="/ColorTransferLab/logo.png" 
                 alt="HMP Logo" 
                 title="Personal Website of Herbert M. Potechius"
                 onClick={handlePersonalClick}

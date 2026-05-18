@@ -10,8 +10,9 @@ Please see the LICENSE file that should have been included as part of this packa
 
 import Layout from "@/components/layout/Layout";
 import { Routes, Route } from 'react-router-dom';
-import {WebRTCProvider} from '@/Utils/WebRTCProvider';
+import { WebRTCProvider } from '@/Utils/WebRTCProvider';
 import UserStudy from "@/componentseval/layout/LayoutEval";
+import LandingPage from "@/components/LandingPage";
 
 /******************************************************************************************************************
  ******************************************************************************************************************
@@ -86,8 +87,9 @@ export default function App() {
     return (
         <WebRTCProvider>
             <Routes>
-            <Route path="/" element={ <Layout/>} />
-            <Route path="/colortransfereval/*" element={<UserStudy />} />
+                <Route path="/ColorTransferLab/LandingPage" element={<LandingPage />} />
+                <Route path="/ColorTransferLab/*" element={<Layout />} />
+                <Route path="/colortransfereval/*" element={<UserStudy />} />
             </Routes>
         </WebRTCProvider>
     );

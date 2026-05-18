@@ -24,8 +24,8 @@ import uuid
 parser = argparse.ArgumentParser(description="WebRTC Client")
 parser.add_argument("--input", type=str, help="The message to send automatically")
 
-SIGNAL_SERVER = "http://localhost:8071"
-# SIGNAL_SERVER = "https://signal.potechius.com"
+#SIGNAL_SERVER = "http://localhost:8071"
+SIGNAL_SERVER = "https://signal.potechius.com"
 
 # Generate a deterministic client ID based on the MAC address, so that it remains consistent across restarts on the same machine
 mac = uuid.getnode()
