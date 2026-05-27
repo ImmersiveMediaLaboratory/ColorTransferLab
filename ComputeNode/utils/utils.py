@@ -216,7 +216,8 @@ class Utils:
         folder_path_data = os.path.abspath("files") + "/data"
         if not Utils.check_folder_exists(folder_path_data):
             Utils.printINFO(f"Download Database...", window)
-            url = "https://potechius.com/Downloads/Datasets/ColorTransferLab_Database.zip"
+            # url = "https://potechius.com/Downloads/Datasets/ColorTransferLab_Database.zip"
+            url = "https://huggingface.co/datasets/hpotechius/ColorTransferLabData/resolve/main/ColorTransferLab_Database.zip"
             absolute_folder_path = os.path.abspath("files")
             local_filename = absolute_folder_path + "/ColorTransferLab_Database.zip"
 

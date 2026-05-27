@@ -248,11 +248,12 @@ async def handlerColorTransfer(client, message, client_id):
             out_raw_path = os.path.join(base_path, tmp_folder, out_file_name)
             os.makedirs(out_raw_path, exist_ok=True)
         elif src_file_ext == "lf":
-            # SRC HANDLING FOR LIGHTFIELD FILES
+            # SRC HANDLING FOR LIGHTFIELD FILES in LF format: expects .lf (ZIP) containing .mp4 and .json
             src_raw_mp4_path = os.path.join(src_raw_path, src_file_name + ".mp4")
             src_raw_json_path = os.path.join(src_raw_path, src_file_name + ".json")
             # Extract src .lf (ZIP) to temp folder 
             Utils.extract_zip(src_file_path, src_raw_path)
+
             # Open json to read grid size
             with open(src_raw_json_path, 'r') as f:
                 lightfield_meta = json.load(f)
@@ -267,7 +268,30 @@ async def handlerColorTransfer(client, message, client_id):
             out_raw_json_path = os.path.join(out_raw_path, out_file_name + ".json")
             with open(out_raw_json_path, 'w') as json_file:
                 json.dump(lightfield_meta, json_file, indent=4)
+        elif src_file_ext == "lfd":
+            # SRC HANDLING FOR LIGHTFIELD FILES in lfd format:
+            # expects .ldf (ZIP) containing multiple .png files and a .json
+            src_raw_json_path = os.path.join(src_raw_path, src_file_name + ".json")
 
+            # Extract src .ldf (ZIP) to temp folder
+            Utils.extract_zip(src_file_path, src_raw_path)
+
+            # Open json to read grid size
+            with open(src_raw_json_path, "r") as f:
+                lightfield_meta = json.load(f)
+                grid_width = lightfield_meta["grid_width"]
+                grid_height = lightfield_meta["grid_height"]
+
+            # Load lightfield from extracted image folder
+            src = LightField(file_path=src_raw_path, isVideo=False, size=(grid_width, grid_height))
+
+            # OUT HANDLING FOR LIGHTFIELD FILES
+            # Create temporary output folder for generated images + json
+            out_raw_path = os.path.join(base_path, tmp_folder, out_file_name)
+            os.makedirs(out_raw_path, exist_ok=True)
+            out_raw_json_path = os.path.join(out_raw_path, out_file_name + ".json")
+            with open(out_raw_json_path, "w") as json_file:
+                json.dump(lightfield_meta, json_file, indent=4)
         elif src_file_ext == "volu":
             # SRC HANDLING FOR VOLUMETRIC VIDEO FILES
             src_raw_json_path = os.path.join(src_raw_path, src_file_name + ".json")
@@ -340,7 +364,7 @@ async def handlerColorTransfer(client, message, client_id):
             return
 
         # If it's a mesh: pack obj/mtl/png into a .mesh (ZIP) file
-        if out_file_ext == "mesh" or out_file_ext == "lf" or out_file_ext == "volu":  # and output_write_path and mesh_zip_path:
+        if out_file_ext == "mesh" or out_file_ext == "lf" or out_file_ext == "lfd" or out_file_ext == "volu":  # and output_write_path and mesh_zip_path:
             # Note: the path of has to look like: files/data/tmp/<out_file_name>/<out_file_name>
             # First <out_file_name> is folder, second is the base name of the .obj/.mtl/.png files
             out_raw_files_path = os.path.join(out_raw_path, out_file_name)
