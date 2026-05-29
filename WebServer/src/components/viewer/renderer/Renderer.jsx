@@ -487,12 +487,12 @@ export default function Renderer({title, rid, filePath, setSettings, setMeshText
             ) : null}
 
             {/* {rid === "ref" && colorPaletteEnabled && ( */}
-            {rid === "ref" && (
+            {/* {rid === "ref" && (
                 <>
                     <ColorLensOutlinedIcon className="renderer-color-palette-icon" onClick={() => handleColorPalette()} />
                     {colorPaletteEnabled && <ColorPalette />}
                 </>
-            )}
+            )} */}
 
             {activeDataType === "Image" && (
                 <ImageRenderer 

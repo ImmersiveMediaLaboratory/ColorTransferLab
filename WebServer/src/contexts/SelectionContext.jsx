@@ -22,6 +22,7 @@ const SelectionContext = createContext({
     selectedHistogram3D: {src: null, ref: null, out: null},
     selectedHistogram2D: {src: null, ref: null, out: null},
     selectedSemanticList: [],
+    selectedTurnServer: {address: null, user: null, password: null},
 
     contextConnectedNodes: null,
 
@@ -85,6 +86,12 @@ const SelectionContext = createContext({
             "Wrap your app in <SelectionProvider> for global state."
         );
     },
+    setSelectedTurnServer: () => {
+        console.warn(
+            "SelectionContext: setSelectedTurnServer called without a Provider. " +
+            "Wrap your app in <SelectionProvider> for global state."
+        );
+    },
     resetSelection: () => {
         console.warn(
             "SelectionContext: resetSelection called without a Provider. " +
@@ -105,6 +112,7 @@ export function SelectionProvider({ children }) {
     const [selectedHistogram3D, setSelectedHistogram3D] = useState({src: null, ref: null, out: null});
     const [selectedHistogram2D, setSelectedHistogram2D] = useState({src: null, ref: null, out: null});
     const [contextConnectedNodes, setContextConnectedNodes] = useState(null);
+    const [selectedTurnServer, setSelectedTurnServer] = useState({address: null, user: null, password: null});
 
     const resetSelection = () => {
         setSelectedAlgorithm(null);
@@ -117,6 +125,7 @@ export function SelectionProvider({ children }) {
         setSelectedHistogram3D({src: null, ref: null, out: null});
         setSelectedHistogram2D({src: null, ref: null, out: null});
         setContextConnectedNodes(null);
+        setSelectedTurnServer({address: null, user: null, password: null});
     };
 
     const value = {
@@ -130,6 +139,7 @@ export function SelectionProvider({ children }) {
         selectedHistogram3D,
         selectedHistogram2D,
         contextConnectedNodes,
+        selectedTurnServer,
         setSelectedAlgorithm,
         setSelectedOptions,
         setSelectedSourcePath,
@@ -140,6 +150,7 @@ export function SelectionProvider({ children }) {
         setSelectedHistogram3D,
         setSelectedHistogram2D,
         setContextConnectedNodes,
+        setSelectedTurnServer,
         resetSelection,
     };
 

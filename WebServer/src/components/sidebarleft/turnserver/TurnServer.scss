@@ -1,0 +1,96 @@
+/*
+Copyright 2026 by Herbert Potechius,
+Technical University of Berlin
+Faculty IV - Electrical Engineering and Computer Science - Institute of Telecommunication Systems - Communication Systems Group
+All rights reserved.
+This file is released under the "MIT License Agreement".
+Please see the LICENSE file that should have been included as part of this package.
+*/
+
+.turnserver {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+
+.turnserver_title {
+    font-size: 13px;
+    padding: 4px;
+    background-color: #262626;
+    display: flex;
+    align-items: center;
+}
+
+.turnserver-password-input {
+    margin-left: 10px; 
+    padding: 4px;
+    font-size: 14px;
+}
+
+.turnserver-icon {
+    margin-right: 8px;
+    font-size: 18px;
+}
+
+.turnserver-button-icon {
+    font-size: 18px;
+    margin-right: 8px,
+}
+
+.turnserver_content {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 5px;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.turnserver_row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.turnserver_row label {
+    width: 80px;
+    flex: 0 0 80px;
+    font-size: 12px;
+    color: #e2e2e2;
+}
+
+.turnserver_row input {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 6px 8px;
+    font-size: 13px;
+    color: #e2e2e2;
+    background: #2b2f36;
+    border: 1px solid #3a3f47;
+    border-radius: 6px;
+    outline: none;
+}
+
+.turnserver_row input:focus {
+    border-color: #5a78ff;
+    box-shadow: 0 0 0 2px rgba(90, 120, 255, 0.18);
+}
+
+.turnserver_apply_button {
+    margin-top: 8px;
+    width: 100%;
+    padding: 7px 10px;
+    font-size: 13px;
+    color: #e2e2e2;
+    background: #2b2f36;
+    border: 1px solid #3a3f47;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.turnserver_apply_button:hover {
+    background: #353b44;
+    border-color: #5a78ff;
+}

@@ -21,6 +21,7 @@ import View from "../viewer/View";
 import {useWebRTC} from '@/Utils/WebRTCProvider';
 import Footer from "./Footer";
 import TestTypes from "@/components/sidebarleft/testtypes/TestTypes";
+import TurnServer from "@/components/sidebarleft/turnserver/TurnServer";
 import DatabaseUserStudy from "@/components/sidebarright/databaseuserstudy/DatabaseUserStudy";
 import ViewUserStudy from "../viewer/userstudy/ViewUserStudy";
 import { getInitialValue } from "@/Utils/Utils";
@@ -64,6 +65,8 @@ export default function Layout() {
 
     const [rightBottomHeight, setRightBottomHeight] = useState(getInitialValue('Layout:rightBottomHeight') ?? 300);
     const [rightTopHeight, setRightTopHeight] = useState(getInitialValue('Layout:rightTopHeight') ?? 300);
+
+    const [leftBottomHeight, setLeftBottomHeight] = useState(getInitialValue('Layout:leftBottomHeight') ?? 300);
     
     const [activePanel, setActivePanel] = useState("center");
 
@@ -106,12 +109,13 @@ export default function Layout() {
         localStorage.setItem('Layout:centerBottomHeight', JSON.stringify(centerBottomHeight));
         localStorage.setItem('Layout:rightBottomHeight', JSON.stringify(rightBottomHeight));
         localStorage.setItem('Layout:rightTopHeight', JSON.stringify(rightTopHeight));
+        localStorage.setItem('Layout:leftBottomHeight', JSON.stringify(leftBottomHeight));
 
         localStorage.setItem('Layout:showLeft', JSON.stringify(showLeft));
         localStorage.setItem('Layout:showRight', JSON.stringify(showRight));
         localStorage.setItem('Layout:showBottom', JSON.stringify(showBottom));
         localStorage.setItem('Layout:isUserStudyOpen', JSON.stringify(isUserStudyOpen));
-    }, [leftWidth, rightWidth, centerBottomHeight, rightBottomHeight, showLeft, showRight, showBottom, isUserStudyOpen]);
+    }, [leftWidth, rightWidth, centerBottomHeight, rightBottomHeight, leftBottomHeight, showLeft, showRight, showBottom, isUserStudyOpen]);
 
 
     
@@ -155,6 +159,11 @@ export default function Layout() {
             setRightBottomHeight(clamped);
         }
 
+        if (drag.current.leftVertical) {
+            let clamped = Math.max(200, Math.min(newHeight, 300));
+            setLeftBottomHeight(clamped);
+        }
+
         let newHeightTop = e.clientY - headerOffset;
         // let XD = screenHeight - rightBottomHeight - footerOffset - headerOffset - 200;
         let XD = screenHeight - 400 - footerOffset - headerOffset - 100;
@@ -163,6 +172,10 @@ export default function Layout() {
 
         if (drag.current.rightVerticalTop) {
             setRightTopHeight(clampedTop);
+        }   
+
+        if (drag.current.leftVerticalTop) {
+            setLeftTopHeight(clampedTop);
         }   
     };
 
@@ -211,7 +224,7 @@ export default function Layout() {
                 }}
             >
                 {/* LEFT COLUMN: Algorithms */}
-                <Algorithms
+                {/* <Algorithms
                     activePanel={activePanel}
                     showLeft={showLeft}  
                     leftWidth={leftWidth}  
@@ -223,7 +236,44 @@ export default function Layout() {
                     showLeft={showLeft}  
                     leftWidth={leftWidth}  
                     isUserStudyOpen={isUserStudyOpen}
-                />
+                /> */}
+
+                <Box
+                    sx={{
+                        display: isMobile
+                        ? (activePanel === "left" ? "flex" : "none")
+                        : (showLeft ? "flex" : "none"),
+                        flexDirection: "column",
+                        width: isMobile ? "100%" : leftWidth + "px",
+                        flexGrow: isMobile ? 1 : 0
+                    }}
+                >
+                    <Algorithms
+                        activePanel={activePanel}
+                        showLeft={showLeft}  
+                        leftWidth={leftWidth}  
+                        isUserStudyOpen={isUserStudyOpen}
+                    />
+
+                    <TestTypes
+                        activePanel={activePanel}
+                        showLeft={showLeft}  
+                        leftWidth={leftWidth}  
+                        isUserStudyOpen={isUserStudyOpen}
+                    />
+                    
+                    {/* Handle between Database and Server */}
+                    <Box
+                        className="layout-handler horizontal"
+                        onMouseDown={() => (drag.current.leftVertical = true)}
+                        sx={{
+                            flexGrow: 0, flexShrink: 0
+                        }}
+
+                    />
+
+                    <TurnServer leftBottomHeight={leftBottomHeight}/>
+                </Box>
 
                 {/* LEFT ↔ CENTER horizontal resizer (desktop only, and only if left is visible) */}
                 {!isMobile && showLeft && (

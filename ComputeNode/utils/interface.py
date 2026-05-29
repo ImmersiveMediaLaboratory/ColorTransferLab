@@ -32,7 +32,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle("ColorTransferLab - ComputeNode - Version 1.0.0")
         self.setGeometry(100, 100, 500, 700)
-        self.setFixedSize(500, 800)
+        self.setFixedSize(500, 1000)
         self.center()
 
         self.terminal = None
@@ -46,6 +46,11 @@ class MainWindow(QMainWindow):
         self.compute_node_name = "ComputeNode-" + Utils.generate_random_string()
         self.compute_node_privacy = False
         self.compute_node_privacy_pw = password
+
+
+        self.turn_name = "turn:ec2-54-164-31-23.compute-1.amazonaws.com:3478"
+        self.turn_user = "testuser"
+        self.turn_pw = "testpw"
 
         # Main widget and layout
         main_widget = QWidget()
@@ -68,8 +73,13 @@ class MainWindow(QMainWindow):
 
         # Init Client Block
         main_layout.addLayout(self.__init_client_block())
-        spacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
+        spacer = QSpacerItem(20, 10, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
         main_layout.addItem(spacer)    
+
+        # Init TURN Server Block
+        main_layout.addLayout(self.__init_turn_block())
+        spacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
+        main_layout.addItem(spacer)
 
         # Init Terminal Block
         main_layout.addWidget(self.__init_terminal_block())
@@ -119,6 +129,24 @@ class MainWindow(QMainWindow):
     # ------------------------------------------------------------------------------------------------------------------
     def set_compute_node_name(self, status):
         self.compute_node_name_val.setText(status)
+
+    # ------------------------------------------------------------------------------------------------------------------
+    # 
+    # ------------------------------------------------------------------------------------------------------------------
+    def set_turn_name(self, status):
+        self.turn_name_val.setText(status)
+
+    # ------------------------------------------------------------------------------------------------------------------
+    # 
+    # ------------------------------------------------------------------------------------------------------------------
+    def set_turn_pw(self, status):
+        self.turn_pw_val.setText(status)
+
+    # ------------------------------------------------------------------------------------------------------------------
+    # 
+    # ------------------------------------------------------------------------------------------------------------------
+    def set_turn_user(self, status):
+        self.turn_user_val.setText(status)
 
     # ------------------------------------------------------------------------------------------------------------------
     # 
@@ -296,6 +324,30 @@ class MainWindow(QMainWindow):
     # ------------------------------------------------------------------------------------------------------------------
     # 
     # ------------------------------------------------------------------------------------------------------------------
+    def update_turn_name(self):
+        new_name = self.turn_name_val.text()
+        if new_name:
+            self.turn_name = new_name
+
+    # ------------------------------------------------------------------------------------------------------------------
+    # 
+    # ------------------------------------------------------------------------------------------------------------------
+    def update_turn_user(self):
+        new_user = self.turn_user_val.text()
+        if new_user:
+            self.turn_user = new_user
+
+    # ------------------------------------------------------------------------------------------------------------------
+    # 
+    # ------------------------------------------------------------------------------------------------------------------
+    def update_turn_pw(self):
+        new_password = self.turn_pw_val.text()
+        if new_password:
+            self.turn_pw = new_password
+
+    # ------------------------------------------------------------------------------------------------------------------
+    # 
+    # ------------------------------------------------------------------------------------------------------------------
     def __init_computenode_block(self):
         box_layout = QVBoxLayout()
         label = QLabel(f"Compute Node Information:")
@@ -469,7 +521,64 @@ class MainWindow(QMainWindow):
         box_layout.addLayout(hbox_layout)
 
         return box_layout
+    
+    # ------------------------------------------------------------------------------------------------------------------
+    # 
+    # ------------------------------------------------------------------------------------------------------------------
+    def __init_turn_block(self):
+        box_layout = QVBoxLayout()
+        label = QLabel(f"TURN Server Information:")
+        font = label.font()
+        font.setBold(True)
+        label.setFont(font)
+        label.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        box_layout.addWidget(label)
 
+        separator = QFrame()
+        separator.setFrameShape(QFrame.Shape.HLine)
+        separator.setFrameShadow(QFrame.Shadow.Sunken)
+        box_layout.addWidget(separator)
+
+        hbox_layout = QHBoxLayout()
+        label_turn_name = QLabel(f"Address:")
+        label_turn_name.setFixedSize(190, 20)
+        label_turn_name.setStyleSheet("color: grey;")
+        hbox_layout.addWidget(label_turn_name)
+
+        self.turn_name_val = QLineEdit()
+        self.turn_name_val.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        self.turn_name_val.returnPressed.connect(self.update_turn_name)
+        self.turn_name_val.setPlaceholderText(self.turn_name)
+        hbox_layout.addWidget(self.turn_name_val)
+        box_layout.addLayout(hbox_layout)
+
+        hbox_layout = QHBoxLayout()
+        label_turnuser_name = QLabel(f"User:")
+        label_turnuser_name.setFixedSize(190, 20)
+        label_turnuser_name.setStyleSheet("color: grey;")
+        hbox_layout.addWidget(label_turnuser_name)
+
+        self.turn_user_val = QLineEdit()
+        self.turn_user_val.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        self.turn_user_val.returnPressed.connect(self.update_turn_user)
+        self.turn_user_val.setPlaceholderText(self.turn_user)
+        hbox_layout.addWidget(self.turn_user_val)
+        box_layout.addLayout(hbox_layout)
+
+        hbox_layout = QHBoxLayout()
+        label_turnpw_name = QLabel(f"Password:")
+        label_turnpw_name.setFixedSize(190, 20)
+        label_turnpw_name.setStyleSheet("color: grey;")
+        hbox_layout.addWidget(label_turnpw_name)
+
+        self.turn_pw_val = QLineEdit()
+        self.turn_pw_val.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        self.turn_pw_val.returnPressed.connect(self.update_turn_pw)
+        self.turn_pw_val.setPlaceholderText(self.turn_pw)
+        hbox_layout.addWidget(self.turn_pw_val)
+        box_layout.addLayout(hbox_layout)
+
+        return box_layout
     # ------------------------------------------------------------------------------------------------------------------
     # 
     # ------------------------------------------------------------------------------------------------------------------

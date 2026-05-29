@@ -1,4 +1,4 @@
-colortransferlib==2.1.0
+colortransferlib==2.2.0
 aiortc
 python-socketio
 geocoder
@@ -11,4 +11,4 @@ pycocotools
 psutil
 psycopg[binary]
 sam3
-setuptools==80.9.0
+setuptools<82

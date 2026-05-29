@@ -110,7 +110,13 @@ class WebRTCClient:
         ice_servers = [
             RTCIceServer(urls="stun:stun.l.google.com:19302"),
             RTCIceServer(urls="stun:stun1.l.google.com:19302"),
+            RTCIceServer(
+                urls=self.window.turn_name,
+                username=self.window.turn_user,
+                credential=self.window.turn_pw
+            ),
         ]
+        
         pc = RTCPeerConnection(RTCConfiguration(iceServers=ice_servers))
         self.connections[client_id] = {"pc": pc, "channel": None, "type": client_type}
         pc.on("icecandidate", lambda candidate: asyncio.create_task(self.on_icecandidate(candidate, client_id)))

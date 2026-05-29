@@ -7,7 +7,7 @@ This repository is part of a collection of three repositories. See the links bel
 <img width="1920" height="1057" alt="03_CTL_interface2" src="https://github.com/user-attachments/assets/4c961333-0f20-44eb-8031-5066b5ed03c7" />
 
 # ColorTransferLab
-![](https://img.shields.io/badge/ColorTransferLib-2.1.0-purple) ![python3.12.6](https://img.shields.io/badge/build-3.12.6-blue?logo=python&label=Python) ![](https://img.shields.io/badge/build-24.04.3%20LTS-orange?logo=ubuntu&label=Ubuntu) ![](https://img.shields.io/badge/build-MIT-purple?label=License) ![](https://img.shields.io/badge/build-GeForce%20RTX%204060%20Ti-white?logo=nvidia&label=GPU) ![](https://img.shields.io/badge/build-intel%20Core%20i7--14700KF-white?logo=intel&label=CPU) ![](https://img.shields.io/badge/npm-11.6.2-red?logo=npm) ![](https://img.shields.io/badge/Node.js-24.11.1-green?logo=node.js)
+![](https://img.shields.io/badge/ColorTransferLib-2.2.0-purple) ![python3.12.6](https://img.shields.io/badge/build-3.12.6-blue?logo=python&label=Python) ![](https://img.shields.io/badge/build-24.04.3%20LTS-orange?logo=ubuntu&label=Ubuntu) ![](https://img.shields.io/badge/build-MIT-purple?label=License) ![](https://img.shields.io/badge/build-GeForce%20RTX%204060%20Ti%20|%2016GB-white?logo=nvidia&label=GPU) ![](https://img.shields.io/badge/build-13.2-white?logo=nvidia&label=CUDA) ![](https://img.shields.io/badge/build-intel%20Core%20i7--14700KF-white?logo=intel&label=CPU) ![](https://img.shields.io/badge/npm-11.6.2-red?logo=npm) ![](https://img.shields.io/badge/Node.js-24.11.1-green?logo=node.js)
 
 ColorTransferLab is a web-based user interface for the application of **color transfer**, **style transfer**, and **colorization** algorithms on different data types, including **Images**, **Videos**, **Point Clouds**, **Meshes**, **Light Fields**, **Volumetric Videos**, and **Gaussian Splattings**, with the possibility to visualize these data types. Additionally, 20 evaluation metrics are included to assess color transfer results. It is based on our previous tool ColorTransferLab.
 
@@ -39,7 +39,7 @@ The above image illustrates the three stages of the compute node:
 ## 2. Setup
 In this setup, the signaling server is provided via https://signal.potechius.com, and the user interface is served through the web server at https://potechius.com/ColorTransferLab. The only instance that must be provided by the user is the compute node. Notably, both the signaling server and the web server are included in this repository and can be self-hosted. The following steps must be followed to run the compute node and test the application.
 
-### 2.1 Advanced Setup
+### 2.1 Setup (Compute Node only)
 1. Clone the repository and go into the directory
    ```
    git clone git@github.com:hpotechius/ColorTransferLab.git
@@ -59,8 +59,11 @@ In this setup, the signaling server is provided via https://signal.potechius.com
    cd ComputeNode
    python main_computenode.py
    ```
-   - During the first run, the Compute Node will download the dataset from https://potechius.com/Downloads/Datasets/ColorTransferLab_Database.zip.
+   - During the first run, the Compute Node will download the dataset from https://huggingface.co/datasets/hpotechius/ColorTransferLabData/resolve/main/ColorTransferLab_Database.zip.
    - The Compute Node will automatically verify whether the specified signaling server is online.
+   - An optional password can be set to limit access.
+   - A TURN server can be specified as a fallback.
+   
 5. Connect to Signal Server
    - Press the "Connect to Signal Server" button (https://signal.potechius.com).
    - The Compute Node will now enter a waiting state until a client connects to it.
@@ -68,19 +71,7 @@ In this setup, the signaling server is provided via https://signal.potechius.com
    - Open https://potechius.com/ColorTransferLab in any browser.
    - The Compute Node should now appear in the Compute Node section of the web interface. Press the button to view all available algorithms and data.
 
-### 2.2 Easy Setup
-1. Run the script to be guided through the installation process.
-   ```
-   cd ressources/scripts
-   chmod +x runComputeNode.sh
-   ./runComputeNode.sh
-   ```
-2. After running the script for the first time, all installation steps can be skipped by using the --run parameter.
-   ```
-   ./runComputeNode.sh --run
-   ```
-
-### 2.4 Local Setup
+### 2.2 Local Setup
 If you want to run ColorTransferLab completely locally, you have to run also the Signal Server and the Webserver.
    ```
    git clone https://github.com/hpotechius/ColorTransferLab
@@ -120,227 +111,29 @@ SIGNAL_SERVER = "http://localhost:8071"
   # Enter your Access Token
    ```
 
-### 2.5 Notes
+### 2.3 Notes
 - Due to the WebRTC-based system architecture, the client and compute node do not need to run on the same system.
-- Depending on the network environment, a connection may not always be established using a STUN server. TURN servers are not provided.
+- Depending on the network environment, a connection may not always be established using a STUN server. In such cases, a TURN server must be provided.
 
 ## 3. Datatypes
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/69fdfbc9-c64b-4866-bc2d-05399a1418a8" width="800">
+  <br>
+  <em>Figure 1: Supported data types. Note: Palette Transfer is not currently available.</em>
+</p>
 
-<img width="4242" height="2374" alt="ColorTransferLabV2_DataTypes_wFiles" src="https://github.com/user-attachments/assets/69fdfbc9-c64b-4866-bc2d-05399a1418a8" />
+## 4. Usage
+<p align="center">
+  <video src="https://potechius.com/Videos/ColorTransferLabMin.mp4" width="1280" height="720" controls></video>
+  <br>
+  <em>Video 1: Usage of the ColorTranserLab interface.</em>
+</p>
 
-## 4. Interface
-
-<table>
-<th align="center">
-<img width="441" height="1">
-<p> 
-<small>
-ALGORITHMS SIDEBAR
-</small>
+<p align="center">
+  <img src="https://static.vecteezy.com/system/resources/previews/022/655/968/non_2x/work-in-progress-rubber-stamp-work-in-progress-grunge-stamp-seal-illustration-free-vector.jpg" width="800">
+  <br>
+  <em>Video 2: Usage of the User Study interface.</em>
 </p>
-</th>
-<th align="center">
-<img width="441" height="1">
-<p> 
-<small>
-DESCRIPTION
-</small>
-</p>
-</th>
-  <tr>
-    <td width="25%"><b>Color Transfer</b></td>
-    <td>This tab provides a collection of 11 color transfer algorithms.</a>.</td>
-  </tr>
-  <tr>
-    <td width="25%"><b>Style Transfer</b></td>
-    <td>This tab provides a collection of 5 style transfer algorithms.</td>
-  </tr>
-  <tr>
-    <td width="25%"><b>Colorization</b></td>
-    <td>This tab provides a collection of 3 colorization algorithms.</td>
-  </tr>
-</table>
-
-<table>
-<th align="center">
-<img width="441" height="1">
-<p> 
-<small>
-RENDERER AREA
-</small>
-</p>
-</th>
-<th align="center">
-<img width="441" height="1">
-<p> 
-<small>
-DESCRIPTION
-</small>
-</p>
-</th>
-  <tr>
-    <td width="25%"><b>Source</b></td>
-    <td>This area can visualize images and 3D point clouds by dragging it from the Items-Menu and dropping it to this area. The object within this area will be used as *Source*-Input for the color transfer.</td>
-  </tr>
-  <tr>
-    <td width="25%"><b>Reference</b></td>
-    <td> </td>
-  </tr>
-  <tr>
-    <td width="25%" align="right"><b>Single Input</b></td>
-    <td>This area can visualize images and 3D point clouds by dragging it from the Items-Menu and dropping it to this area. The object within this area will be used as *Reference*-Input for the color transfer.</td>
-  </tr>
-  <tr>
-    <td width="25%" align="right"><b>Color Palette</b></td>
-    <td>This area allows the user to select multiple colors which will be used as reference.</td>
-  </tr>
-  <tr>
-    <td width="25%"><b>Output</b></td>
-    <td>his area can visualize images and 3D point clouds applying a color transfer algorithm. Only the results can be visualized here. See `Buttons/Start`-Section for more information.</td>
-  </tr>
-</table>
-
-<table>
-<th align="center">
-<img width="441" height="1">
-<p> 
-<small>
-DATA SIDEBAR
-</small>
-</p>
-</th>
-<th align="center">
-<img width="441" height="1">
-<p> 
-<small>
-DESCRIPTION
-</small>
-</p>
-</th>
-  <tr>
-    <td width="25%"><b>Database</b></td>
-    <td>Contains a folder structure of available data.</td>
-  </tr>
-  <tr>
-    <td width="25%" align="right"><b>Output</b></td>
-    <td>Contains the results which are created by the user.</td>
-  </tr>
-  <tr>
-    <td width="25%" align="right"><b>Uploads</b></td>
-    <td>Images which are uploaded, will be available here. See `Buttons/Upload`-Section for more information.</td>
-  </tr>
-  <tr>
-    <td width="25%"><b>Items</b></td>
-    <td>Shows the folders and objects which are contained within the corresponding Database-Folder.</td>
-  </tr>
-</table>
-
-<!---
-### Console-Area
-1. **Console**  
-   ![console](https://user-images.githubusercontent.com/15614886/192982467-3f2b23e3-e88f-475e-a507-a71c999b263c.png)
-2. **Evaluation**  
-   TODO
-3. **Configuration**  
-   ![configuration](https://user-images.githubusercontent.com/15614886/192982722-1f3b7d61-c5f3-457d-a27d-8cf40f481b4c.png)
-4. **Color Statistics**  
-   ![colorstatistics](https://user-images.githubusercontent.com/15614886/192982998-dba4b666-59ba-4fe8-979b-39794ae8f1b5.png)
-5. **Information**  
-   ![information](https://user-images.githubusercontent.com/15614886/193003445-86d08284-4923-43fd-9e54-5d9bc6546525.png)
---->
-
-<table>
-<th align="center">
-<img width="441" height="1">
-<p> 
-<small>
-CONSOLE TAB
-</small>
-</p>
-</th>
-<th align="center">
-<img width="441" height="1">
-<p> 
-<small>
-DESCRIPTION
-</small>
-</p>
-</th>
-  <tr>
-    <td width="25%"><b>Console</b></td>
-    <td>Shows information about the current state of the application with corresponding time stamps.</td>
-  </tr>
-  <tr>
-    <td><b>Evaluation</b></td>
-    <td>Provides the user with information about objective evaluation metrics after clicking the *Evaluation*-button. See `Buttons/Evaluation`-Section for more information.</td>
-  </tr>
-  <tr>
-    <td><b>Configuration</b></td>
-    <td>Configurable parameters will be shown after clicking a chosen color transfer algorithm</td>
-  </tr>
-  <tr>
-    <td><b>Color Statistics</b></td>
-    <td>Shows the 2D color histograms for source, reference and output with the respective means and standard deviations.</td>
-  </tr>
-  <tr>
-    <td><b>Information</b></td>
-    <td>This area shows general information of the clicked color transfer algorithms.</td>
-  </tr>
-</table>
-
-<table width="100%" leftmargin=0 rightmargin=0>
-<th align="center">
-<img width="441" height="1">
-<p> 
-<small>
-BUTTONS
-</small>
-</p>
-</th>
-<th align="center">
-<img width="441" height="1">
-<p> 
-<small>
-DESCRIPTION
-</small>
-</p>
-</th>
-  <tr>
-    <td><b>Upload</b></td>
-    <td>By clicking on this button the user can select an image which will be uploaded to the database. The uploaded object will be availabe in the `Items`-Area after clicking the `Uploads`-Button in the `Database`-Area.</td>
-  </tr>
-  <tr>
-    <td><b>Evaluation</b></td>
-    <td>By clicking this button, the evaluation of the output against the source and reference will be performed. This feature is only available for image-to-image color transfer.</td>
-  </tr>
-  <tr>
-    <td><b>Start</b></td>
-    <td>By clicking on this button the user starts the color transfer process. The resulting object will be displayed in the `Output`-Renderer. This only works if both a source and a reference object are selected and a color transfer algorithm was chosen.</td>
-  </tr>
-</table>
-
-<table>
-<th align="center">
-<img width="441" height="1">
-<p> 
-<small>
-SETTINGS
-</small>
-</p>
-</th>
-<th align="center">
-<img width="441" height="1">
-<p> 
-<small>
-DESCRIPTION
-</small>
-</p>
-</th>
-  <tr>
-    <td width="25%"><b>Single View</b></td>
-    <td>Toggles between the Single View of the renderer area and the simultaneous view of all three renderers — source, reference, and output.</td>
-  </tr>
-</table> 
 
 ## 5. List of other Color Transfer Tools
 - [Palette-based Photo Recoloring](https://recolor.cs.princeton.edu/demo/index.html)

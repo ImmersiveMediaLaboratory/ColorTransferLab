@@ -95,7 +95,7 @@ class WebRTC {
             "/fileUserStudy": "onFileUserStudyRequest",
         };
 
-        const { setContextConnectedNodes } = useSelection();
+        const { setContextConnectedNodes, selectedTurnServer } = useSelection();
         const { setOfferState } = useSelectionUserStudy();
 
         this.onDbRequest = null;
@@ -416,7 +416,8 @@ class WebRTC {
     /**************************************************************************************************************
      * Initializes the RTCPeerConnection and sets up event handlers for ICE candidates and data channels.
      **************************************************************************************************************/
-    initPeerConnection() {
+    initPeerConnection(turnServer=null) {
+
         // If there is still an old connection: close it
         if (this.peerConnection) {
             try {
@@ -431,15 +432,10 @@ class WebRTC {
                 { urls: "stun:stun.l.google.com:19302" },
                 { urls: "stun:stun1.l.google.com:19302" },
                 {
-                    urls: "turn:ec2-54-164-31-23.compute-1.amazonaws.com:3478",
-                    username: "herbert",
-                    credential: "TestPW123!"
+                    urls: turnServer?.address || "turn:potechius.com:3478?transport=tcp",
+                    username: turnServer?.user || "test",
+                    credential: turnServer?.password || "test"
                 }
-                // {
-                //     urls: "turn:potechius.com:3478?transport=tcp",
-                //     username: "test",
-                //     credential: "test"
-                // }
             ]
         });
 
@@ -607,7 +603,7 @@ class WebRTC {
      * Creates an SDP offer, sets up the DataChannel, and sends the offer to the specified 
      * Compute Node via the signalling server.
      **************************************************************************************************************/
-    createOffer = async (sid, password, test_link=null) => {
+    createOffer = async (sid, password, test_link=null, turnServer=null) => {
         this.database_id = sid;
         console.debug("INFO", `Creating offer for Compute Node with SID: ${sid}`);
 
@@ -634,7 +630,7 @@ class WebRTC {
         }
 
         // Create peer connection
-        this.initPeerConnection();
+        this.initPeerConnection(turnServer);
 
         // Create a new DataChannel
         this.dataChannel = this.peerConnection.createDataChannel("dataChannel", {

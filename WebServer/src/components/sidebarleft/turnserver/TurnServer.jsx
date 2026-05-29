@@ -7,7 +7,7 @@ This file is released under the "MIT License Agreement".
 Please see the LICENSE file that should have been included as part of this package.
 */
 
-import "./Server.scss";
+import "./TurnServer.scss";
 import {useEffect, useState} from "react";
 import Box from "@mui/material/Box";
 import PublicTwoToneIcon from '@mui/icons-material/PublicTwoTone';
@@ -26,7 +26,7 @@ import {useSelection} from "@/contexts/SelectionContext";
  ** Also allows to disconnect from the currently connected Compute Node.
  ******************************************************************************************************************
  ******************************************************************************************************************/
-export default function Server({rightBottomHeight}) {
+export default function TurnServer({leftBottomHeight}) {
     /**************************************************************************************************************
      **************************************************************************************************************
      ** STATES & REFERENCES & VARIABLES
@@ -36,15 +36,15 @@ export default function Server({rightBottomHeight}) {
     /*------------------------------------------------------------------------------------------------------------
     -- STATE VARIABLES
     -------------------------------------------------------------------------------------------------------------*/
-    const [computeNodes, setComputeNodes] = useState({});
-    const [connectedKey, setConnectedKey] = useState(null);
-    const [password, setPassword] = useState(config.password);
+    const [turnAddress, setTurnAddress] = useState(config.turn_name ?? "");
+    const [turnUser, setTurnUser] = useState(config.turn_user ?? "");
+    const [password, setPassword] = useState(config.turn_pw ?? "");
+
 
     /*------------------------------------------------------------------------------------------------------------
     -- VARIABLES
     -------------------------------------------------------------------------------------------------------------*/
-    const {rtc} = useWebRTC();
-    const { setContextConnectedNodes, selectedTurnServer } = useSelection();
+    const { setSelectedTurnServer } = useSelection();
 
     /**************************************************************************************************************
      **************************************************************************************************************
@@ -53,22 +53,11 @@ export default function Server({rightBottomHeight}) {
      **************************************************************************************************************/
     
     /**************************************************************************************************************
-     * Sets the received list of available Compute Nodes and listens for connection state changes to 
-     * update the UI accordingly.
+     * Initially set the TURN server information in the global selection context based on the config values.
      **************************************************************************************************************/
     useEffect(() => {
-        rtc.onDbRequest = (data) => {
-            setComputeNodes(data);
-        };
-
-        rtc.onConnectionStateChange = ({ state, serverKey }) => {
-            if (state === "connected") {
-                setConnectedKey(serverKey);
-            } else if (state === "disconnected" || state === "failed" || state === "closed") {
-                setConnectedKey(null);
-            }
-        };
-    }, [rtc]);
+        setSelectedTurnServer({address: turnAddress, user: turnUser, password: password});
+    }, []);
 
     /**************************************************************************************************************
      **************************************************************************************************************
@@ -84,22 +73,15 @@ export default function Server({rightBottomHeight}) {
     };
 
     /**************************************************************************************************************
-     * Create offer for connecting to Compute Node.
+     * Sets the selected TURN server information in the global selection context.
      **************************************************************************************************************/
-    function handleEntryClick(key, entry) {
-        console.debug("INFO", `Attempting to connect to Compute Node: ${entry.name}`)
-        setContextConnectedNodes(key)
-        rtc.createOffer(key, password, null, selectedTurnServer);
-    }
-
-    /**************************************************************************************************************
-     * Dicsonnects from Compute Node.
-     **************************************************************************************************************/
-    function handleDisconnect() {
-        if (rtc && typeof rtc.disconnect === "function")
-            rtc.disconnect();
-
-        setConnectedKey(null);
+    function handleApply() {
+        console.debug("INFO", "Apply TURN settings", {
+            turnAddress,
+            turnUser,
+            password,
+        });
+        setSelectedTurnServer({address: turnAddress, user: turnUser, password: password});
     }
 
     /**************************************************************************************************************
@@ -108,59 +90,45 @@ export default function Server({rightBottomHeight}) {
      **************************************************************************************************************
      **************************************************************************************************************/
     return (
-        <Box className="server" sx={{ height: rightBottomHeight + "px" }}>
-            <div className="server_title">
-                <DnsIcon className="server-icon"/>
-                SERVER
-                <input
-                    className="server-password-input"
-                    type="password"
-                    id="password"
-                    placeholder="password"
-                    onChange={handlePasswordChange}
-                    value={password}
-                />
+        <Box className="turnserver" sx={{ height: leftBottomHeight + "px" }}>
+            <div className="turnserver_title">
+                <DnsIcon className="turnserver-icon"/>
+                TURN SERVER
             </div>
-            <div className="server_content">
-                {Object.entries(computeNodes).map(([key, entry]) => {
-                    const isActive = key === connectedKey;
-                    return (
-                        <div key={key} style={{ display: "flex", alignItems: "center" }}>
-                            <button
-                                className="server_entry_button"
-                                onClick={() => handleEntryClick(key, entry)}
-                                style={
-                                    isActive
-                                        ? {
-                                            border: "1px solid #4caf50",
-                                            backgroundColor: "#1b1b1b"
-                                        }
-                                        : {}
-                                }
-                                disabled={isActive}
-                            >
-                                {entry.privacy ? 
-                                    <PublicOffTwoToneIcon className="server-button-icon"
-                                        style={{color: isActive ? "#4caf50" : undefined}}
-                                    /> 
-                                    :
-                                    <PublicTwoToneIcon className="server-button-icon"
-                                        style={{color: isActive ? "#4caf50" : undefined}}
-                                    /> 
-                                }
-                                {entry.name}
-                            </button>
-                            {isActive && (
-                                <button className='server_exit_button'
-                                    title="Disconnect"
-                                    onClick={handleDisconnect}
-                                >
-                                    <CloseIcon className="server-close-button" />
-                                </button>
-                            )}
-                        </div>
-                    );
-                })}
+            <div className="turnserver_content">
+                <div className="turnserver_row">
+                    <label htmlFor="turn-address">Address</label>
+                    <input
+                        id="turn-address"
+                        type="text"
+                        value={turnAddress}
+                        onChange={(e) => setTurnAddress(e.target.value)}
+                    />
+                </div>
+
+                <div className="turnserver_row">
+                    <label htmlFor="turn-user">User</label>
+                    <input
+                        id="turn-user"
+                        type="text"
+                        value={turnUser}
+                        onChange={(e) => setTurnUser(e.target.value)}
+                    />
+                </div>
+
+                <div className="turnserver_row">
+                    <label htmlFor="turn-password">Password</label>
+                    <input
+                        id="turn-password"
+                        type="password"
+                        value={password}
+                        onChange={handlePasswordChange}
+                    />
+                </div>
+
+                <button className="turnserver_apply_button" onClick={handleApply}>
+                    Apply
+                </button>
             </div>
         </Box>
     );
