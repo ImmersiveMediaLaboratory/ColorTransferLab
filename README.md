@@ -123,10 +123,10 @@ SIGNAL_SERVER = "http://localhost:8071"
 </p>
 
 ## 4. Usage
+
+[![Video Title](https://github.com/user-attachments/assets/4c961333-0f20-44eb-8031-5066b5ed03c7)](https://potechius.com/Videos/ColorTransferLabMin.mp4)
 <p align="center">
-  <video src="https://potechius.com/Videos/ColorTransferLabMin.mp4" width="1280" height="720" controls></video>
-  <br>
-  <em>Video 1: Usage of the ColorTranserLab interface.</em>
+  <em>Video 1: Usage of the ColorTransferLab interface.</em>
 </p>
 
 <p align="center">
