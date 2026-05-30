@@ -27,7 +27,7 @@ The client is the user interface, served by a web server available at https://po
 To connect two instances, such as the client and compute node, within this WebRTC-based setup, the signaling server announces them to each other. The server is available at https://signal.potechius.com and also displays a list of available instances when accessed via a browser.
 
 ### 1.3 Compute Node
-![computenodeinterface](https://github.com/user-attachments/assets/ddcc9b13-cee6-4af7-932d-09653d7913a0)
+<img width="1280" height="861" alt="ComputeNode" src="https://github.com/user-attachments/assets/56ca56d9-b5e3-42c6-a108-4b77d413c1bb" />
 This instance must be provided by the user (see Section 2: Usage). It supplies the necessary data and computational power to apply the algorithms. It is a Python instance with an installed version of ColorTransferLib.
 
 The above image illustrates the three stages of the compute node:
@@ -129,7 +129,7 @@ SIGNAL_SERVER = "http://localhost:8071"
   <em>Video 1: Usage of the ColorTransferLab interface.</em>
 </p>
 
-[![Video Title](https://github.com/user-attachments/assets/4c961333-0f20-44eb-8031-5066b5ed03c7)](https://potechius.com/Videos/ColorTransferLabUserStudy.mp4)
+[![Video Title](https://github.com/user-attachments/assets/33076aac-1ba5-47a8-b5d7-759bb04b8164)](https://potechius.com/Videos/ColorTransferLabUserStudy.mp4)
 <p align="center">
   <em>Video 2: Usage of the User Study interface.</em>
 </p>
