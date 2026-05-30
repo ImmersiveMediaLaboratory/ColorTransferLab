@@ -1,9 +1,0 @@
-ColorTransferLib==2.0.1.post2
-geocoder==1.38.1
-func_timeout==4.3.5
-PyQt6==6.8.1
-qasync==0.27.1
-Flask-SocketIO==5.5.1
-aiortc==1.10.1
-aiohttp==3.11.12
-dominate==2.9.1

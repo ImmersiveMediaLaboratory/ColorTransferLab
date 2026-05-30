@@ -1,0 +1,27 @@
+/*
+Copyright 2026 by Herbert Potechius,
+Technical University of Berlin
+Faculty IV - Electrical Engineering and Computer Science - Institute of Telecommunication Systems - Communication Systems Group
+All rights reserved.
+This file is released under the "MIT License Agreement".
+Please see the LICENSE file that should have been included as part of this package.
+*/
+
+.histogram3d-content {
+    position: relative;
+    display: flex;
+    font-family: monospace;
+    font-size: 10px;
+    height: calc(100% - 8px);
+    width: calc(100% - 8px);
+    gap: 5px;
+    padding: 4px;
+}
+
+.histogram3d-canvas {
+    height: calc(100% - 4px); 
+    width: calc(100% - 4px); 
+    display: block;
+    position: absolute;
+    background-color: rgb(53, 53, 53);
+}

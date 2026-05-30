@@ -1,23 +1,18 @@
-instances/WebServer/build/
-instances/WebServer/node_modules/
-instances/WebServer/package-lock.json
-instances/WebServer/public/data/
-instances/WebServer/public/previews/
+WebServer/build/
+WebServer/dist/
+WebServer/node_modules/
+WebServer/package-lock.json
+WebServer/public/data/
+WebServer/public/previews/
 
-instances/SignalingServer/connections.db
+ComputeNode/files/data/
+ComputeNode/files/semantics/
+ComputeNode/files/study/
+ComputeNode/files/data/
+ComputeNode/env/
 
-instances/ComputeNode/data/
-instances/ComputeNode/previews/
-instances/ComputeNode/files/data/
-instances/ComputeNode/files/previews/
-instances/ComputeNode/Models/
-instances/ComputeNode/octave-workspace/
+SignalingServer/env/
 
-ressources/security/ca_bundle.crt
-ressources/security/certificate.crt
-ressources/security/private.key
-
-ressources/env/
 
 __pycache__/
 __MACOSX/

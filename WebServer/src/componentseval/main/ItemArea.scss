@@ -1,0 +1,86 @@
+/*
+Copyright 2026 by Herbert Potechius,
+Technical University of Berlin
+Faculty IV - Electrical Engineering and Computer Science - Institute of Telecommunication Systems - Communication Systems Group
+All rights reserved.
+This file is released under the "MIT License Agreement".
+Please see the LICENSE file that should have been included as part of this package.
+*/
+
+.itemarea {
+    display: flex;
+    box-shadow: -4px 0 8px rgba(0, 0, 0, 0.15);
+}
+
+.itemarea-toggle-button {
+    width: 20px;
+    background-color: #222222;
+    color: white;
+    text-align: center;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: 4px 0 8px rgba(0, 0, 0, 0.15);
+}
+
+.itemarea-toggle-button:hover {
+    background-color: #333333;
+}
+
+.itemarea-item-list {
+    flex: 1;
+    background-color: #f0f0f0;
+    padding: 10px;
+    overflow-y: auto;
+    width: 160px;
+    min-width: 0;
+    transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+
+.itemarea-item-list.collapsed {
+    width: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+.itemarea-arrow {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-left: 10px solid #fff;
+    transition: transform 0.3s;
+}
+
+.itemarea-arrow.collapsed {
+    transform: rotate(180deg);
+}
+
+.itemarea-item {
+    padding: 5px;
+    margin: 5px;
+    width: calc(100% - 20px);
+    cursor: pointer;
+    border: 1px solid #DDDDDD;
+    border-radius: 4px;
+    background-color: #ffeaea;
+    color: black;
+}
+
+.itemarea-item:hover {
+    background-color: #e0e0e0;
+}
+
+.itemarea-item.selected {
+  border: 2px solid #1976d2;
+  box-shadow: 0 0 4px #1976d2;
+}
+
+.itemarea-item.completed {
+    background-color: #eaffea;
+    border: 2px solid #4caf50;
+    box-shadow: 0 0 4px #4caf50;
+}

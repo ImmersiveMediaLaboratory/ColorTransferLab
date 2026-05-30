@@ -1,0 +1,47 @@
+/*
+Copyright 2026 by Herbert Potechius,
+Technical University of Berlin
+Faculty IV - Electrical Engineering and Computer Science - Institute of Telecommunication Systems - Communication Systems Group
+All rights reserved.
+This file is released under the "MIT License Agreement".
+Please see the LICENSE file that should have been included as part of this package.
+*/
+
+.meshrenderer{
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    display: none;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.meshrenderer-button-container {
+    position: absolute;
+    height: 25px;
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.meshrenderer-volucounter {
+    position: absolute;
+    top: 25px;
+    left: 0;
+    padding: 5px;
+    color: #B4B4B8;
+    font-size: 12px;
+    z-index: 9999;
+}
+
+.meshrenderer-button {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 4px;
+    background: #222;
+    margin-right: 6px;
+    z-index: 9999
+}

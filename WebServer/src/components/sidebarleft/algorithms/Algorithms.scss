@@ -1,0 +1,81 @@
+/*
+Copyright 2026 by Herbert Potechius,
+Technical University of Berlin
+Faculty IV - Electrical Engineering and Computer Science - Institute of Telecommunication Systems - Communication Systems Group
+All rights reserved.
+This file is released under the "MIT License Agreement".
+Please see the LICENSE file that should have been included as part of this package.
+*/
+
+.algorithms {
+    flex-direction: column;
+    height: 100%;
+    flex-grow: 1;
+    min-width: 200px;
+}
+
+.algorithms_title {
+    font-size: 13px;
+    padding: 4px;
+    background-color: #262626;
+    display: flex;
+    align-items: center;
+}
+
+.algorithms_icon {
+    margin-right: 8px;
+    font-size: 18px;
+}
+
+.algorithms_tabs {
+    display: flex;
+    flex-direction: column;
+}
+
+.algorithms_tab {
+    width: 20px;
+    flex: 1;
+    border-radius: 0;
+    padding: 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    border: 1px solid #444;
+}
+
+.algorithms_tab:hover {
+    background: rgb(63, 57, 85);
+}
+
+.algorithms_tab.active {
+    background: rgb(43, 39, 58);
+}
+
+.algorithms_tab:focus {
+    outline: none;
+}
+
+.algorithms_tab_text {
+    transform: rotate(-90deg);
+    white-space: nowrap;
+    font-size: 10px;
+}
+
+.algorithms_body {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.algorithms_content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    flex: 1;
+    padding: 10px;
+    overflow: hidden;
+}

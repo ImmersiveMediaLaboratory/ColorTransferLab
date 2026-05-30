@@ -1,0 +1,64 @@
+/*
+Copyright 2026 by Herbert Potechius,
+Technical University of Berlin
+Faculty IV - Electrical Engineering and Computer Science - Institute of Telecommunication Systems - Communication Systems Group
+All rights reserved.
+This file is released under the "MIT License Agreement".
+Please see the LICENSE file that should have been included as part of this package.
+*/
+
+.console-tab {
+    flex: 1;
+    border-radius: 0;
+    padding: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    border: 1px solid #444;
+}
+
+.console-tab:focus {
+    outline: none;
+}
+
+.console-tab:hover {
+    background: rgb(63, 57, 85);
+}
+
+.console-tab.active {
+    background: rgb(43, 39, 58);
+}
+
+.console-tab-text {
+    white-space: nowrap;
+    font-size: 13px;
+    display: flex;
+}
+
+.consoletabbutton-icon {
+    margin-right: 8px;
+    font-size: 18px;
+}
+
+/* MOBILE MODE ---------------------------------------------------- */
+@media (max-width: 900px) {
+    /* Hide tab text (only icons remain) */
+    .console-tab-text {
+        display: none;
+    }
+
+    /* Make tabs smaller & more compact */
+    .console-tab {
+        padding: 4px;
+        /* min-width: 32px;
+        max-width: 48px; */
+    }
+
+    /* Reduce icon size if needed */
+    .console-tab svg {
+        width: 18px;
+        height: 18px;
+    }
+}

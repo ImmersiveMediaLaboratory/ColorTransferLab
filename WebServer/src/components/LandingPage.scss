@@ -1,0 +1,384 @@
+
+/*
+Copyright 2026 by Herbert Potechius,
+Technical University of Berlin
+Faculty IV - Electrical Engineering and Computer Science - Institute of Telecommunication Systems - Communication Systems Group
+All rights reserved.
+This file is released under the "MIT License Agreement".
+Please see the LICENSE file that should have been included as part of this package.
+*/
+
+html,
+body,
+#root {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+.landingpage {
+    min-height: 100vh;
+    width: 100vw;
+    color: #f4f7fb;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    background:
+        radial-gradient(circle at 15% 20%, rgba(44, 180, 120, 0.18), transparent 30%),
+        radial-gradient(circle at 85% 15%, rgba(42, 123, 228, 0.14), transparent 28%),
+        radial-gradient(circle at 50% 100%, rgba(120, 160, 255, 0.12), transparent 28%),
+        linear-gradient(180deg, #07111c 0%, #050c14 100%);
+    position: relative;
+    overflow-x: hidden;
+}
+
+.landingpage-background {
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 80px 80px;
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,0.65), rgba(0,0,0,1));
+    pointer-events: none;
+}
+
+.landingpage-glow1 {
+    position: absolute;
+    width: 540px;
+    height: 540px;
+    left: -120px;
+    top: 40px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(144,255,164,0.14) 0%, rgba(144,255,164,0.02) 45%, transparent 70%);
+    filter: blur(24px);
+    pointer-events: none;
+}
+
+.landingpage-glow2 {
+    position: absolute;
+    width: 520px;
+    height: 520px;
+    right: -120px;
+    top: -40px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(48,123,255,0.14) 0%, rgba(48,123,255,0.03) 45%, transparent 70%);
+    filter: blur(24px);
+    pointer-events: none;
+}
+
+.landingpage-container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 32px 24px 64px;
+    box-sizing: border-box;
+}
+
+.landingpage-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 34px;
+}
+
+.landingpage-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 700;
+    font-size: 1.15rem;
+    letter-spacing: -0.02em;
+}
+
+.landingpage-branddot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #b8ff72, #53d86a);
+    box-shadow: 0 0 18px rgba(157,255,120,0.45);
+}
+
+.landingpage-navlinks {
+    display: flex;
+    gap: 24px;
+    color: rgba(255,255,255,0.72);
+    font-size: 0.95rem;
+}
+
+.landingpage-navlink {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    color: inherit;
+}
+
+.landingpage-wrapper {
+    width: 100%;
+}
+
+.landingpage-maincard {
+    position: relative;
+    padding: 52px 52px 150px;
+    border-radius: 30px;
+    background: linear-gradient(180deg, rgba(7,17,28,0.88) 0%, rgba(5,12,20,0.92) 100%);
+    border: 1px solid rgba(160,190,255,0.12);
+    box-shadow: 0 20px 80px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.04);
+    overflow: hidden;
+    min-height: 500px;
+}
+
+.landingpage-herorow {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 28px;
+    align-items: center;
+}
+
+.landingpage-herotext {
+    min-width: 0;
+}
+
+.landingpage-modelcard {
+    border-radius: 20px;
+    border: 1px solid rgba(160, 190, 255, 0.16);
+    background: rgba(255, 255, 255, 0.03);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    padding: 14px;
+}
+
+.landingpage-modelviewer {
+    width: 100%;
+    height: 320px;
+    border-radius: 14px;
+    background: radial-gradient(circle at 50% 20%, rgba(60, 95, 150, 0.25), rgba(8, 15, 24, 0.9));
+}
+
+.landingpage-modelhint {
+    margin: 10px 4px 2px;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.55);
+}
+
+@media (max-width: 980px) {
+    .landingpage-herorow {
+        grid-template-columns: 1fr;
+    }
+
+    .landingpage-modelviewer {
+        height: 260px;
+    }
+}
+
+.landingpage-title {
+    font-size: 4rem;
+    line-height: 1.04;
+    font-weight: 800;
+    letter-spacing: -0.05em;
+    max-width: 700px;
+    margin: 0;
+}
+
+.landingpage-titleaccent {
+    color: #a4f96c;
+    text-shadow: 0 0 24px rgba(164,249,108,0.22);
+}
+
+.landingpage-text {
+    margin-top: 24px;
+    color: rgba(232,240,250,0.72);
+    font-size: 1.05rem;
+    line-height: 1.7;
+    max-width: 620px;
+}
+
+.landingpage-ctaRow {
+    display: flex;
+    gap: 14px;
+    margin-top: 34px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.landingpage-primarybutton {
+    background: linear-gradient(135deg, #b8ff72, #8fe45f);
+    color: #08111b;
+    border: none;
+    border-radius: 14px;
+    padding: 16px 22px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(175,255,114,0.24);
+    width: 200px;
+}
+
+.landingpage-secondarybutton {
+    background: rgba(255, 255, 255, 0.04);
+    color: rgba(255, 255, 255, 0.72);
+    border: none;
+    border-radius: 14px;
+    padding: 16px 22px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    width: 100px;
+}   
+
+.landingpage-authform {
+    margin: 18px auto 0;
+    width: min(560px, 100%);
+    display: grid;
+    gap: 10px;
+}
+
+.landingpage-authinput {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(160,190,255,0.25);
+    background: rgba(255, 255, 255, 0.05);
+    color: #f4f7fb;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.landingpage-authinput::placeholder {
+    color: rgba(233, 240, 250, 0.6);
+}
+
+.landingpage-autherror {
+    color: #ffb2b2;
+    font-size: 0.9rem;
+}
+
+.landingpage-confirmbutton {
+    justify-self: center;
+    background: linear-gradient(135deg, #76b7ff, #4c93f0);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.landingpage-wave {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -20px;
+    height: 260px;
+    pointer-events: none;
+}
+
+.landingpage-wave1 {
+    position: absolute;
+    left: -5%;
+    right: -5%;
+    bottom: 18px;
+    height: 170px;
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+    background: radial-gradient(ellipse at top, rgba(194,241,182,0.9) 0%, rgba(120,180,255,0.18) 22%, rgba(18,30,48,0.06) 48%, transparent 72%);
+    filter: blur(10px);
+    opacity: 0.85;
+    transform: scaleX(1.15);
+}
+
+.landingpage-wave2 {
+    position: absolute;
+    left: -10%;
+    right: -10%;
+    bottom: -8px;
+    height: 180px;
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+    background: radial-gradient(ellipse at top, rgba(104,156,255,0.46) 0%, rgba(22,35,60,0.28) 32%, rgba(8,15,24,0.05) 60%, transparent 76%);
+    filter: blur(18px);
+    opacity: 0.9;
+}
+
+.landingpage-wave3 {
+    position: absolute;
+    left: -8%;
+    right: -8%;
+    bottom: -18px;
+    height: 150px;
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+    background: linear-gradient(180deg, rgba(15,32,52,0.15), rgba(7,14,24,0.9));
+    filter: blur(12px);
+    opacity: 1;
+}
+
+.landingpage-infogrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 34px;
+}
+
+@media (max-width: 980px) {
+    .landingpage-infogrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.landingpage-infocard {
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 24px;
+    padding: 24px;
+    background: linear-gradient(180deg, rgba(13,22,35,0.82), rgba(8,14,24,0.92));
+    border: 1px solid rgba(160,190,255,0.1);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.22);
+    overflow: hidden;
+    position: relative;
+}
+
+.landingpage-infotitle {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.landingpage-infotext {
+    color: rgba(255,255,255,0.64);
+    line-height: 1.6;
+    font-size: 0.96rem;
+    max-width: 320px;
+}
+
+.landingpage-infochips {
+    margin-top: auto;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.landingpage-infochips2 {
+    margin-top: auto;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.landingpage-infochip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 0.83rem;
+    font-weight: 600;
+    color: rgba(235, 246, 255, 0.9);
+    padding: 10px 8px;
+    border-radius: 10px;
+    border: 1px solid rgba(160,190,255,0.2);
+    background: rgba(255, 255, 255, 0.04);
+    height: 30px;
+}
+
+@media (max-width: 480px) {
+    .landingpage-infochips {
+        grid-template-columns: 1fr;
+    }
+}

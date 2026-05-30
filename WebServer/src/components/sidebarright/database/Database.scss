@@ -1,0 +1,57 @@
+/*
+Copyright 2026 by Herbert Potechius,
+Technical University of Berlin
+Faculty IV - Electrical Engineering and Computer Science - Institute of Telecommunication Systems - Communication Systems Group
+All rights reserved.
+This file is released under the "MIT License Agreement".
+Please see the LICENSE file that should have been included as part of this package.
+*/
+
+.database {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.database-add-button {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
+    cursor: pointer;
+    color: #fff;
+}
+
+.database-title {
+    font-size: 13px;
+    padding: 4px 8px;
+    background-color: #262626;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #333;
+}
+
+.database-icon {
+    margin-right: 8px;
+    font-size: 18px;
+    color: #fff;
+}
+
+.database-add-icon {
+    font-size: 18px;
+}
+
+.database-add-icon:hover {
+    color: rgb(134, 119, 188);
+}
+
+.database_content {
+    position: relative;
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    height: 100%;
+}
+

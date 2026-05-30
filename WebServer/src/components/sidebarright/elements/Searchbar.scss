@@ -1,0 +1,31 @@
+/*
+Copyright 2026 by Herbert Potechius,
+Technical University of Berlin
+Faculty IV - Electrical Engineering and Computer Science - Institute of Telecommunication Systems - Communication Systems Group
+All rights reserved.
+This file is released under the "MIT License Agreement".
+Please see the LICENSE file that should have been included as part of this package.
+*/
+
+.searchbar {
+    display: flex;
+    align-items: center;
+    padding: 6px 8px 2px 8px;
+    background: #232323;
+}
+
+.searchbar-icon {
+    color: #aaa;
+    margin-right: 4px;
+}
+
+.searchbar-input {
+    flex: 1;
+    background: #181818;
+    color: #fff;
+    border: 1px solid #444;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 13px;
+    outline: none;
+}

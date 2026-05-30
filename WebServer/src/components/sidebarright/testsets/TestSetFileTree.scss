@@ -1,0 +1,84 @@
+/*
+Copyright 2026 by Herbert Potechius,
+Technical University of Berlin
+Faculty IV - Electrical Engineering and Computer Science - Institute of Telecommunication Systems - Communication Systems Group
+All rights reserved.
+This file is released under the "MIT License Agreement".
+Please see the LICENSE file that should have been included as part of this package.
+*/
+
+.file-tree {
+    font-size: 12px;
+    position: absolute;  
+    top: 0px;     
+    left: 0;
+    right: 0;
+    bottom: 0;
+    flex: 1;
+    overflow-y: auto;
+    padding: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    pointer-events: auto;
+    background: transparent;
+}
+
+.file-node {
+    margin-left: 5px;
+}
+
+.file-icon {
+    width: 22px;
+    display: inline-block;
+}
+
+.file-children {
+    margin-left: 8px;
+    border-left: 1px solid #444;
+    padding-left: 8px;
+}
+
+.file-dragging {
+    background-color: rgba(100, 150, 255, 0.25);
+    outline: 2px solid #4a90ff;
+    border-radius: 4px;
+    transform: scale(1.03);
+    transition: 0.1s ease;
+}
+
+.file-context-menu {
+    position: fixed;
+    background: #ffffffcc;
+    backdrop-filter: blur(6px);
+    border: 1px solid #d0d0d0;
+    border-radius: 6px;
+    box-shadow: 0px 4px 16px rgba(0,0,0,0.25);
+    padding: 1px 0;
+    z-index: 9999;
+    animation: menuFadeIn 0.15s ease-out;
+}
+
+.file-context-item {
+    padding: 8px 8px;
+    cursor: pointer;
+    font-size: 10px;
+    color: #222;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.file-context-item:hover {
+    background: #4a90ff22;
+    color: #0047b3;
+}
+
+@keyframes menuFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0px);
+    }
+}

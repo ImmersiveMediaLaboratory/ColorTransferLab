@@ -1,0 +1,67 @@
+/*
+Copyright 2026 by Herbert Potechius,
+Technical University of Berlin
+Faculty IV - Electrical Engineering and Computer Science - Institute of Telecommunication Systems - Communication Systems Group
+All rights reserved.
+This file is released under the "MIT License Agreement".
+Please see the LICENSE file that should have been included as part of this package.
+*/
+
+.warning {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.45);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.warning-header-title {
+    margin-bottom: 12px;
+    font-weight: bold;
+    color: #8c861c;
+    font-size: 16px;
+}
+
+.warning-content {
+    top: -150px;
+    background-color: #232323;
+    border-radius: 10px;
+    min-width: 320px;
+    max-width: 90vw;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    padding: 32px 24px 24px 24px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.warning-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.warning-button {
+    background: #4f4f4f;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 32px;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+    margin-top: 4px;
+    width: 150px;
+    margin: 0 auto;
+    display: block;
+}
+
+.warning-button:hover {
+    background: #6f6f6f;
+}

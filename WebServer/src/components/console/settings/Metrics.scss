@@ -1,0 +1,70 @@
+/*
+Copyright 2026 by Herbert Potechius,
+Technical University of Berlin
+Faculty IV - Electrical Engineering and Computer Science - Institute of Telecommunication Systems - Communication Systems Group
+All rights reserved.
+This file is released under the "MIT License Agreement".
+Please see the LICENSE file that should have been included as part of this package.
+*/
+
+.metrics {
+    display: flex;
+    flex-direction: column;
+    height: calc(100%);
+    width: calc(100%);
+    font-size: 10px;
+    background-color: #1e1e1e;
+    font-family: monospace;
+    position: relative;
+}
+
+.metrics-content {
+    position: absolute;
+    font-family: monospace;
+    overflow-y: auto;
+    overflow-x: hidden;
+    color: #eee;
+    font-size: 10px;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.4;
+    background-color: #1e1e1e;
+    min-height: 0;
+    height: calc(100%);
+    width: calc(100%);
+    flex: 1;
+    gap: 10px;
+}
+
+.metrics-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.metrics-cell-config {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    padding: 2px 4px;
+}
+
+.metrics-cell-config.center {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.metrics-icon:hover {
+    color: rgb(134, 119, 188);
+    cursor: pointer;
+}
+
+.metrics-cell-config.yellow {
+    color: rgb(121, 121, 33);
+}
+
+.metrics-cell-config.red {
+    color: rgb(122, 34, 34);
+}
+
+.metrics-cell-config.green {
+    color: rgb(34, 122, 34);
+}

@@ -1,0 +1,20 @@
+{
+    "likert": {
+        "scale": 5,
+        "metrics": [
+            {
+                "name": "Naturalness",
+                "lowest": "unnatural",
+                "highest": "natural",
+                "Description": ""
+            },
+            {
+                "name": "Similarity",
+                "lowest": "unsimilar",
+                "highest": "very similar",
+                "Description": ""
+            }
+            
+        ]
+    }
+}

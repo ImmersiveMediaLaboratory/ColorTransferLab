@@ -1,0 +1,14 @@
+colortransferlib==2.2.0
+aiortc
+python-socketio
+geocoder
+func_timeout
+pyqt6
+qasync
+einops
+decord
+pycocotools
+psutil
+psycopg[binary]
+sam3
+setuptools<82
