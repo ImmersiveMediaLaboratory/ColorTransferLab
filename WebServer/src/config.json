@@ -1,5 +1,5 @@
 {
-  "signalServerURL_local": "http://192.168.178.189:8071",
+  "signalServerURL_local": "http://localhost:8071",
   "signalServerURL": "https://signal.potechius.com",
   "password": "test",
   "turn_name": "turn:ec2-54-164-31-23.compute-1.amazonaws.com:3478",

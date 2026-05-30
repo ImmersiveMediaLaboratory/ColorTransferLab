@@ -59,7 +59,8 @@ export default function Participants({activeTab}) {
     const { selectedTestSets } = useSelectionUserStudy();
     const { showWarning, showInfo } = useWarning();
     const headerValC = ["", "ID", "Worker ID", "Completion Code", "Gender", "Age", "Nationality", "Vision Impairment", "Start", "End", "Duration", "Link", "Test Type", "#", "Action"];
-    const testTypes = ["rating", "comparison", "ranking"];
+    //const testTypes = ["rating", "comparison", "ranking"];
+    const testTypes = ["rating"];
 
     /**************************************************************************************************************
      **************************************************************************************************************
@@ -209,7 +210,7 @@ export default function Participants({activeTab}) {
                                 <td className={`participants-cell-config${(participant.end_time == null || participant.start_time == null) ? " yellow" : ""}`}>{getDuration(participant.start_time, participant.end_time)}</td>
                                 <td className="participants-cell-config link">
                                     {participant.test_link
-                                        ? <a href={`${window.location.origin}/colortransfereval?sid=${contextConnectedNodes}&id=${participant.test_link}`} target={`${window.location.origin}/colortransfereval?sid=${contextConnectedNodes}&id=${participant.test_link}`} rel="noopener noreferrer">Link</a>
+                                        ? <a href={`${window.location.origin}/ColorTransferLab/colortransfereval?sid=${contextConnectedNodes}&id=${participant.test_link}`} target={`${window.location.origin}/ColorTransferLab/colortransfereval?sid=${contextConnectedNodes}&id=${participant.test_link}`} rel="noopener noreferrer">Link</a>
                                         : "Null"}
                                 </td>
                                 <td className="participants-cell-config">{participant.test_type ?? "Null"}</td>

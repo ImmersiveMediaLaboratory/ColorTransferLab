@@ -100,24 +100,24 @@ export default function Data({activeTab, settings, meshTexture, setOutputModific
             icon: AutoAwesomeOutlinedIcon,
             tooltip: "Semantics"
         },
-        {
-            component: Empty,
-            props: { activeRenderer },
-            icon: LayersOutlinedIcon,
-            tooltip: "Depths"
-        },
-        {
-            component: Empty,
-            props: { activeRenderer },
-            icon: ArrowOutwardOutlinedIcon,
-            tooltip: "Normals"
-        },
-        {
-            component: Empty,
-            props: { activeRenderer },
-            icon: WbSunnyTwoToneIcon,
-            tooltip: "Illumination"
-        },
+        // {
+        //     component: Empty,
+        //     props: { activeRenderer },
+        //     icon: LayersOutlinedIcon,
+        //     tooltip: "Depths"
+        // },
+        // {
+        //     component: Empty,
+        //     props: { activeRenderer },
+        //     icon: ArrowOutwardOutlinedIcon,
+        //     tooltip: "Normals"
+        // },
+        // {
+        //     component: Empty,
+        //     props: { activeRenderer },
+        //     icon: WbSunnyTwoToneIcon,
+        //     tooltip: "Illumination"
+        // },
         {
             component: OutputAdjustment,
             props: { setOutputModifications: setOutputModifications, semanticMaps: semanticMaps },

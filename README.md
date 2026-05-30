@@ -69,7 +69,7 @@ In this setup, the signaling server is provided via https://signal.potechius.com
    - The Compute Node will now enter a waiting state until a client connects to it.
 6. Connect to Compute Node
    - Open https://potechius.com/ColorTransferLab in any browser.
-   - The Compute Node should now appear in the Compute Node section of the web interface. Press the button to view all available algorithms and data.
+   - The Compute Node should now appear in the SERVER section of the web interface. Press the button to view all available algorithms and data.
 
 ### 2.2 Local Setup
 If you want to run ColorTransferLab completely locally, you have to run also the Signal Server and the Webserver.
@@ -78,20 +78,23 @@ If you want to run ColorTransferLab completely locally, you have to run also the
    ```
 #### Signal Server
    ```
-   cd SignalServer
+   cd SignalingServer
    python3.12 -m venv env
+   source env/bin/activate
    pip install -r requirements.txt
+   python main_signalingserver.py
    ```
    The signal server will be available at http://localhost:8071.
 #### WebServer
+In the file `WebServer/src/config.json` change the variable `signalServerURL` to http://localhost:8071.
    ```
    cd WebServer
    npm install
    npm run dev
    ```
-   The tool will be available at http://localhost:5173.
+   The tool will be available at http://localhost:5173/ColorTransferLab.
 #### Compute Node   
-In the main_computenode.py change the Variable SIGNAL_SERVER from https://signal.potechius.com to http://localhost:8071.
+In the file `ComputeNode/main_computenode.py` change the Variable `SIGNAL_SERVER` from https://signal.potechius.com to http://localhost:8071.
 ```
 SIGNAL_SERVER = "http://localhost:8071"
 # SIGNAL_SERVER = "https://signal.potechius.com"
@@ -103,13 +106,10 @@ SIGNAL_SERVER = "http://localhost:8071"
   source env/bin/activate
   pip install -r requirements.txt
   pip install git+https://github.com/facebookresearch/detectron2.git@main
+
+  # Optional: To enable semantic segmentation support
   pip install git+https://github.com/facebookresearch/sam3.git
-  pip install "torch==2.9.1" "torchvision==0.24.1" "torchaudio==2.9.1" --index-url https://download.pytorch.org/whl/cu130
-
-
-  hf auth login
-  # Enter your Access Token
-   ```
+```
 
 ### 2.3 Notes
 - Due to the WebRTC-based system architecture, the client and compute node do not need to run on the same system.
@@ -129,9 +129,8 @@ SIGNAL_SERVER = "http://localhost:8071"
   <em>Video 1: Usage of the ColorTransferLab interface.</em>
 </p>
 
+[![Video Title](https://github.com/user-attachments/assets/4c961333-0f20-44eb-8031-5066b5ed03c7)](https://potechius.com/Videos/ColorTransferLabUserStudy.mp4)
 <p align="center">
-  <img src="https://static.vecteezy.com/system/resources/previews/022/655/968/non_2x/work-in-progress-rubber-stamp-work-in-progress-grunge-stamp-seal-illustration-free-vector.jpg" width="800">
-  <br>
   <em>Video 2: Usage of the User Study interface.</em>
 </p>
 

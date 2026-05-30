@@ -89,7 +89,7 @@ export default function App() {
             <Routes>
                 <Route path="/ColorTransferLab/LandingPage" element={<LandingPage />} />
                 <Route path="/ColorTransferLab/*" element={<Layout />} />
-                <Route path="/colortransfereval/*" element={<UserStudy />} />
+                <Route path="/ColorTransferLab/colortransfereval/*" element={<UserStudy />} />
             </Routes>
         </WebRTCProvider>
     );

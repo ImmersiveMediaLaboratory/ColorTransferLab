@@ -142,13 +142,14 @@ def segment(client, input_image, segment_classes):
             Utils.printINFO(f"Finding objects of class: '{segment['name']}'", client.window)
 
             # 1) Encode image
-            inference_state = processor.set_image(in_image)
+            with torch.autocast("cuda", dtype=torch.bfloat16):
+                inference_state = processor.set_image(in_image)
 
-            # 2) Pass text prompt
-            output = processor.set_text_prompt(
-                state=inference_state,
-                prompt=segment["name"]
-            )
+                # 2) Pass text prompt
+                output = processor.set_text_prompt(
+                    state=inference_state,
+                    prompt=segment["name"]
+                )
 
             masks = output["masks"]      # (N,1,H,W)
             print(f" → Masks shape: {masks.shape if masks is not None else None}")

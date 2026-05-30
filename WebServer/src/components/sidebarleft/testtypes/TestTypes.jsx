@@ -93,6 +93,14 @@ export default function TestTypes({activePanel, showLeft, leftWidth, isUserStudy
         console.debug("INFO", `Selected test type: ${testType}`)
         setActiveTestType(testType);
         setSelectedTestType(testType);
+
+        const data_send = {
+            command: "/getIntroductionsRequest",
+            data: { test_type: testType }
+        };
+
+        console.debug("SEND", "[COMPUTE NODE] Request to apply User Study introductions via command /getIntroductionsRequest", data_send);
+        rtc.sendMessage(JSON.stringify(data_send));
     };
 
     /**************************************************************************************************************

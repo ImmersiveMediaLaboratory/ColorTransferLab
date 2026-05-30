@@ -18,6 +18,7 @@ import os
 from utils.utils import Utils
 import psycopg
 import json
+import subprocess
 
 # ----------------------------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------------------
@@ -651,6 +652,51 @@ class MainWindow(QMainWindow):
     async def on_button_click_db(self):
         root_path = "files/study"
 
+        # create userstudy database and tables based on userstudy.sql
+        db_name = "userstudy"
+
+        with psycopg.connect(
+            "dbname=postgres user=postgres password=postgres host=localhost port=5432"
+        ) as conn:
+            conn.autocommit = True
+
+            with conn.cursor() as cur:
+                # Check if database already exists
+                cur.execute("SELECT EXISTS(SELECT 1 FROM pg_database WHERE datname = %s);", (db_name,))
+                db_exists = cur.fetchone()[0]
+                
+                if not db_exists:
+                    cur.execute(f"CREATE DATABASE {db_name}")
+                    Utils.printINFO(f"Database created successfully.", self)
+                else:
+                    Utils.printINFO(f"Database '{db_name}' already exists.", self)
+
+        # load userstudy.sql 
+        script_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        sql_file = os.path.join(script_dir, "meta/userstudy/userstudy.sql")
+        
+        if not os.path.exists(sql_file):
+            Utils.printINFO(f"SQL file not found: {sql_file}", self)
+            return
+        
+        env = os.environ.copy()
+        env["PGPASSWORD"] = "postgres"
+
+        try:
+            subprocess.run([
+                "psql",
+                "-h", "localhost",
+                "-p", "5432",
+                "-U", "postgres",
+                "-d", "userstudy",
+                "-f", sql_file
+            ], check=True, env=env)
+        except subprocess.CalledProcessError as e:
+            Utils.printINFO(f"Error loading SQL file: {e}", self)
+            return
+
+
+
         conn = psycopg.connect(
             "dbname=userstudy user=postgres password=postgres host=localhost port=5432"
         )
@@ -660,11 +706,9 @@ class MainWindow(QMainWindow):
             cur.execute("TRUNCATE TABLE set, set_item, item CASCADE;")
             conn.commit()
 
-        # Alle Ordner direkt unter root_path
         for folder_name in os.listdir(root_path):
             folder_path = os.path.join(root_path, folder_name)
             if os.path.isdir(folder_path):
-                # Alle Unterordner in diesem Ordner
                 for subfolder_name in os.listdir(folder_path):
                     subfolder_path = os.path.join(folder_path, subfolder_name)
                     if os.path.isdir(subfolder_path):

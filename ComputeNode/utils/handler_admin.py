@@ -392,6 +392,7 @@ async def handlerPutParticipant(client, message, client_id):
     with conn.cursor(row_factory=dict_row) as cur:
         cur.execute("SELECT * FROM participant;")
         rows = cur.fetchall()
+        rows = [serialize_row(dict(r)) for r in rows]
 
         client.send_datachannel_message({
             "message": "/putParticipantResponse",
