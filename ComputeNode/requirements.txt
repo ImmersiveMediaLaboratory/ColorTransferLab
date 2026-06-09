@@ -6,9 +6,9 @@ func_timeout
 pyqt6
 qasync
 einops
-decord
+#decord
 pycocotools
 psutil
 psycopg[binary]
-sam3
+#sam3
 setuptools<82
