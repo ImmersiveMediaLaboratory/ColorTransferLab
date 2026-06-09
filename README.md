@@ -52,7 +52,7 @@ In this setup, the signaling server is provided via https://signal.potechius.com
    ```
 3. Install the necessary packages
    ```
-   pip install -r ComputeNode/requirements/requirements.txt
+   pip install -r ComputeNode/requirements.txt
    ```
 4. Run the Compute Node
    ```
